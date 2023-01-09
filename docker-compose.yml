@@ -1,0 +1,45 @@
+version: '3'
+
+service:
+  back-end:
+    depends_on:
+      - postgres
+      - reverse-proxy
+    build: ./img/back-end/
+    volumes:
+      - ./volumes/back-end:/usr/back-end/
+    networks:
+      - 42network
+    
+  front-end:
+    depends_on:
+      - back-end
+    build: ./img/front-end/
+    volume:
+     - ./volumes/front-end:/usr/front-end/
+     - front-end:/usr/front-end/
+    networks:
+      - 42network
+
+  reverse-proxy:
+    build: ./img/reverse-proxy/
+    volumes:
+      - ./volumes/reverse-proxy:/usr/reverse-proxy/
+      - front-end:/usr/front-end/
+    networks:
+      - 42network
+  
+  postgres:
+    build: ./img/postgres/
+    volumes:
+      - ./volumes/postgres:/usr/postgres
+    networks:
+      - 42network
+
+network:
+  42network:
+    name: 42network
+    driver: bridge
+
+volumes:
+  front-end:
