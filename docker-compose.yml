@@ -5,7 +5,10 @@ service:
     depends_on:
       - postgres
       - reverse-proxy
-    build: ./img/back-end/
+    build:
+      context: ./img/back-end/
+      args:
+        - MODE
     volumes:
       - ./volumes/back-end:/usr/back-end/
     networks:

@@ -1,0 +1,13 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "backend of transcendence",
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -t main.ts",
+    "prod": "ts-node main.ts"
+  },
+  "author": "emenella ebellon pthomas mberne agardet",
+  "license": "ISC"
+}
