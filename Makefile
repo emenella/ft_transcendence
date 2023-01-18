@@ -6,7 +6,7 @@
 #    By: pthomas <pthomas@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/18 16:18:04 by pthomas          ###   ########lyon.fr    #
+#    Updated: 2023/01/18 16:26:38 by pthomas          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -58,7 +58,9 @@ ifeq '$(CONTAINER)' ''
 else
 	$(COMPOSE) exec $(CONTAINER) /bin/bash
 endif
-
+# View output from containers
+logs:
+			$(COMPOSE) logs
 #~~~~ Essantial ~~~~#
 # Start services
 start:
