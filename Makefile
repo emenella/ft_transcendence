@@ -6,7 +6,7 @@
 #    By: pthomas <pthomas@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/18 16:26:38 by pthomas          ###   ########lyon.fr    #
+#    Updated: 2023/01/18 17:32:15 by pthomas          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,7 @@ create:		build
 # List containers
 ps:
 			$(COMPOSE) ps --all
-# Execute a command in a running container
+# Execute bash in the container $(CONTAINER)
 exec:
 ifeq '$(CONTAINER)' ''
 	@echo "Usage: CONTAINER=<CONTAINER_NAME> make exec"
