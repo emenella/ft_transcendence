@@ -1,48 +1,86 @@
-version: '3'
+version: '3.9'
+name: pong
 
-service:
-  back-end:
-    depends_on:
-      - postgres
-      - reverse-proxy
-    build:
-      context: ./img/back-end/
-      args:
-        - MODE
-    volumes:
-      - ./volumes/back-end:/usr/back-end/
-    networks:
-      - 42network
-    
-  front-end:
-    depends_on:
-      - back-end
-    build: ./img/front-end/
-    volume:
-     - ./volumes/front-end:/usr/front-end/
-     - front-end:/usr/front-end/
-    networks:
-      - 42network
-
-  reverse-proxy:
-    build: ./img/reverse-proxy/
-    volumes:
-      - ./volumes/reverse-proxy:/usr/reverse-proxy/
-      - front-end:/usr/front-end/
-    networks:
-      - 42network
-  
+services:
   postgres:
-    build: ./img/postgres/
+    container_name: postgres
+    image: postgres:15.1
+    env_file: .env
+    ports:
+      - '5432:5432'
     volumes:
-      - ./volumes/postgres:/usr/postgres
+      - database:/var/lib/postgresql/data
     networks:
-      - 42network
+      - back-end
+    restart: on-failure
+    init: true
 
-network:
-  42network:
-    name: 42network
-    driver: bridge
+  nginx-proxy:
+    container_name: nginx-proxy 
+    image: nginx:stable
+    # depends_on:
+      # - server
+    ports:
+      - "80:80"
+      - "443:443"
+    configs:
+      - nginx-config
+    secrets:
+      - ssl-credentials
+    networks:
+      - front-end
+      - back-end
+    init: true
+
+  # server:
+  #   container_name: server
+  #   image: transcendence-server
+  #   build:
+  #     context: ./back-end
+  #   depends_on:
+  #     - postgres
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - ./volumes/back-end:/usr/back-end
+  #   networks:
+  #     - back-end
+  #   init: true
+    
+  # app:
+  #   container_name: app
+  #   image: transcendence-app
+  #   build:
+  #     context: ./front-end
+  #   depends_on:
+  #     - server
+  #   volumes:
+  #    - ./volumes/front-end:/usr/front-end
+  #   networks:
+  #     - front-end
+  #   init: true
 
 volumes:
+  database:
+    name: database
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/database
+
+networks:
   front-end:
+    name: front-end
+    driver: bridge
+  back-end:
+    name: back-end
+    driver: bridge
+
+configs:
+  nginx-config:
+    file: ./reverse-proxy/nginx.conf
+
+secrets:
+    ssl-credentials:
+      file: ./ssl_credentials
