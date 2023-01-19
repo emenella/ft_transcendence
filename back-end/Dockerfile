@@ -1,10 +1,11 @@
-FROM alpine:3.17.0
+FROM node:14
 
-ARG MODE
-
-VOLUME ["/usr/back-end"]
-WORKDIR /usr/back-end
+WORKDIR /usr/src/app
 
 RUN npm install
 
-CMD ["npm", "run", MODE]
+# Compile TypeScript code
+RUN npm run build
+
+# Start the app
+CMD [ "npm", "start" ]

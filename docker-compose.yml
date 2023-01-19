@@ -42,7 +42,7 @@ services:
   #   ports:
   #     - "4200:4200"
   #   volumes:
-  #     - ./volumes/back-end:/usr/back-end
+  #     - ./back-end:/usr/back-end
   #   networks:
   #     - back-end
   #   init: true
@@ -55,7 +55,7 @@ services:
   #   depends_on:
   #     - server
   #   volumes:
-  #    - ./volumes/front-end:/usr/front-end
+  #    - ./front-end:/usr/front-end
   #   networks:
   #     - front-end
   #   init: true

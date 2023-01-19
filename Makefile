@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pthomas <pthomas@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: emenella <emenella@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/18 17:32:15 by pthomas          ###   ########lyon.fr    #
+#    Updated: 2023/01/19 10:46:13 by emenella         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 #~~~~ DOCKER ~~~~#
 
 NAME			= pong
-COMPOSE			= docker-compose --project-directory=. -p $(NAME)
+COMPOSE			= docker compose --project-directory=. -p $(NAME)
 
 #~~~~ VOLUMES ~~~~#
 
