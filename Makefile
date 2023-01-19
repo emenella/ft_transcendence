@@ -6,7 +6,7 @@
 #    By: pthomas <pthomas@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/18 17:32:15 by pthomas          ###   ########lyon.fr    #
+#    Updated: 2023/01/19 15:27:54 by pthomas          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,6 +88,14 @@ vclean:
 # Create volume directories if they don't already exist
 volumes:
 			@mkdir -p $(VOLUMES_PATH)/database
+# Create a self signed ssl certificate
+certificate:
+			@mkdir -p ssl_credentials
+			openssl req \
+			-newkey rsa:2048 -nodes -keyout "ssl_credentials/ssl.key" \
+			-x509 -days 365 \
+			-subj '/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr' \
+			-out "ssl_credentials/ssl.crt"
 
 #~~~~ Eugene ~~~~#
 

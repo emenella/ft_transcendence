@@ -27,7 +27,9 @@ services:
       - source: nginx-config
         target: /etc/nginx/conf.d/nginx.conf
     secrets:
-      - ssl-credentials
+      # - ssl-credentials
+      - source: ssl-credentials
+        target: /etc/ssl
     networks:
       - front-end
       - back-end
