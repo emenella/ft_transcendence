@@ -6,7 +6,7 @@
 #    By: emenella <emenella@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/23 14:39:27 by emenella         ###   ########.fr        #
+#    Updated: 2023/01/23 15:51:49 by emenella         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ all:		up
 re:			fclean all
 # Create and start containers
 up:			build
-			$(COMPOSE) up --detach
+			$(COMPOSE) up --detach --build
 # Stop and remove containers and networks
 down:
 			$(COMPOSE) down
