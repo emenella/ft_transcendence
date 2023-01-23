@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pthomas <pthomas@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: emenella <emenella@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/19 15:27:54 by pthomas          ###   ########lyon.fr    #
+#    Updated: 2023/01/23 15:51:49 by emenella         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ all:		up
 re:			fclean all
 # Create and start containers
 up:			build
-			$(COMPOSE) up --detach
+			$(COMPOSE) up --detach --build
 # Stop and remove containers and networks
 down:
 			$(COMPOSE) down

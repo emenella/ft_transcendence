@@ -1,10 +1,8 @@
-FROM alpine:3.17.0
+FROM node:14
 
-ARG MODE
-
-VOLUME ["/usr/back-end"]
-WORKDIR /usr/back-end
+WORKDIR /usr/backend
 
 RUN npm install
 
-CMD ["npm", "run", MODE]
+# Start the app
+CMD [ "npm", "run", "start" ]
