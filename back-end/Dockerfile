@@ -1,11 +1,8 @@
 FROM node:14
 
-WORKDIR /usr/src/app
+WORKDIR /usr/backend
 
 RUN npm install
 
-# Compile TypeScript code
-RUN npm run build
-
 # Start the app
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "start" ]

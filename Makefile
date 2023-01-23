@@ -6,7 +6,7 @@
 #    By: emenella <emenella@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/12 15:24:38 by pthomas           #+#    #+#              #
-#    Updated: 2023/01/19 10:46:13 by emenella         ###   ########.fr        #
+#    Updated: 2023/01/23 14:39:27 by emenella         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@
 #~~~~ DOCKER ~~~~#
 
 NAME			= pong
-COMPOSE			= docker compose --project-directory=. -p $(NAME)
+COMPOSE			= docker-compose --project-directory=. -p $(NAME)
 
 #~~~~ VOLUMES ~~~~#
 
@@ -88,6 +88,14 @@ vclean:
 # Create volume directories if they don't already exist
 volumes:
 			@mkdir -p $(VOLUMES_PATH)/database
+# Create a self signed ssl certificate
+certificate:
+			@mkdir -p ssl_credentials
+			openssl req \
+			-newkey rsa:2048 -nodes -keyout "ssl_credentials/ssl.key" \
+			-x509 -days 365 \
+			-subj '/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr' \
+			-out "ssl_credentials/ssl.crt"
 
 #~~~~ Eugene ~~~~#
 

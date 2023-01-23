@@ -18,34 +18,37 @@ services:
   nginx-proxy:
     container_name: nginx-proxy 
     image: nginx:stable
-    # depends_on:
-      # - server
+    depends_on:
+      - server
     ports:
       - "80:80"
       - "443:443"
     configs:
-      - nginx-config
+      - source: nginx-config
+        target: /etc/nginx/conf.d/nginx.conf
     secrets:
       - ssl-credentials
+      # - source: ssl-credentials
+        # target: /etc/ssl
     networks:
       - front-end
       - back-end
     init: true
 
-  # server:
-  #   container_name: server
-  #   image: transcendence-server
-  #   build:
-  #     context: ./back-end
-  #   depends_on:
-  #     - postgres
-  #   ports:
-  #     - "4200:4200"
-  #   volumes:
-  #     - ./back-end:/usr/back-end
-  #   networks:
-  #     - back-end
-  #   init: true
+  server:
+    container_name: server
+    image: transcendence-server
+    build:
+      context: ./back-end
+    depends_on:
+      - postgres
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./back-end:/usr/backend
+    networks:
+      - back-end
+    init: true
     
   # app:
   #   container_name: app
