@@ -2,7 +2,10 @@ FROM node:14
 
 WORKDIR /usr/backend
 
-RUN npm install
+COPY . .
+
+RUN [ "npm", "install" ]
+RUN [ "npm", "run", "build" ]
 
 # Start the app
 CMD [ "npm", "run", "start" ]

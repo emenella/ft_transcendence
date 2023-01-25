@@ -44,8 +44,8 @@ services:
       - postgres
     ports:
       - "4200:4200"
-    volumes:
-      - ./back-end:/usr/backend
+    # volumes:
+    #   - ./back-end:/usr/backend
     networks:
       - back-end
     init: true
