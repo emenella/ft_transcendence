@@ -6,11 +6,12 @@ export class User {
     id: number;
 
     @Column()
-    firstName: string;
+    login: string;
 
     @Column()
-    lastName: string;
+    username: string;
 
-    @Column()
-    age: number;
+    // TODO chatroom
+    // TODO friends
+    // TODO match history
 }

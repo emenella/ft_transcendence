@@ -20,6 +20,11 @@ export class UserService {
         return user;
     }
 
+    async getUserByLogin(login: string): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { login: login } });
+        return user;
+    }
+
     async createUser(body: User): Promise<void> {
         await this.userRepository.save(body);
     }
