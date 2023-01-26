@@ -21,8 +21,9 @@ export class AuthenticationService {
             const user: any = { login: res.login, username: "" };
             await this.userService.createUser(user);
         }
+        const payload = { login: res.login };
         return {
-            acces_token: this.jwtService.sign(res.login),
+            acces_token: this.jwtService.sign(payload),
         }
     }
 
