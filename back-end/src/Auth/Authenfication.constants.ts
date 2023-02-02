@@ -5,8 +5,3 @@ dotenv.config();
 export const jwtConstants = {
     secret: process.env.JWT,
 };
-
-export const API = {
-    UID: process.env.API_UID,
-    KEY: process.env.API_KEY,
-};

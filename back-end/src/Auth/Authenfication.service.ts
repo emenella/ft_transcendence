@@ -1,41 +1,31 @@
 import { Injectable, Param } from '@nestjs/common';
 import { UserService } from 'src/Users/User.service';
 import { JwtService } from '@nestjs/jwt';
-import { API } from './constants';
+import { Client42ApiService } from 'src/Interface-42/Client42Api.service';
 
 @Injectable()
 export class AuthenticationService {
-    constructor(private readonly userService: UserService,
-        private readonly jwtService: JwtService) {}
+    constructor(private readonly userService: UserService, private readonly jwtService: JwtService, private readonly Client42ApiService: Client42ApiService) { }
 
-    async login(code: string) {
-        const token = await this.getToken(code);
-        let req = await fetch('https://api.intra.42.fr/v2/me', {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-            }
-        });
-        const res = await req.json();
-        const userDB = await this.userService.getUserByLogin(res.login);
-        if (!userDB) {
-            const user: any = { login: res.login, username: "" };
-            await this.userService.createUser(user);
-        }
-        const payload = { login: res.login };
-        return {
-            acces_token: this.jwtService.sign(payload),
-        }
+    async redirectUrl(): Promise<string> {
+        return await this.Client42ApiService.redirectUrl();
     }
 
-    async getToken(code: string) {
-        let req = await fetch('https://api.intra.42.fr/oauth/token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'grant_type=authorization_code&client_id=' + API.UID + '&client_secret=' + API.KEY + '&code=' + code + '&redirect_uri=http://localhost/auth',
-        });
-        const res = await req.json();
-        return res.access_token;
+    async login(code: string): Promise<any | { status: number }> {
+        const accessToken = await this.Client42ApiService.getAccessToken(code);
+        const userInfo = await this.Client42ApiService.getUserInfo(accessToken);
+        const user = await this.userService.getUserByLogin(userInfo.login);
+        if (!user) {
+            const newUser: any = {
+                login: userInfo.login,
+                username: userInfo.displayname
+            }
+            await this.userService.createUser(newUser);
+        }
+        const payload = { login: userInfo.login};
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 }
+
