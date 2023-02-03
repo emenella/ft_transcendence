@@ -19,6 +19,7 @@ export class Client42ApiService {
             code: code,
             redirect_uri: API.URL,
         }).toPromise().then(response => {
+            console.log(response.data);
             return response.data.access_token;
         }
         );
@@ -30,6 +31,7 @@ export class Client42ApiService {
                 "Authorization": "Bearer " + accessToken,
             },
         }).toPromise().then(response => {
+            console.log(response.data);
             return response.data;
         }
         );

@@ -7,7 +7,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './Authenfication.constants';
 import { Client42ApiModule } from 'src/Interface-42/Client42Api.module';
-import { Client42ApiService } from 'src/Interface-42/Client42Api.service';
 
 @Module({
     imports: [
