@@ -13,7 +13,9 @@ export class AuthenticationService {
 
     async login(code: string): Promise<any | { status: number }> {
         const accessToken = await this.Client42ApiService.getAccessToken(code);
+        console.log(accessToken + " access token");
         const userInfo = await this.Client42ApiService.getUserInfo(accessToken);
+        console.log(userInfo + " user info");
         const user = await this.userService.getUserByLogin(userInfo.login);
         if (!user) {
             const newUser: any = {

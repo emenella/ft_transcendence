@@ -1,4 +1,4 @@
-import { Get, Post, Controller, Param, Redirect } from '@nestjs/common';
+import { Get, Post, Controller, Param, Redirect, Body, Query } from '@nestjs/common';
 import { AuthenticationService } from './Authenfication.service';
 import { API } from '../Interface-42/constants';
 
@@ -13,7 +13,7 @@ export class AuthenticationController {
     }
 
     @Get('callback')
-    async postAuth(@Param('code') code: string) {
-        return await this.authenticationService.login(code);
+    async postAuth(@Query() query: any) {
+        return await this.authenticationService.login(query.code);
     }
 }
