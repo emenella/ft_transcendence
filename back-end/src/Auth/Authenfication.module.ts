@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthenticationService } from './Authenfication.service';
 import { AuthenticationController } from './Authenfication.controller';
-import { JwtStrategy } from './Authenfication.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { UserModule } from 'src/Users/Users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './Authenfication.constants';
-import { Client42ApiModule } from 'src/Interface-42/Client42Api.module';
+import { FortyTwoGuard } from './guard/42.guard';
+import { JwtGuard } from './guard/jwt.guard';
+import { FortyTwoStrategy } from './strategy/42.strategy';
 
 @Module({
     imports: [
@@ -16,10 +18,9 @@ import { Client42ApiModule } from 'src/Interface-42/Client42Api.module';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '60s' },
         }),
-        Client42ApiModule,
         UserModule,
     ],
-    providers: [AuthenticationService, JwtStrategy],
+    providers: [AuthenticationService, JwtStrategy, FortyTwoStrategy, FortyTwoGuard, JwtGuard],
     controllers: [AuthenticationController],
     exports: [AuthenticationService],
 })
