@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToMany,
+    JoinTable,
+    OneToMany
+} from 'typeorm';
 import { Chan } from '../Chat/Chan.entity';
 import { Message } from '../Chat/Message/Message.entity';
 
@@ -24,6 +31,10 @@ export class User {
     @ManyToMany(() => Chan)
     @JoinTable()
     admChans: Chan[];
+
+    @ManyToMany(() => Chan)
+    @JoinTable()
+    invitedChans: Chan[];
 
     @OneToMany(() => Message, (target) => target.author)
     messages: Message[];

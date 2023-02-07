@@ -1,4 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    ManyToOne,
+    JoinColumn,
+    RelationId,
+    ManyToMany,
+    JoinTable,
+    OneToMany
+} from 'typeorm';
 import { User } from 'src/Users/User.entity';
 import { Message } from './Message/Message.entity';
 
@@ -9,19 +20,22 @@ export class Chan {
     id: number;
 
     @Column()
-    name: string;
+    title: string;
 
     @Column()
-    lastName: string;
+    mode: string;
 
     @Column()
-    age: number;
+    password: string;
+
+    @CreateDateColumn()
+    createdAt: number;
 
     @ManyToOne(() => User, (user) => user.ownedChans)
     @JoinColumn()
     owner: User;
 
-    @RelationId((self: User) => self.owner)
+    @RelationId((self: Chan) => self.owner)
     readonly ownerId: User['id'];
 
     @ManyToMany(() => User)
@@ -32,6 +46,11 @@ export class Chan {
     @JoinTable()
     admUsers: User[];
 
-    @OneToMany(() => Message, (target) => target.channel)
+    @ManyToMany(() => User)
+    @JoinTable()
+    invitedUsers: User[];
+
+    @OneToMany(() => Message, (message) => message.channel)
+    @JoinColumn()
     messages: Message[];
 }

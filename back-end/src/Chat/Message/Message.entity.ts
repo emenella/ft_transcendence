@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    ManyToOne,
+    JoinColumn,
+    RelationId,
+} from 'typeorm';
 import { User } from 'src/Users/User.entity';
 import { Chan } from '../Chan.entity';
 
@@ -7,7 +15,7 @@ export class Message {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @CreateDateColumn()
     date: number;
 
     @Column()
@@ -17,13 +25,13 @@ export class Message {
     @JoinColumn()
     author: User;
 
-    @RelationId((self: User) => self.author)
+    @RelationId((self: Message) => self.author)
     readonly authorId: User['id'];
 
     @ManyToOne(() => Chan, (chan) => chan.messages)
     @JoinColumn()
     channel: Chan;
 
-    @RelationId((self: Chan) => self.channel)
+    @RelationId((self: Message) => self.channel)
     readonly channelId: Chan['id'];
 }
