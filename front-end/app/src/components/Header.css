@@ -1,0 +1,18 @@
+.flex-container {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-container > div {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    width: 25%;
+    height: auto;
+}
