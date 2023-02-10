@@ -28,10 +28,11 @@ services:
         target: /etc/nginx/conf.d/default.conf
     secrets:
       - source: ssl-credentials
-        target: /etc/ssl
+        target: /etc/ssl/private
     networks:
       - front-end
       - back-end
+    restart: on-failure
     init: true
 
   server:
@@ -48,6 +49,7 @@ services:
     #   - ./back-end:/usr/backend
     networks:
       - back-end
+    restart: on-failure
     init: true
     
   # app:
@@ -61,6 +63,7 @@ services:
   #    - ./front-end:/usr/front-end
   #   networks:
   #     - front-end
+  #   restart: on-failure
   #   init: true
 
 volumes:
