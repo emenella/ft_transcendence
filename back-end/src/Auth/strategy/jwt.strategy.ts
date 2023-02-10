@@ -1,7 +1,7 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy, } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from 'src/Users/User.service';
+import { HttpException, HttpStatus, Injectable,  } from '@nestjs/common';
+import { UserService } from 'src/Users/service/User.service';
 import { jwtConstants } from '../Authenfication.constants';
 
 @Injectable()
@@ -15,11 +15,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        console.log("payload", payload);
-        const user = await this.usersService.getUserByLogin(payload.login);
-        if (!user) {
-            throw new UnauthorizedException();
+        console.log(payload);
+        if (payload.otp) {
+            throw new HttpException("OTP not verified", HttpStatus.UNAUTHORIZED);
         }
-        return user;
+        return { userId: payload.userId};
     }
 }
