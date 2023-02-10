@@ -88,5 +88,5 @@ configs:
     file: ./reverse-proxy/nginx.conf
 
 secrets:
-    ssl-credentials:
-      file: ./ssl_credentials
+  ssl-credentials:
+    file: ./ssl_credentials
