@@ -2,12 +2,70 @@ import React from 'react';
 import './User_connected.css';
 import logo_matchmaking from '../assets/logo_pong.jpg';
 
-{/* Ajouter deux sidebar et le chat dessous */ }
-function Connected() {
+// ajouter boucle
+function ChatSidebar() {
   return (
-    <div>
+    <div className='chatSidebar'>
+      <table>
+        <thead>
+          <tr>
+            <th scope='row'>Channels rejoints</th>
+            <th scope='row'>+</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>nom du channel</td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ajouter boucle
+function UserSidebar() {
+  return (
+    <div className='userSidebar'>
+      <table>
+        <thead>
+          <tr>
+            <th scope='row'>Amis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>pdp</td>
+            <td>pseudo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Chat() {
+  return (
+    <div className='chat'>
+      <table>
+        <tbody>
+          <tr>
+            <p>Bla bla des autres.</p>
+          </tr>
+          <tr>
+            <p>Mon blabla a écrire et envoyer.</p>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Main() {
+  return (
+    <div className='main'>
       {/* Onglet "Jouer" */}
-      {/* Ajouter lien vers matchmaking */}
       <div className='matchmaking'>
         <h2>JOUER</h2>
         <div className='matchmaking_mode'>
@@ -30,11 +88,6 @@ function Connected() {
           <p>Map 3</p>
         </div>
       </div>
-
-      <br />
-      <br />
-      <br />
-      <br />
 
       {/* Onglet "Profil" */}
       {/* Appels API partouuuut : besoin de fix l'arrangement photo et pseudo */}
@@ -65,18 +118,13 @@ function Connected() {
               <tbody>
                 <tr>
                   <td>Appel API VS Appel API</td>
-                  <td>Appel API</td>
+                  <td>Autre appel API</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
-      <br />
-      <br />
-      <br />
-      <br />
 
       {/* Onglet "Gestion du compte" */}
       <div className='account-management'>
@@ -87,6 +135,19 @@ function Connected() {
         <label htmlFor="auth">Activer l'authentification à double facteur : </label> <input type="checkbox" name="auth" id="auth" value="2F" /> <br />
         <p>Supprimer le compte</p>
       </div>
+    </div>
+  );
+}
+
+function Connected() {
+  return (
+    <div className='connected'>
+      <ChatSidebar />
+      <div className='connectedCenter'>
+        <Main />
+        <Chat />
+      </div>
+      <UserSidebar />
     </div>
   );
 }

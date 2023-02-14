@@ -6,7 +6,7 @@ function Footer() {
     <div className='Copyright'>
       <p>
         Copyright ©<br />
-        emenella ebellon pthomas mberne agardet
+        emenella ebellon pthomas mberne
       </p>
     </div>
   );
