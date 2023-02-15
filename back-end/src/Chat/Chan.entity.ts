@@ -16,8 +16,8 @@ import { Message } from './Message/Message.entity';
 
 @Entity()
 export class Chan {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column()
     title: string;
