@@ -12,8 +12,12 @@ export class MessageService {
         private readonly messageRepository: Repository<Message>
     ) {}
 
-    async createMessage(body: Message) {
-        return await this.messageRepository.save(body);
+    async createMessage(author: User, chan: Chan, content: Message["content"]) {
+        const message = await this.messageRepository.create();
+        message.author = author;
+        message.channel = chan;
+        message.content = content;
+        return await this.messageRepository.save(message);
     }
 
     async getMessage(messageId : Message["id"]): Promise<Message> {

@@ -9,8 +9,10 @@ export class MessageControllers {
     constructor(private readonly messageService: MessageService) {}
 
     @Post()
-    async create(@Body() message: Message): Promise<Message> {
-        return this.messageService.createMessage(message);
+    async create(@Param("user") user: User,
+                @Param("chan") chan: Chan,
+                @Param("content") content: Message["content"]): Promise<Message> {
+        return this.messageService.createMessage(user, chan, content);
     }
 
     @Get(":id")
