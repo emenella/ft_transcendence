@@ -1,16 +1,19 @@
-import React from 'react';
-import Footer from './components/Footer';
+import React, { useState } from 'react';
 import Header from './components/Header';
-import Main from './components/Main';
+import Body from './components/Body';
+import Footer from './components/Footer';
 
 function App() {
-  return (
-    <div>
-      <Header />
-      <Main />
-      <Footer />
-    </div>
-  );
+    const [status, setStatus] = useState<boolean>(false);
+    const [playing, setPlaying] = useState<boolean>(false);
+
+    return (
+        <div>
+            <Header status={status} />
+            <Body status={status} playing={playing} />
+            <Footer />
+        </div>
+    );
 }
 
 export default App;

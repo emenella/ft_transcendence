@@ -1,12 +1,11 @@
 .flex-container {
     width: 100%;
     display: flex;
-    flex-flow: row wrap;
     justify-content: space-around;
     align-items: flex-start;
 }
 
-.flex-container > div {
+.flex-container>div {
     width: 33%;
     text-align: center;
 }

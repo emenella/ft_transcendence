@@ -8,7 +8,13 @@ interface User {
     playing: boolean;
 }
 
-function Body({status, playing} : User) {
+function Body({ status, playing }: User) {
+
+    // dev
+    status = true;
+    // playing = true;
+    // end dev
+
     if (status && playing)
         return <Game />;
     else if (status)

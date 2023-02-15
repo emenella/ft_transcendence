@@ -10,13 +10,13 @@
     border-color: black;
 }
 
-.chatSidebar > table {
+.chatSidebar>table {
     table-layout: fixed;
     text-align: left;
     width: 100%;
 }
 
-.chatSidebar > table > thead th:nth-child(1) {
+.chatSidebar>table>thead th:nth-child(1) {
     width: 95%;
 }
 
@@ -32,19 +32,14 @@
     border-color: black;
 }
 
-.userSidebar > table {
+.userSidebar>table {
     text-align: left;
     table-layout: fixed;
     width: 100%;
 }
 
-.userSidebar > table > thead th:nth-child(1) {
+.userSidebar>table>thead th:nth-child(1) {
     width: 25%;
-}
-
-.main {
-    border-style: solid;
-    border-color: black;
 }
 
 .chat {
@@ -57,8 +52,8 @@
     text-align: center;
 }
 
-.matchmaking_mode > img {
-    clip-path:ellipse(33% 50%);
+.matchmaking_mode>img {
+    clip-path: ellipse(33% 50%);
     width: 10%;
     height: auto;
 }
@@ -85,11 +80,11 @@
     justify-content: space-around;
 }
 
-.history > table {
+.history>table {
     table-layout: fixed;
     text-align: center;
 }
 
-.history > table > tbody > tr > td {
+.history>table>tbody>tr>td {
     padding: 10px;
 }
