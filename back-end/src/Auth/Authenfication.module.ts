@@ -2,17 +2,14 @@ import { Module } from '@nestjs/common';
 import { AuthenticationService } from './Authenfication.service';
 import { AuthenticationController } from './Authenfication.controller';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { UserModule } from 'src/Users/Users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './Authenfication.constants';
-import { FortyTwoGuard } from './guard/42.guard';
-import { JwtGuard } from './guard/jwt.guard';
 import { FortyTwoStrategy } from './strategy/42.strategy';
+import { UserModule } from 'src/Users/Users.module';
 
 @Module({
     imports: [
-        UserModule,
         PassportModule,
         JwtModule.register({
             secret: jwtConstants.secret,
@@ -20,7 +17,7 @@ import { FortyTwoStrategy } from './strategy/42.strategy';
         }),
         UserModule,
     ],
-    providers: [AuthenticationService, JwtStrategy, FortyTwoStrategy, FortyTwoGuard, JwtGuard],
+    providers: [AuthenticationService, JwtStrategy, FortyTwoStrategy],
     controllers: [AuthenticationController],
     exports: [AuthenticationService],
 })

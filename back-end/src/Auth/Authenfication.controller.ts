@@ -1,17 +1,19 @@
 import { Get, Post, Controller, Param, Redirect, Body, Query, UseGuards, Req, Res, Delete } from '@nestjs/common';
 import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
-import { JwtGuard } from './guard/jwt.guard';
+import { Public } from './decorators/public.decoration';
 
 @Controller('auth')
 export class AuthenticationController {
 
     constructor(private readonly authenticationService: AuthenticationService) {}
     
+    @Public()
     @UseGuards(FortyTwoGuard)
     @Get('')
     async getAuth() {}
     
+    @Public()
     @UseGuards(FortyTwoGuard)
     @Get('callback')
     async postAuth(@Req() req) {
@@ -19,38 +21,42 @@ export class AuthenticationController {
         return await this.authenticationService.login(req.user)
     }
 
+    @Public()
     @Get('admin')
     async getAdmin(@Body() body) {
         return await this.authenticationService.login(body.user);
     }
 
-    @UseGuards(JwtGuard)
+    @Public()
     @Get('user')
     async getUser(@Req() req) {
-        return req.user;
+        if (!req.headers.authorization) {
+            return false;
+        }
+        let payload = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
+        return payload;
     }
-
-    @UseGuards(JwtGuard)
+    
     @Get('2fa/qrcode')
     async getQrCode(@Req() req) {
-        console.log(req.user);
-        return await this.authenticationService.generateQR(req.user.userId);
+        return await this.authenticationService.generateQR(req.user);
     }
 
-    @UseGuards(JwtGuard)
     @Post('2fa/save')
     async saveSecret(@Req() req, @Body() body) {
-        console.log(req.user);
         return await this.authenticationService.saveSecret(req.user, body.code);
     }
 
-    @UseGuards(JwtGuard)
+    @Public()
     @Post('2fa/login')
     async Af2Login(@Req() req, @Body() body) {
-        return await this.authenticationService.otp(req.user, body.code);
+        if (!req.headers.authorization) {
+            return false;
+        }
+        let token = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
+        return await this.authenticationService.otp(token, body.code);
     }
 
-    @UseGuards(JwtGuard)
     @Delete('2fa/delete')
     async deleteSecret(@Req() req) {
         return await this.authenticationService.deleteSecret(req.user);
