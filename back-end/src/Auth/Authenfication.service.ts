@@ -19,8 +19,6 @@ export class AuthenticationService {
         let connection = await this.connectionService.getConnectionById42(user.id);
         if (!connection) {
             const newUser = new User();
-            newUser.login = user.login;
-            newUser.username = "";
             let foundUser = await this.userService.createUser(newUser);
             
             connection = new Connection();

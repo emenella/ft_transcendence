@@ -35,7 +35,6 @@ export class UserService {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
         userToUpdate.login = updatedUser.login;
-        userToUpdate.username = updatedUser.username;
         userToUpdate.connection = updatedUser.connection;
         return await this.userRepository.save(userToUpdate);
     }
