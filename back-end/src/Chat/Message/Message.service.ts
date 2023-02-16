@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Message } from "./Message.entity";
-import { Chan } from "../Chan.entity";
-import { User } from "src/Users/User.entity";
+import { Chan } from "../Chan/Chan.entity";
+import { User } from "src/Users/entity/User.entity";
 
 @Injectable()
 export class MessageService {
@@ -17,7 +17,7 @@ export class MessageService {
         message.author = author;
         message.channel = chan;
         message.content = content;
-        return await this.messageRepository.save(message);
+        return await message.save();
     }
 
     async getMessage(messageId : Message["id"]): Promise<Message> {

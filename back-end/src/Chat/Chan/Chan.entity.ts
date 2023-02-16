@@ -10,8 +10,8 @@ import {
     JoinTable,
     OneToMany
 } from 'typeorm';
-import { User } from 'src/Users/User.entity';
-import { Message } from './Message/Message.entity';
+import { User } from '../../Users/entity/User.entity';
+import { Message } from '../Message/Message.entity';
 
 
 @Entity()
@@ -38,17 +38,27 @@ export class Chan {
     @RelationId((self: Chan) => self.owner)
     readonly ownerId: User['id'];
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    users: User[];
+    /*TO DO : make a ChanRelation.entity */
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    admUsers: User[];
+    // @ManyToMany(() => User)
+    // @JoinTable()
+    // users: User[];
 
-    @ManyToMany(() => User)
-    @JoinTable()
-    invitedUsers: User[];
+    // @ManyToMany(() => User)
+    // @JoinTable()
+    // admUsers: User[];
+
+    // @ManyToMany(() => User)
+    // @JoinTable()
+    // invitedUsers: User[];
+
+    // @ManyToMany(() => User)
+    // @JoinTable()
+    // bannedUsers: User[];
+
+    // @ManyToMany(() => User)
+    // @JoinTable()
+    // mutedUsers: User[];
 
     @OneToMany(() => Message, (message) => message.channel)
     @JoinColumn()

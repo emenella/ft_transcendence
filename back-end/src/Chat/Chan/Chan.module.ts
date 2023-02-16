@@ -3,7 +3,7 @@ import { ChanControllers } from "./Chan.controller";
 import { ChanService } from "./Chan.service";
 import { Chan } from "./Chan.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { MessageModule } from "./Message/Message.module";
+import { MessageModule } from "../Message/Message.module";
 import { UserModule } from "src/Users/Users.module";
 
 @Module({
