@@ -4,7 +4,7 @@ import { MessageService } from "./Message.service";
 import { Message } from "./Message.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "src/Users/Users.module";
-import { ChanModule } from "../Chan.module";
+import { ChanModule } from "../Chan/Chan.module";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Message]), UserModule, ChanModule],

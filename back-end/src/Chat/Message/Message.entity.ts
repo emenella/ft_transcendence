@@ -7,13 +7,13 @@ import {
     JoinColumn,
     RelationId,
 } from 'typeorm';
-import { User } from 'src/Users/User.entity';
-import { Chan } from '../Chan.entity';
+import { User } from 'src/Users/entity/User.entity';
+import { Chan } from '../Chan/Chan.entity';
 
 @Entity()
 export class Message {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: number;
 
     @CreateDateColumn()
     date: number;
@@ -21,14 +21,14 @@ export class Message {
     @Column()
     content: string;
 
-    @ManyToOne(() => User, (user) => user.messages)
+    @ManyToOne(() => User, (user: User) => user.messages)
     @JoinColumn()
     author: User;
 
     @RelationId((self: Message) => self.author)
     readonly authorId: User['id'];
 
-    @ManyToOne(() => Chan, (chan) => chan.messages)
+    @ManyToOne(() => Chan, (chan: Chan) => chan.messages)
     @JoinColumn()
     channel: Chan;
 

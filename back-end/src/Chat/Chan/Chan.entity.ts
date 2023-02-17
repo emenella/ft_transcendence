@@ -17,50 +17,59 @@ import { Message } from '../Message/Message.entity';
 @Entity()
 export class Chan {
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id: number;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @Column()
     title: string;
 
-    @Column()
-    mode: string;
+    @Column({default: false})
+	isPrivate : boolean;
 
-    @Column()
-    password: string;
+	@Column({ nullable: true })
+	password_key : string
 
-    @CreateDateColumn()
-    createdAt: number;
+	@Column({ nullable: true })
+	isDm : boolean;
 
-    @ManyToOne(() => User, (user) => user.ownedChans)
+    @ManyToOne(() => User, (user: User) => user.ownedChans)
     @JoinColumn()
     owner: User;
 
     @RelationId((self: Chan) => self.owner)
     readonly ownerId: User['id'];
 
-    /*TO DO : make a ChanRelation.entity */
+    @OneToMany(() => RelationTable, (rel: RelationTable) => rel.chan)
+    @JoinColumn()
+    relations: RelationTable[];
 
-    // @ManyToMany(() => User)
-    // @JoinTable()
-    // users: User[];
-
-    // @ManyToMany(() => User)
-    // @JoinTable()
-    // admUsers: User[];
-
-    // @ManyToMany(() => User)
-    // @JoinTable()
-    // invitedUsers: User[];
-
-    // @ManyToMany(() => User)
-    // @JoinTable()
-    // bannedUsers: User[];
-
-    // @ManyToMany(() => User)
-    // @JoinTable()
-    // mutedUsers: User[];
-
-    @OneToMany(() => Message, (message) => message.channel)
+    @OneToMany(() => Message, (message: Message) => message.channel)
     @JoinColumn()
     messages: Message[];
+}
+
+@Entity()
+export class RelationTable
+{
+    @PrimaryGeneratedColumn('uuid')
+    id: number;
+
+    @ManyToOne(() => Chan)
+	@JoinColumn()
+	chan: Chan;
+
+	@ManyToOne(() => User)
+	@JoinColumn()
+	user: User;
+
+	@Column({default: false})
+	isAdmin: boolean;
+
+	@Column({ nullable: true })
+	mute_expire: Date;
+
+	@Column({ nullable: true })
+	ban_expire: Date;
 }
