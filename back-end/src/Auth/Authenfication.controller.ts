@@ -17,24 +17,14 @@ export class AuthenticationController {
     @UseGuards(FortyTwoGuard)
     @Get('callback')
     async postAuth(@Req() req) {
-        console.log("Req", req);
         return await this.authenticationService.login(req.user)
     }
 
+    // Sign up without 42
     @Public()
     @Get('admin')
     async getAdmin(@Body() body) {
         return await this.authenticationService.login(body.user);
-    }
-
-    @Public()
-    @Get('user')
-    async getUser(@Req() req) {
-        if (!req.headers.authorization) {
-            return false;
-        }
-        let payload = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
-        return payload;
     }
     
     @Get('2fa/qrcode')

@@ -48,15 +48,12 @@ export class AuthenticationService {
         }
         const secret = this.secret.get(payload.userId);
         const url = speakeasy.otpauthURL({ secret: secret, encoding: 'base32', label: "ft_pong" });
-        console.log("QRSecret " + secret);
         const qr = await qrcode.toDataURL(url);
         return "<img src='" + qr + "' />";
     }
     
     async verifyQR(id: number, code: string) {
-        console.log("Id " + id);
         const secret = this.secret.get(id);
-        console.log("QRSecret " + secret);
         if (!secret) {
             return false;
         }
@@ -115,9 +112,7 @@ export class AuthenticationService {
         if (!verified) {
             throw new HttpException("Code is not valid", 401);
         }
-        console.log("User " + user + " is now online");
         const payload = { userId: user.userId, otp: true};
-        console.log(user.userId);
         return {
             access_token: this.jwtService.sign(payload),
         };
