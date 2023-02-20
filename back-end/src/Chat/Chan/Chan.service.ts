@@ -61,8 +61,8 @@ export class ChanService {
 		return level;
 	}
 
-	async isInChan(chanId : number, userId: number) : Promise<boolean> {
-		const ret = await this.getRelOf(chanId, userId);
+	async isInChan(chan : Chan, userId: number) : Promise<boolean> {
+		const ret = await this.getRelOf(chan.id, userId);
 
 		if (ret === undefined || ret === null)
 			return false;
@@ -241,79 +241,6 @@ export class ChanService {
 			return (chan.owner.id);
 		}
 		return (undefined);
-	}
-
-    async userListOfChan(chanId: number, userId: number) : Promise<UserListDto[] | string> {
-		const chan = await this.getChanById(chanId);
-
-		if (chan === undefined || chan === null)
-			return ("no chan exist");
-
-		if (await this.isInChan(chan.id, userId) === false)
-			return ("not in chan");
-
-		const rel = await this.chanRelRepo.find({ relations: ["user", "chan"],
-			        where: { chan: { id : chan.id } } })
-
-		let ret : UserListDto[];
-		ret = [];
-
-		for(const r of rel) {
-			await this.checkBan(chan.id, r.user.id);
-            if (r !== undefined && r !== null && r.isInvite === false) {
-			    ret.push({
-			    	id :	        r.user.id,
-			    	username:		r.user.username,
-			    	level:			await this.getUserLevel(chan.id, chan.owner.id, r.user.id),
-			    	isMuted:		await this.isMute(chan.id, r.user.id),
-			    	isBan:			r.ban_expire !== null,
-			    	is_connected:	false
-			    })
-            }
-		}
-
-		return (ret);
-	}
-
-    async chanListOfUser(userId : number) : Promise<ChanListDTO[]> {
-		const chan_list = await this.chanRelRepo.find({ relations : ["user", "chan"],
-			            where : { user : { id : userId} } })
-
-		let ret : ChanListDTO[];
-
-		ret = [];
-
-		if (chan_list === null || chan_list === undefined)
-			return [];
-
-		for (let rel of chan_list) {
-			let chan = rel.chan;
-
-			if (chan.isDm) {
-				const rel2 = await this.chanRelRepo.find({ relations : ["user", "chan"],
-					        where : { chan: chan } })
-
-				rel2.forEach(r => {
-					if (r.user.id !== userId)
-					{
-						chan.title = r.user.username;
-						chan.owner = r.user.id;
-					}
-				});
-			}
-
-			if (rel.ban_expire === null && rel.isInvite === false) {
-				ret.push({
-					id:				chan.id,
-					title:			chan.title,
-					owner:			chan.owner,
-					has_password:	chan.password_key !== null,
-					isDm:			chan.isDm,
-				});
-			}
-		}
-
-		return ret;
 	}
 
     async checkBan(chanId: number, userId: number) : Promise<boolean> {
@@ -538,6 +465,79 @@ export class ChanService {
 		ret.isAdmin = isAdmin;
 		await this.chanRelRepo.save(ret);
 		return undefined;
+	}
+    
+    async userListOfChan(chanId: number, userId: number) : Promise<UserListDto[] | string> {
+		const chan = await this.getChanById(chanId);
+
+		if (chan === undefined || chan === null)
+			return ("no chan exist");
+
+		if (await this.isInChan(chan, userId) === false)
+			return ("not in chan");
+
+		const rel = await this.chanRelRepo.find({ relations: ["user", "chan"],
+			        where: { chan: { id : chan.id } } })
+
+		let ret : UserListDto[];
+		ret = [];
+
+		for(const r of rel) {
+			await this.checkBan(chan.id, r.user.id);
+            if (r !== undefined && r !== null && r.isInvite === false) {
+			    ret.push({
+			    	id :	        r.user.id,
+			    	username:		r.user.username,
+			    	level:			await this.getUserLevel(chan.id, chan.owner.id, r.user.id),
+			    	isMuted:		await this.isMute(chan.id, r.user.id),
+			    	isBan:			r.ban_expire !== null,
+			    	is_connected:	false
+			    })
+            }
+		}
+
+		return (ret);
+	}
+
+    async chanListOfUser(userId : number) : Promise<ChanListDTO[]> {
+		const chan_list = await this.chanRelRepo.find({ relations : ["user", "chan"],
+			            where : { user : { id : userId} } })
+
+		let ret : ChanListDTO[];
+
+		ret = [];
+
+		if (chan_list === null || chan_list === undefined)
+			return [];
+
+		for (let rel of chan_list) {
+			let chan = rel.chan;
+
+			if (chan.isDm) {
+				const rel2 = await this.chanRelRepo.find({ relations : ["user", "chan"],
+					        where : { chan: chan } })
+
+				rel2.forEach(r => {
+					if (r.user.id !== userId)
+					{
+						chan.title = r.user.username;
+						chan.owner = r.user.id;
+					}
+				});
+			}
+
+			if (rel.ban_expire === null && rel.isInvite === false) {
+				ret.push({
+					id:				chan.id,
+					title:			chan.title,
+					owner:			chan.owner,
+					has_password:	chan.password_key !== null,
+					isDm:			chan.isDm,
+				});
+			}
+		}
+
+		return ret;
 	}
 
 	async publicChanList() : Promise<ChanListDTO[]> {
