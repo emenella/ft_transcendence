@@ -15,8 +15,8 @@ export class UserService {
         return users;
     }
 
-    async getUserById(id: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: parseInt(id) } });
+    async getUserById(id: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id: id } });
         return user;
     }
 
@@ -40,7 +40,12 @@ export class UserService {
     }
     
 
-    async deleteUser(id: string): Promise<void> {
+    async deleteUser(id: number): Promise<void> {
         const user = await this.userRepository.delete(id);
+    }
+
+    async getUserFromCOnnectionid(connectionId: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} } });
+        return user;
     }
 }

@@ -6,13 +6,13 @@ import { UserService } from "./service/User.service";
 export class UserControllers {
     constructor(private readonly userService: UserService) {}
 
-    @Get()
-    async findAll(): Promise<User[]> {
-        return this.userService.getAllUsers();
+    @Get("/me/")
+    async getMe(@Param("id") id: number): Promise<User> {
+        return this.userService.getUserById(id);
     }
 
     @Get(":id")
-    async findOne(@Param("id") id: string): Promise<User> {
+    async findOne(@Param("id") id: number): Promise<User> {
         return this.userService.getUserById(id);
     }
 
@@ -27,7 +27,7 @@ export class UserControllers {
     }
 
     @Delete(":id")
-    async delete(@Param("id") id: string): Promise<void> {
+    async delete(@Param("id") id: number): Promise<void> {
         return this.userService.deleteUser(id);
     }
 
