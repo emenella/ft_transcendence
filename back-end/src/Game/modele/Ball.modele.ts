@@ -1,4 +1,5 @@
-import { Player } from "./player";
+import { Player } from "./Player.modele";
+import { general } from "./Game.modele";
 
 export class Ball
 {
@@ -8,8 +9,9 @@ export class Ball
     private veloX: number;
     private veloY: number;
     private color: string;
+    private general: general;
     
-    constructor(_radius: number, _startX: number, _startY: number, _speedX: number, _speedY: number, _color: string)
+    constructor(_radius: number, _startX: number, _startY: number, _speedX: number, _speedY: number, _color: string, _general: general)
     {
         this.posX = _startX;
         this.posY = _startY;
@@ -17,7 +19,7 @@ export class Ball
         this.veloX = _speedX;
         this.veloY = _speedY;
         this.color = _color;
-        console.log("Ball created: " + this.posX + " " + this.posY + " " + this.radius + " " + this.veloX + " " + this.veloY);
+        this.general = _general;
     }
 
     
@@ -37,11 +39,10 @@ export class Ball
         return false;
     }
     
-    private collisionWall(ctx :CanvasRenderingContext2D): boolean
+    private collisionWall(): boolean
     {
-        if (this.posY + this.radius >= ctx.canvas.height || this.posY - this.radius <= 0)
+        if (this.posY + this.radius >= this.general.height || this.posY - this.radius <= 0)
         {
-            console.log("Wall hit");
             this.veloY = -this.veloY;
             return true;
         }
@@ -64,7 +65,7 @@ export class Ball
 
     public move(player0: Player, player1: Player): void
     {
-        if (this.collisionWall(ctx) || this.collisionPlayer(player0) || this.collisionPlayer(player1))
+        if (this.collisionWall() || this.collisionPlayer(player0) || this.collisionPlayer(player1))
         {}
         this.posX += this.veloX;
         this.posY += this.veloY;

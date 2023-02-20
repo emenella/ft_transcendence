@@ -1,3 +1,5 @@
+import { general } from "./Game.modele";
+
 export class Paddle
 {
     //Position of paddle
@@ -17,7 +19,9 @@ export class Paddle
     private veloX: number;
     private veloY: number;
 
-    constructor(_color: string ,_width: number, _length: number, _startX: number, _startY: number, _speedX: number, _speedY: number)
+    private general: general;
+
+    constructor(_color: string ,_width: number, _length: number, _startX: number, _startY: number, _speedX: number, _speedY: number, _general: general)
     {
         this.posX = _startX;
         this.posY = _startY;
@@ -28,6 +32,7 @@ export class Paddle
         this.color = _color;
         this.dx = 0;
         this.dy = 0;
+        this.general = _general;
         console.log("Paddle created: " + this.posX + " " + this.posY + " " + this.width + " " + this.length + " " + this.veloX + " " + this.veloY);
     }
 
@@ -70,17 +75,17 @@ export class Paddle
         {
             this.posX = this.width / 2;
         }
-        if (this.posX + this.width / 2 > ctx.canvas.width)
+        if (this.posX + this.width / 2 > this.general.width)
         {
-            this.posX = ctx.canvas.width - (this.width / 2);
+            this.posX = this.general.width - (this.width / 2);
         }
         if (this.posY - this.length / 2 < 0)
         {
             this.posY = this.length / 2;
         }
-        if (this.posY + this.length / 2 > ctx.canvas.height)
+        if (this.posY + this.length / 2 > this.general.height)
         {
-            this.posY = ctx.canvas.height - (this.length / 2);
+            this.posY = this.general.height - (this.length / 2);
         }
     }
 
