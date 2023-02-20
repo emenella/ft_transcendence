@@ -15,8 +15,8 @@ export class UserService {
         return users;
     }
 
-    async getUserById(id: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: parseInt(id) } });
+    async getUserById(id: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id: id } });
         return user;
     }
 
@@ -35,13 +35,16 @@ export class UserService {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
         userToUpdate.login = updatedUser.login;
-        userToUpdate.username = updatedUser.username;
         userToUpdate.connection = updatedUser.connection;
         return await this.userRepository.save(userToUpdate);
     }
-    
 
-    async deleteUser(id: string): Promise<void> {
+    async deleteUser(id: number): Promise<void> {
         const user = await this.userRepository.delete(id);
+    }
+
+    async getUserFromConnectionId(connectionId: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} } });
+        return user;
     }
 }

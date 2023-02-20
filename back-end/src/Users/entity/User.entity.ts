@@ -6,11 +6,8 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({unique: true, nullable: true})
     login: string;
-
-    @Column({nullable: true})
-    username: string;
 
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;

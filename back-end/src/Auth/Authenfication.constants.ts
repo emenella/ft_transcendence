@@ -8,7 +8,6 @@ export const jwtConstants = {
 
 export const API = {
     UID: process.env.API_UID,
-    KEY: process.env.API_KEY,
+    KEY: process.env.API_SECRET,
     URL: process.env.API_URL,
 };
-
