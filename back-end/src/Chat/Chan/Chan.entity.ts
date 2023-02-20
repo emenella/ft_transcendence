@@ -67,6 +67,9 @@ export class RelationTable
 	@Column({default: false})
 	isAdmin: boolean;
 
+    @Column({default: false})
+	isInvite: boolean;
+
 	@Column({ nullable: true })
 	mute_expire: Date;
 
