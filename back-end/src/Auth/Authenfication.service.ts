@@ -15,6 +15,10 @@ export class AuthenticationService {
     
     constructor(private readonly userService: UserService, private readonly connectionService: ConnectionService,private readonly jwtService: JwtService) { }
     
+    async getUrl42() {
+        return "https://api.intra.42.fr/oauth/authorize?client_id=" + API.UID + "&redirect_uri=" + API.URL + "&response_type=code";
+    }
+    
     async login(user: any) {
         let connection = await this.connectionService.getConnectionById42(user.id);
         if (!connection) {
@@ -107,6 +111,9 @@ export class AuthenticationService {
         const connection = await this.connectionService.getConnectionById(user.userId);
         if (!connection) {
             throw new HttpException("Connection does not exist", 404);
+        }
+        if (!connection.otp) {
+            throw new HttpException("Connection does not have a secret", 400);
         }
         const verified = await this.verify(user.id, code);
         if (!verified) {
