@@ -1,17 +1,21 @@
 import { Injectable } from "@nestjs/common";
 import { Game, Setup } from "./modele/Game.modele";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class GameService {
     private games: Map<string, Game> = new Map();
 
-    private setup: Setup = {
+    private default: Setup = {
         general: {
             ScoreWin: 5,
             Overtime: false,
+            OvertimeScore: 3,
+            height: 1000,
+            width: 2000
         },
         player0: {
-            name: "Player 0",
+            id: 0,
             color: "red",
             length: 100,
             width: 10,
@@ -19,7 +23,7 @@ export class GameService {
             speedY: 5
         },
         player1: {
-            name: "Player 1",
+            id: 0,
             color: "blue",
             length: 100,
             width: 10,
@@ -31,16 +35,64 @@ export class GameService {
             radius: 10,
             speed: 10
         },
-        server: { url: undefined }
     };
 
     public getGame(id: string): any {
         return this.games.get(id);
     }
 
-    public createGame(): Game {
-        const game = new Game();
-        this.games.set(game.id, game);
+    public createGame(setting?: Setup): Game {
+        let game: Game;
+        if (setting)
+            game = new Game(setting);
+        else
+            game = new Game(this.default);
+        this.games.set(uuidv4(), game);
         return game;
+    }
+
+    public joinPlayer(id: number): boolean {
+        let game = this.findGameWithPlayer(id);
+        if (game) {
+            return game.playerConnect(id);
+        }
+        else {
+            return false
+        }
+    }
+
+    public leavePlayer(id: number): boolean {
+        let game = this.findGameWithPlayer(id);
+        if (game) {
+            return game.playerDisconnect(id);
+        }
+        else {
+            return false
+        }
+    }
+
+    protected findGameWithPlayer(id: number): Game {
+        for (const game of this.games.values()) {
+            if (game.player0.id === id || game.player1.id === id) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public handleGameEvent(id: number, event: string): void {
+        let game = this.findGameWithPlayer(id);
+        if (game) {
+            game.handleEvent(id, event);
+        }
+    }
+
+    public handleGameInfo(id: number): void {
+        let game = this.findGameWithPlayer(id);
+        if (game) {
+            return game.getGameInfo(id);
+        }
+        else
+            return null;
     }
 }

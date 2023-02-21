@@ -1,8 +1,15 @@
 import { Module } from "@nestjs/common";
-import { GameGateway } from "./Game.gateway";
+import { GameGateway } from "./Game.Gateway";
 import { WebSocketGateway } from "@nestjs/websockets"
 import { GameService } from "./Game.service";
+import { AuthenticationModule } from "../Auth/Authenfication.module";
+import { UserModule } from "../Users/Users.module";
+
 
 @Module({
-    imports: [WebsocketGateway.forRoot()],
-    providers: [GameService],
+    imports: [AuthenticationModule, UserModule],
+    controllers: [],
+    providers: [GameGateway, GameService],
+    exports: [GameService]
+})
+export class GameModule {}

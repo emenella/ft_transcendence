@@ -1,6 +1,7 @@
 import { Paddle } from "./Paddle.modele";
+import { Socket } from "socket.io";
 
-enum Direction {
+export enum Direction {
     UP = "UP",
     DOWN = "DOWN",
     LEFT = "LEFT",
@@ -9,13 +10,16 @@ enum Direction {
 
 
 export class Player {
-    public name: string;
+    public id: number;
+    public socket: Socket;
     public score: number;
+    public isConnected: boolean;
     public paddle: Paddle;
 
-    constructor(name: string, paddle: Paddle) {
-        this.name = name;
+    constructor(id: number, paddle: Paddle) {
+        this.id = id;
         this.score = 0;
+        this.isConnected = false;
         this.paddle = paddle;
     }
 
