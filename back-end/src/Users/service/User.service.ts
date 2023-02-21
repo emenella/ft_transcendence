@@ -20,8 +20,8 @@ export class UserService {
         return user;
     }
 
-    async getUserByLogin(login: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { login: login } });
+    async getUserByLogin(username: string): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { username: username } });
         return user;
     }
 
@@ -34,7 +34,7 @@ export class UserService {
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
-        userToUpdate.login = updatedUser.login;
+        userToUpdate.username = updatedUser.username;
         userToUpdate.connection = updatedUser.connection;
         return await this.userRepository.save(userToUpdate);
     }
