@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { MatchHistory } from './History.entity';
 import { Connection } from './Connection.entity';
+import { Avatar } from './Avatar.entity';
 
 @Entity()
 export class User {
@@ -7,12 +9,23 @@ export class User {
     id: number;
 
     @Column({unique: true, nullable: true})
-    login: string;
+    username: string;
 
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
 
-    // TODO chatroom
-    // TODO friends
-    // TODO match history
+    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
+    avatar: Avatar;
+
+    @Column('boolean', {default: false})
+    isProfileComplete: boolean;
+
+    @Column({default: 1000})
+    elo: number;
+
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner)
+    winMatch: MatchHistory[];
+
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.loser)
+    looseMatch: MatchHistory[];
 }

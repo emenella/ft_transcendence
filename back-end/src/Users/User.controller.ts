@@ -11,25 +11,5 @@ export class UserControllers {
         return this.userService.getUserFromConnectionId(req.user.userId);
     }
 
-    @Get(":id")
-    async findOne(@Param("id") id: number): Promise<User> {
-        return this.userService.getUserById(id);
-    }
-
-    @Post()
-    async create(@Body() user: User): Promise<User> {
-        return this.userService.createUser(user);
-    }
-
-    @Put(":id")
-    async update(@Param("id") id: number, @Body() user: User): Promise<User> {
-        return this.userService.updateUser(id, user);
-    }
-
-    @Delete(":id")
-    async delete(@Param("id") id: number): Promise<void> {
-        return this.userService.deleteUser(id);
-    }
-
-
+    
 }
