@@ -4,7 +4,7 @@ import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../Users/service/User.service';
 
-@WebSocketGateway(80, {namespace: 'game'})
+@WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {
     @WebSocketServer()
     server: Server;
@@ -16,12 +16,11 @@ export class GameGateway {
     }
 
     async handleConnection(client: Socket, ...args: any[]) {
-        console.log('GameGateway client connected');
+        console.log('GameGateway client connected ' + client.handshake.headers.authorization);
         const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
         const user = await this.userService.getUserFromConnectionId(payload.userId);
-        
         if (user) {
-            this.gameService.joinPlayer(user.id)
+            this.gameService.joinPlayer(user.id, client);
         }
         else {
             client.disconnect();
@@ -48,13 +47,32 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage('game:gameInfo')
-    async onGameInfo(client: Socket, data: any): Promise<any> {
+    @SubscribeMessage('game:join')
+    async onGameJoin(client: Socket, data: any): Promise<any> {
         const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
         const user = await this.userService.getUserFromConnectionId(payload.userId);
         if (user) {
-            let gameInfo = this.gameService.handleGameInfo(user.id);
-            client.emit('game:gameInfo', gameInfo);
+            this.gameService.joinPlayer(user.id, client);
+        }
+    }
+
+
+    @SubscribeMessage('game:setup')
+    async onGameSetup(client: Socket): Promise<any> {
+        const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
+        const user = await this.userService.getUserFromConnectionId(payload.userId);
+        if (user) {
+            let setup: any = this.gameService.getGameSetup(user.id);
+            client.emit('game:setup', setup);
+        }
+    }
+
+    @SubscribeMessage('game:spec')
+    async onGameSpec(client: Socket, data: any): Promise<any> {
+        const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
+        const user = await this.userService.getUserFromConnectionId(payload.userId);
+        if (user) {
+            this.gameService.spectateGame(data.gameId, user.id, client);
         }
     }
 }

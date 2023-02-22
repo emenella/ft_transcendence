@@ -105,6 +105,16 @@ export class Paddle
         return this.posY;
     }
 
+    public getDx(): number
+    {
+        return this.dx;
+    }
+
+    public getDy(): number
+    {
+        return this.dy;
+    }
+
     public getWidth(): number
     {
         return this.width;

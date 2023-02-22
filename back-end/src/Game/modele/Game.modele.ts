@@ -1,6 +1,8 @@
 import { Player, Direction } from "./Player.modele";
 import { Ball } from "./Ball.modele";
 import { Paddle } from "./Paddle.modele";
+import { Socket } from "socket.io";
+import { Spectator } from "./Spec.modele";
 
 export interface general {
     ScoreWin: number;
@@ -36,6 +38,7 @@ export class Game {
     
     public player0: Player;
     public player1: Player;
+    public spectators: Spectator[] = [];
     public isLive: boolean;
     public isFinish: boolean;
     private idPlayerPause: number;
@@ -65,6 +68,7 @@ export class Game {
                 this.player1.paddle.move();
                 this.checkGoal();
                 this.sendGameInfo();
+                this.sendGameInfoToSpectators();
             }
             setTimeout(() => this.loop(), 1000/128);
         }
@@ -116,20 +120,21 @@ export class Game {
     {
         this.loop();
     }
-
-    public playerConnect(id: number): boolean
+    
+    public playerConnect(id: number, socket: Socket): boolean
     {
         const player = this.getPlayer(id);
         if (player != null)
         {
             player.isConnected = true;
+            player.socket = socket;
             if (this.player0.isConnected && this.player1.isConnected)
-                this.launchGame();
+            this.launchGame();
             return true;
         }
         return false;
     }
-
+    
     public playerDisconnect(id: number): boolean
     {
         const player = this.getPlayer(id);
@@ -137,18 +142,18 @@ export class Game {
         {
             player.isConnected = false;
             if (this.isLive)
-                this.pauseGame(player.id);
+            this.pauseGame(player.id);
             return true;
         }
         return false;
     }
-
+    
     public pauseGame(id: number): void
     {
         this.isLive = false;
         this.idPlayerPause = id;
     }
-
+    
     public resumeGame(id: number): void
     {
         if (id == this.idPlayerPause)
@@ -157,43 +162,64 @@ export class Game {
             this.idPlayerPause = null;
         }
     }
-
+    
     public getPlayer(id: number): Player
     {
         if (id == this.player0.id)
-            return this.player0;
+        return this.player0;
         else if (id == this.player1.id)
-            return this.player1;
+        return this.player1;
         else
-            return null;
+        return null;
     }
-
+    
     public handleEvent(id: number, key: string): void
     {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            if (key == "+UP")
-                player.press(Direction.UP);
-            else if (key == "+DOWN")
-                player.press(Direction.DOWN);
-            else if (key == "-UP")
-                player.unpress(Direction.UP);
-            else if (key == "-DOWN")
-                player.unpress(Direction.DOWN);
-            else if (key == "SPACE")
-                this.resumeGame(id);
+            switch (key)
+            {
+                case "+UP":
+                player.paddle.keyDownUp();
+                break;
+                case "-UP":
+                player.paddle.keyUpX();
+                break;
+                case "+DOWN":
+                player.paddle.keyDownDown();
+                break;
+                case "-DOWN":
+                player.paddle.keyUpX();
+                break;
+                case "+LEFT":
+                player.paddle.keyDownLeft();
+                break;
+                case "-LEFT":
+                player.paddle.keyUpY();
+                break;
+                case "+RIGHT":
+                player.paddle.keyDownRight();
+                break;
+                case "-RIGHT":
+                player.paddle.keyUpY();
+                break;
+                default:
+                break;
+            }
         }
     }
-
-    public sendGameInfo(): void
+    
+    public getGameInfo(): any
     {
-        const gameInfo = {
+        return {
             player0: {
                 score: this.player0.score,
                 paddle: {
                     x: this.player0.paddle.getPosX(),
                     y: this.player0.paddle.getPosY(),
+                    dx: this.player0.paddle.getDx(),
+                    dy: this.player0.paddle.getDy(),
                     width: this.player0.paddle.getWidth(),
                     height: this.player0.paddle.getLength()
                 }
@@ -213,32 +239,35 @@ export class Game {
                 radius: this.ball.getRadius()
             }
         };
-        this.player0.socket.emit("gameInfo", gameInfo);
-        this.player1.socket.emit("gameInfo", gameInfo);
     }
-
-    public getGameInfo(id: number): any
+    
+    public getGameInfoForPlayer(id: number): any
     {
         const player = this.getPlayer(id);
+        const otherPlayer = this.getPlayer(id == this.player0.id ? this.player1.id : this.player0.id);
         if (player != null)
         {
             const gameInfo = {
                 player0: {
-                    score: this.player0.score,
+                    score: player.score,
                     paddle: {
-                        x: this.player0.paddle.getPosX(),
-                        y: this.player0.paddle.getPosY(),
-                        width: this.player0.paddle.getWidth(),
-                        height: this.player0.paddle.getLength()
+                        x: player.paddle.getPosX(),
+                        y: player.paddle.getPosY(),
+                        dx: player.paddle.getDx(),
+                        dy: player.paddle.getDy(),
+                        width: player.paddle.getWidth(),
+                        height: player.paddle.getLength()
                     }
                 },
                 player1: {
-                    score: this.player1.score,
+                    score: otherPlayer.score,
                     paddle: {
-                        x: this.player1.paddle.getPosX(),
-                        y: this.player1.paddle.getPosY(),
-                        width: this.player1.paddle.getWidth(),
-                        height: this.player1.paddle.getLength()
+                        x: otherPlayer.paddle.getPosX(),
+                        y: otherPlayer.paddle.getPosY(),
+                        dx: otherPlayer.paddle.getDx(),
+                        dy: otherPlayer.paddle.getDy(),
+                        width: otherPlayer.paddle.getWidth(),
+                        height: otherPlayer.paddle.getLength()
                     }
                 },
                 ball: {
@@ -251,4 +280,36 @@ export class Game {
         }
         return null;
     }
+
+    public getSetup(): any
+    {
+        return this.setup;
+    }
+    
+    public sendGameInfo(): void
+    {
+        this.player0.socket.emit("game:info", this.getGameInfoForPlayer(this.player0.id));
+        this.player1.socket.emit("game:info", this.getGameInfoForPlayer(this.player1.id));
+    }
+    
+    public spectatorConnect(id: number, socket: Socket): void
+    {
+        const spectator = new Spectator(id, socket, this);
+        this.spectators.push(spectator);
+    }
+
+    public spectatorDisconnect(id: number): void
+    {
+        const spectator = this.spectators.find(s => s.id == id);
+        if (spectator != null)
+        {
+            this.spectators.splice(this.spectators.indexOf(spectator), 1);
+        }
+    }
+
+    public sendGameInfoToSpectators(): void
+    {
+        this.spectators.forEach(s => s.sendGameUpdate());
+    }
+    
 }

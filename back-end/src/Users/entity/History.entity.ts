@@ -12,11 +12,11 @@ export class MatchHistory {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     date: Date;
 
-    @ManyToOne(() => User, user => user.winMatch)
-    @JoinColumn({ name: 'user_id' })
+    @ManyToOne(() => User)
+    @JoinColumn()
     winner: User;
 
-    @ManyToOne(() => User, user => user.looseMatch)
-    @JoinColumn({ name: 'user_id' })
+    @ManyToOne(() => User)
+    @JoinColumn()
     loser: User;
 }

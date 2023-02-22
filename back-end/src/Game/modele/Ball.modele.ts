@@ -81,6 +81,16 @@ export class Ball
         return this.posY;
     }
 
+    public getVeloX(): number
+    {
+        return this.veloX;
+    }
+
+    public getVeloY(): number
+    {
+        return this.veloY;
+    }
+
     public getRadius(): number
     {
         return this.radius;

@@ -11,8 +11,8 @@ export enum Direction {
 
 export class Player {
     public id: number;
-    public socket: Socket;
     public score: number;
+    public socket: Socket;
     public isConnected: boolean;
     public paddle: Paddle;
 

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Game, Setup } from "./modele/Game.modele";
 import { v4 as uuidv4 } from "uuid";
+import { Socket } from "socket.io";
 
 @Injectable()
 export class GameService {
@@ -15,7 +16,7 @@ export class GameService {
             width: 2000
         },
         player0: {
-            id: 0,
+            id: 1,
             color: "red",
             length: 100,
             width: 10,
@@ -23,7 +24,7 @@ export class GameService {
             speedY: 5
         },
         player1: {
-            id: 0,
+            id: 2,
             color: "blue",
             length: 100,
             width: 10,
@@ -36,6 +37,10 @@ export class GameService {
             speed: 10
         },
     };
+
+    constructor() {
+        this.createGame(this.default);
+    }
 
     public getGame(id: string): any {
         return this.games.get(id);
@@ -51,10 +56,10 @@ export class GameService {
         return game;
     }
 
-    public joinPlayer(id: number): boolean {
+    public joinPlayer(id: number, socket: Socket): boolean {
         let game = this.findGameWithPlayer(id);
         if (game) {
-            return game.playerConnect(id);
+            return game.playerConnect(id, socket);
         }
         else {
             return false
@@ -87,12 +92,23 @@ export class GameService {
         }
     }
 
-    public handleGameInfo(id: number): void {
+    public getGameSetup(id: number): Setup {
         let game = this.findGameWithPlayer(id);
         if (game) {
-            return game.getGameInfo(id);
+            return game.getSetup();
         }
         else
             return null;
+    }
+
+    public spectateGame(gameid: string, userid: number, socket: Socket): boolean {
+        let game = this.games.get(gameid)
+        if (game) {
+            game.spectatorConnect(userid, socket);
+            return true;
+        }
+        else {
+            return false
+        }
     }
 }
