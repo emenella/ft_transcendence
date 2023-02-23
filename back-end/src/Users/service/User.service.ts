@@ -16,12 +16,16 @@ export class UserService {
     }
 
     async getUserById(id: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: id } });
+        const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with ID ${id} not found.`, 404);
         return user;
     }
 
     async getUserByLogin(username: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { username: username } });
+        const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with username ${username} not found.`, 404);
         return user;
     }
 
@@ -30,7 +34,7 @@ export class UserService {
     }
 
     async updateUser(id: number, updatedUser: User): Promise<User> {
-        const userToUpdate = await this.userRepository.findOne({where : { id: id }});
+        const userToUpdate = await this.userRepository.findOne({where : { id: id }, relations: ["avatar", "winMatch", "looseMatch"]});
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
@@ -40,11 +44,13 @@ export class UserService {
     }
 
     async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.delete(id);
+        await this.userRepository.delete(id);
     }
 
     async getUserFromConnectionId(connectionId: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} } });
+        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
         return user;
     }
 }
