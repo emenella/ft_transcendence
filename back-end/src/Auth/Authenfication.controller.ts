@@ -17,11 +17,9 @@ export class AuthenticationController {
     @Public()
     @UseGuards(FortyTwoGuard)
     @Get('callback')
-    @Redirect('http://localhost/auth')
-    async postAuth(@Req() req) {
+    async postAuth(@Req() req, @Res() res) {
         let token = this.authenticationService.login(req.user);
-        //redirect to front with token in response
-        return await token;
+        res.redirect('http://localhost/auth?token=' + token);
     }
 
     // Sign up without 42
