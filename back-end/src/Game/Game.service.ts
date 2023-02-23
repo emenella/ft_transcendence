@@ -85,6 +85,15 @@ export class GameService {
         return null;
     }
 
+    public findGameIdWithPlayer(id: number): string {
+        for (const [key, game] of this.games.entries()) {
+            if (game.player0.id === id || game.player1.id === id) {
+                return key;
+            }
+        }
+        return null;
+    }
+
     public handleGameEvent(id: number, event: string): void {
         let game = this.findGameWithPlayer(id);
         if (game) {

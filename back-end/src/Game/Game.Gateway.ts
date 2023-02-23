@@ -56,6 +56,24 @@ export class GameGateway {
         }
     }
 
+    @SubscribeMessage('game:leave')
+    async onGameLeave(client: Socket): Promise<any> {
+        const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
+        const user = await this.userService.getUserFromConnectionId(payload.userId);
+        if (user) {
+            this.gameService.leavePlayer(user.id);
+        }
+    }
+
+    @SubscribeMessage('game:ready')
+    async onGameReady(client: Socket): Promise<any> {
+        const payload: any = this.authService.verifyJWT(client.handshake.headers.authorization);
+        const user = await this.userService.getUserFromConnectionId(payload.userId);
+        if (user) {
+            this.gameService.setPlayerReady(user.id);
+        }
+    }
+
 
     @SubscribeMessage('game:setup')
     async onGameSetup(client: Socket): Promise<any> {
