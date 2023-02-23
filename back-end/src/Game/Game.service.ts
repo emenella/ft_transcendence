@@ -13,7 +13,7 @@ export class GameService {
             Overtime: false,
             OvertimeScore: 3,
             height: 1000,
-            width: 2000
+            width: 1000
         },
         player0: {
             id: 1,
@@ -33,7 +33,7 @@ export class GameService {
         },
         ball: {
             color: "green",
-            radius: 10,
+            radius: 20,
             speed: 10
         },
     };
