@@ -35,31 +35,31 @@ export class MessageService {
     }
 
     async getMessagesFromChanId(chanId : Chan["id"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { id: chanId } });
+        const messages = await this.messageRepository.find({ where: { channel: {id : chanId} } });
 
         return messages;
     }
 
     async getMessagesFromChanTitle(chanTitle : Chan["title"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { title: chanTitle } });
+        const messages = await this.messageRepository.find({ where: { channel: { title: chanTitle } } });
 
         return messages;
     }
 
     async getMessagesFromUserId(userId : User["id"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { id: userId } });
+        const messages = await this.messageRepository.find({ where: { author: { id: userId } } });
 
         return messages;
     }
 
     async getMessagesFromUserLogin(userLogin : User["login"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { login: userLogin } });
+        const messages = await this.messageRepository.find({ where: { author: { login: userLogin } } });
 
         return messages;
     }
 
     async getMessagesFromUserName(userName : User["username"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { username: userName } });
+        const messages = await this.messageRepository.find({ where: { author: { username: userName } } });
 
         return messages;
     }

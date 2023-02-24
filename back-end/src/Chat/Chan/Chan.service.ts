@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { Chan, RelationTable } from "./Chan.entity";
 import { ChanPasswordService } from "./Chan.password.service";
 import { User } from "src/Users/entity/User.entity";
-import { ChanListDTO, UserListDto, ELevelInChan } from './DTO/chanDto';
+import { ChanListDTO, UserListDto, ELevelInChan } from '../Dto/chanDto';
 import { UserService } from "src/Users/service/User.service";
 
 @Injectable()
@@ -122,7 +122,7 @@ export class ChanService {
 
 		chanRel.chan	= chan;
 		chanRel.user	= owner;
-		chanRel.isAdmin = true;
+		chanRel.isAdmin = false;
 
 		if (isDm && owner.id !== user2.id)
 		{
@@ -130,7 +130,6 @@ export class ChanService {
 
 			chanRel2.chan	= chan;
 			chanRel2.user	= user2;
-			chanRel.isAdmin = false;
 			chanRel2.isAdmin = false;
 			await this.chanRelRepo.save(chanRel2);
 		}
