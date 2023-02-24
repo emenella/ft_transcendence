@@ -21,4 +21,4 @@ import { UserModule } from 'src/Users/Users.module';
     controllers: [AuthenticationController],
     exports: [AuthenticationService],
 })
-export class AuthenticationModule {}
+export class AuthentificationModule {}
