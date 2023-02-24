@@ -8,7 +8,7 @@ export enum ELevelInChan
 export interface UserListDto
 {
 	username:		string,
-    id:	number,
+    id:				number,
 	is_connected:	boolean,
 	isMuted:		boolean,
 	isBan:			boolean,

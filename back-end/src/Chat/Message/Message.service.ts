@@ -19,7 +19,7 @@ export class MessageService {
         message.channel = chan;
         message.content = content;
 
-        return await message.save();
+        return await this.messageRepository.save(message);
     }
 
     async getMessage(messageId : Message["id"]): Promise<Message> {
@@ -29,7 +29,7 @@ export class MessageService {
     }
 
     async getAllMessages(): Promise<Message[]> {
-        const messages = await this.messageRepository.findOrFail();
+        const messages = await this.messageRepository.find();
 
         return messages;
     }
@@ -48,12 +48,6 @@ export class MessageService {
 
     async getMessagesFromUserId(userId : User["id"]): Promise<Message[]> {
         const messages = await this.messageRepository.find({ where: { author: { id: userId } } });
-
-        return messages;
-    }
-
-    async getMessagesFromUserLogin(userLogin : User["login"]): Promise<Message[]> {
-        const messages = await this.messageRepository.find({ where: { author: { login: userLogin } } });
 
         return messages;
     }

@@ -40,11 +40,6 @@ export class MessageControllers {
         return this.messageService.getMessagesFromUserId(userId);
     }
 
-    @Get(":userLogin")
-    async findAllFromUserLogin(@Param("userLogin") userLogin: User["login"]): Promise<Message[]> {
-        return this.messageService.getMessagesFromUserLogin(userLogin);
-    }
-
     @Get(":userName")
     async findAllFromUserName(@Param("userName") username: User["username"]): Promise<Message[]> {
         return this.messageService.getMessagesFromUserName(username);

@@ -53,9 +53,4 @@ export class UserService {
             throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
         return user;
     }
-    
-    async getUserFromConnectionId(connectionId: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} } });
-        return user;
-    }
 }

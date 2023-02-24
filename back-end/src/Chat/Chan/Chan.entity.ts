@@ -6,8 +6,6 @@ import {
     ManyToOne,
     JoinColumn,
     RelationId,
-    ManyToMany,
-    JoinTable,
     OneToMany
 } from 'typeorm';
 import { User } from '../../Users/entity/User.entity';
@@ -27,6 +25,9 @@ export class Chan {
 
     @Column({default: false})
 	isPrivate : boolean;
+
+    @Column({default: false})
+	isProtected : boolean;
 
 	@Column({ nullable: true })
 	password_key : string

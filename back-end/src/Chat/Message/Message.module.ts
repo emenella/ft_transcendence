@@ -3,11 +3,11 @@ import { MessageControllers } from "./Message.controller";
 import { MessageService } from "./Message.service";
 import { Message } from "./Message.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserModule } from "src/Users/Users.module";
-import { ChanModule } from "../Chan/Chan.module";
+import { User} from "src/Users/entity/User.entity";
+import { Chan} from "../Chan/Chan.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Message]), UserModule, ChanModule],
+    imports: [TypeOrmModule.forFeature([Message, User, Chan])],
     controllers: [MessageControllers],
     providers: [MessageService],
     exports: [MessageService]

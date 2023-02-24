@@ -5,7 +5,7 @@ import { User } from "./entity/User.entity";
 import { Connection } from "./entity/Connection.entity";
 import { ConnectionService } from "./service/Connection.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ChanModule } from "src/Chat/Chan.module";
+import { ChanModule } from "src/Chat/Chan/Chan.module";
 import { MessageModule } from "src/Chat/Message/Message.module";
 
 @Module({

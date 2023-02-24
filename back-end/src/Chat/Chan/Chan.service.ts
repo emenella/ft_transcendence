@@ -88,7 +88,7 @@ export class ChanService {
 		for (let c of chansDm)
 		{
 			const resp = await this.chanRelRepo.find({ relations : ["user", "chan"],
-				        where: [ {chan: c, user: user1}, {chan: c, user: user2} ] })
+				        where: [ {chan: { id: c.id }, user: {id: user1.id}}, {chan: { id: c.id }, user: {id: user1.id} } ] })
 			if (resp.length === 2)
 				return true;
 		}
@@ -96,7 +96,7 @@ export class ChanService {
 		return false;
 	}
 
-	async createChan(title: string, owner: User, isPrivate: boolean, password_key: string, isDm: boolean, user2: User) : Promise<string | Chan> {
+	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string, isDm: boolean, user2: User) : Promise<string | Chan> {
 		let chan	: Chan 			= new Chan();
 		let chanRel	: RelationTable	= new RelationTable();
 
@@ -115,6 +115,7 @@ export class ChanService {
 		chan.owner.id		= owner.id;
 		chan.createdAt  	= new Date();
 		chan.isPrivate		= isPrivate;
+		chan.isProtected	= isProtected;
 		chan.password_key	= (password_key !== undefined) ? await this.passwordService.genHash(password_key) : null;
 		chan.isDm			= isDm;
 
@@ -321,7 +322,7 @@ export class ChanService {
 
 	async inviteUser(chanId: number, senderId: number, inviteId: number) : Promise<string | Chan> {
 		const chan = await this.getChanById(chanId);
-        const user = await this.userService.getUserById(inviteId.toString())
+        const user = await this.userService.getUserById(inviteId)
 
 		if (chan === undefined || chan === null)
 			return ("Chan doesn't exist !")
@@ -514,13 +515,13 @@ export class ChanService {
 
 			if (chan.isDm) {
 				const rel2 = await this.chanRelRepo.find({ relations : ["user", "chan"],
-					        where : { chan: chan } })
+					        where : { chan: { id: chan.id } } })
 
 				rel2.forEach(r => {
 					if (r.user.id !== userId)
 					{
 						chan.title = r.user.username;
-						chan.owner = r.user.id;
+						chan.owner.id = r.user.id;
 					}
 				});
 			}
@@ -529,7 +530,7 @@ export class ChanService {
 				ret.push({
 					id:				chan.id,
 					title:			chan.title,
-					owner:			chan.owner,
+					owner:			chan.owner.id,
 					has_password:	chan.password_key !== null,
 					isDm:			chan.isDm,
 				});
@@ -553,7 +554,7 @@ export class ChanService {
 			ret.push({
 				id: chan.id,
 				title: chan.title,
-				owner: chan.owner,
+				owner: chan.owner.id,
 				has_password: chan.password_key !== null,
 				isDm: false,
 			})
