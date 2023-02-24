@@ -15,13 +15,17 @@ export class UserService {
         return users;
     }
 
-    async getUserById(id: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: parseInt(id) } });
+    async getUserById(id: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with ID ${id} not found.`, 404);
         return user;
     }
 
-    async getUserByLogin(login: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { login: login } });
+    async getUserByLogin(username: string): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with username ${username} not found.`, 404);
         return user;
     }
 
@@ -30,19 +34,24 @@ export class UserService {
     }
 
     async updateUser(id: number, updatedUser: User): Promise<User> {
-        const userToUpdate = await this.userRepository.findOne({where : { id: id }});
+        const userToUpdate = await this.userRepository.findOne({where : { id: id }, relations: ["avatar", "winMatch", "looseMatch"]});
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
-        userToUpdate.login = updatedUser.login;
         userToUpdate.username = updatedUser.username;
         userToUpdate.connection = updatedUser.connection;
         return await this.userRepository.save(userToUpdate);
     }
-    
 
-    async deleteUser(id: string): Promise<void> {
-        const user = await this.userRepository.delete(id);
+    async deleteUser(id: number): Promise<void> {
+        await this.userRepository.delete(id);
+    }
+
+    async getUserFromConnectionId(connectionId: number): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch"] });
+        if (!user)
+            throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
+        return user;
     }
     
     async getUserFromConnectionId(connectionId: number): Promise<User> {

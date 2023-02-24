@@ -15,7 +15,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        console.log(payload);
         if (!payload.otp) {
             throw new HttpException('OTP required', HttpStatus.UNAUTHORIZED);
         }

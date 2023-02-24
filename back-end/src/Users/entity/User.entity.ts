@@ -1,25 +1,14 @@
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    ManyToMany,
-    JoinTable,
-    OneToMany,
-    OneToOne
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { MatchHistory } from './History.entity';
 import { Connection } from './Connection.entity';
-import { Chan, RelationTable } from '../../Chat/Chan/Chan.entity';
-import { Message } from '../../Chat/Message/Message.entity';
+import { Avatar } from './Avatar.entity';
 
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    login: string;
-
-    @Column({nullable: true})
+    @Column({unique: true, nullable: true})
     username: string;
 
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
@@ -37,4 +26,18 @@ export class User {
     
     // TODO friends
     // TODO match history
+    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
+    avatar: Avatar;
+
+    @Column('boolean', {default: false})
+    isProfileComplete: boolean;
+
+    @Column({default: 1000})
+    elo: number;
+
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner)
+    winMatch: MatchHistory[];
+
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.loser)
+    looseMatch: MatchHistory[];
 }
