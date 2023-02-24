@@ -14,12 +14,14 @@ export class Player {
     public score: number;
     public socket: Socket;
     public isConnected: boolean;
+    public isReady: boolean;
     public paddle: Paddle;
 
     constructor(id: number, paddle: Paddle) {
         this.id = id;
         this.score = 0;
         this.isConnected = false;
+        this.isReady = false;
         this.paddle = paddle;
     }
 

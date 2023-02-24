@@ -5,6 +5,7 @@ import { Socket } from "socket.io";
 import { Spectator } from "./Spec.modele";
 
 export interface general {
+    id: string;
     ScoreWin: number;
     Overtime: boolean;
     OvertimeScore: number;
@@ -34,17 +35,49 @@ export interface Setup {
     ball: ball;
 }
 
+export class GameInfo
+{
+    player0: {
+        score: number;
+        paddle: {
+            x: number;
+            y: number;
+            dx: number;
+            dy: number;
+            width: number;
+            height: number;
+        };
+    }
+    player1: {
+        score: number;
+        paddle: {
+            x: number;
+            y: number;
+            dx: number;
+            dy: number;
+            width: number;
+            height: number;
+        }
+    }
+    ball: {
+        x: number;
+        y: number;
+        dx: number;
+        dy: number;
+        radius: number;
+    }
+}
+
 export class Game {
     
     public player0: Player;
     public player1: Player;
-    public spectators: Spectator[] = [];
-    public isLive: boolean;
-    public isFinish: boolean;
-    private idPlayerPause: number;
+    private spectators: Spectator[] = [];
+    private isLive: boolean;
+    private isFinish: boolean;
     private ball: Ball;
     private startSpeed: number;
-    private setup: Setup;
+    public setup: Setup;
     
     constructor(_setup: Setup)
     {
@@ -72,6 +105,8 @@ export class Game {
             }
             setTimeout(() => this.loop(), 1000/128);
         }
+        this.player0.socket.emit("game:finish", this.player0.id);
+        this.player1.socket.emit("game:finish", this.player1.id);
     }
     
     protected checkGoal(): void
@@ -82,7 +117,7 @@ export class Game {
             this.player0.paddle.setPos(10, this.setup.general.height / 2);
             this.player1.paddle.setPos(this.setup.general.width - 10 - this.player1.paddle.getWidth(), this.setup.general.height / 2);
             this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, this.setup.ball.speed, 0);
-            this.pauseGame(this.player0.id);
+            this.playerUnready(this.player1.id);
             console.log(this.showScore());
         }
         else if (this.ball.getPosX() - this.ball.getRadius() <= 0)
@@ -91,7 +126,7 @@ export class Game {
             this.player0.paddle.setPos(10, this.setup.general.height / 2);
             this.player1.paddle.setPos(this.setup.general.width - 10 - this.player1.paddle.getWidth(), this.setup.general.height / 2);
             this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, -this.setup.ball.speed, 0);
-            this.pauseGame(this.player1.id);
+            this.playerUnready(this.player0.id);
             console.log(this.showScore());
         }
     }
@@ -123,13 +158,15 @@ export class Game {
     
     public playerConnect(id: number, socket: Socket): boolean
     {
+        console.log("Player " + id + " connected to game" + this.setup.general.id + ".");
         const player = this.getPlayer(id);
         if (player != null)
         {
             player.isConnected = true;
             player.socket = socket;
+            player.socket.emit("game:join");
             if (this.player0.isConnected && this.player1.isConnected)
-            this.launchGame();
+                this.launchGame();
             return true;
         }
         return false;
@@ -137,30 +174,49 @@ export class Game {
     
     public playerDisconnect(id: number): boolean
     {
+        console.log("Player " + id + " disconnected from game" + this.setup.general.id + ".");
         const player = this.getPlayer(id);
         if (player != null)
         {
             player.isConnected = false;
             if (this.isLive)
-            this.pauseGame(player.id);
+                this.playerUnready(player.id);
             return true;
         }
         return false;
     }
     
-    public pauseGame(id: number): void
+    public playerReady(id: number): boolean
     {
-        this.isLive = false;
-        this.idPlayerPause = id;
-    }
-    
-    public resumeGame(id: number): void
-    {
-        if (id == this.idPlayerPause)
+        console.log("Player " + id + " is ready.");
+        const player = this.getPlayer(id);
+        if (player != null)
         {
-            this.isLive = true;
-            this.idPlayerPause = null;
+            player.isReady = true;
+            if (this.player0.isReady && this.player1.isReady)
+            {
+                this.isLive = true;
+                this.player0.socket.emit("game:live", this.setup.general.id);
+                this.player1.socket.emit("game:live", this.setup.general.id);
+                this.sendGameInfo();
+            }
+            return true;
         }
+        return false;
+    }
+
+    public playerUnready(id: number): boolean
+    {
+        console.log("Player " + id + " is unready.");
+        const player = this.getPlayer(id);
+        if (player != null)
+        {
+            player.isReady = false;
+            this.isLive = false;
+            this.sendGameInfo();
+            return true;
+        }
+        return false;
     }
     
     public getPlayer(id: number): Player
@@ -175,6 +231,7 @@ export class Game {
     
     public handleEvent(id: number, key: string): void
     {
+        console.log("Player " + id + " pressed " + key + ".");
         const player = this.getPlayer(id);
         if (player != null)
         {
@@ -210,7 +267,7 @@ export class Game {
         }
     }
     
-    public getGameInfo(): any
+    public getGameInfo(): GameInfo
     {
         return {
             player0: {
@@ -229,6 +286,8 @@ export class Game {
                 paddle: {
                     x: this.player1.paddle.getPosX(),
                     y: this.player1.paddle.getPosY(),
+                    dx: this.player1.paddle.getDx(),
+                    dy: this.player1.paddle.getDy(),
                     width: this.player1.paddle.getWidth(),
                     height: this.player1.paddle.getLength()
                 }
@@ -236,49 +295,11 @@ export class Game {
             ball: {
                 x: this.ball.getPosX(),
                 y: this.ball.getPosY(),
+                dx: this.ball.getVeloX(),
+                dy: this.ball.getVeloY(),
                 radius: this.ball.getRadius()
             }
         };
-    }
-    
-    public getGameInfoForPlayer(id: number): any
-    {
-        const player = this.getPlayer(id);
-        const otherPlayer = this.getPlayer(id == this.player0.id ? this.player1.id : this.player0.id);
-        if (player != null)
-        {
-            const gameInfo = {
-                player0: {
-                    score: player.score,
-                    paddle: {
-                        x: player.paddle.getPosX(),
-                        y: player.paddle.getPosY(),
-                        dx: player.paddle.getDx(),
-                        dy: player.paddle.getDy(),
-                        width: player.paddle.getWidth(),
-                        height: player.paddle.getLength()
-                    }
-                },
-                player1: {
-                    score: otherPlayer.score,
-                    paddle: {
-                        x: otherPlayer.paddle.getPosX(),
-                        y: otherPlayer.paddle.getPosY(),
-                        dx: otherPlayer.paddle.getDx(),
-                        dy: otherPlayer.paddle.getDy(),
-                        width: otherPlayer.paddle.getWidth(),
-                        height: otherPlayer.paddle.getLength()
-                    }
-                },
-                ball: {
-                    x: this.ball.getPosX(),
-                    y: this.ball.getPosY(),
-                    radius: this.ball.getRadius()
-                }
-            };
-            return gameInfo;
-        }
-        return null;
     }
 
     public getSetup(): any
@@ -288,8 +309,8 @@ export class Game {
     
     public sendGameInfo(): void
     {
-        this.player0.socket.emit("game:info", this.getGameInfoForPlayer(this.player0.id));
-        this.player1.socket.emit("game:info", this.getGameInfoForPlayer(this.player1.id));
+        this.player0.socket.emit("game:info", this.getGameInfo());
+        this.player1.socket.emit("game:info", this.getGameInfo());
     }
     
     public spectatorConnect(id: number, socket: Socket): void
