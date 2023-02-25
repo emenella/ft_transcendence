@@ -3,6 +3,7 @@ import { Ball } from "./Ball.modele";
 import { Paddle } from "./Paddle.modele";
 import { Socket } from "socket.io";
 import { Spectator } from "./Spec.modele";
+import { GameService } from "../Game.service";
 
 export interface general {
     id: string;
@@ -79,7 +80,7 @@ export class Game {
     private startSpeed: number;
     public setup: Setup;
     
-    constructor(_setup: Setup)
+    constructor(_setup: Setup, readonly handlerGameFinish: (id: string) => void)
     {
         this.setup = _setup;
         this.startSpeed = this.setup.ball.speed;
@@ -105,8 +106,6 @@ export class Game {
             }
             setTimeout(() => this.loop(), 1000/128);
         }
-        this.player0.socket.emit("game:finish", this.player0.id);
-        this.player1.socket.emit("game:finish", this.player1.id);
     }
     
     protected checkGoal(): void
@@ -116,18 +115,18 @@ export class Game {
             this.player0.score++;
             this.player0.paddle.setPos(10, this.setup.general.height / 2);
             this.player1.paddle.setPos(this.setup.general.width - 10 - this.player1.paddle.getWidth(), this.setup.general.height / 2);
-            this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, this.setup.ball.speed, 0);
+            this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, this.startSpeed, 0);
             this.playerUnready(this.player1.id);
-            console.log(this.showScore());
+            this.showScore();
         }
         else if (this.ball.getPosX() - this.ball.getRadius() <= 0)
         {
             this.player1.score++;
             this.player0.paddle.setPos(10, this.setup.general.height / 2);
             this.player1.paddle.setPos(this.setup.general.width - 10 - this.player1.paddle.getWidth(), this.setup.general.height / 2);
-            this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, -this.setup.ball.speed, 0);
+            this.ball.setPos(this.setup.general.width / 2, this.setup.general.height / 2, -this.startSpeed, 0);
             this.playerUnready(this.player0.id);
-            console.log(this.showScore());
+            this.showScore();
         }
     }
     
@@ -140,12 +139,12 @@ export class Game {
         }
         if (this.player0.score == this.setup.general.ScoreWin)
         {
-            this.isFinish = true;
+            this.gameFinish();
             console.log(this.player0.id + " win");
         }
         else if (this.player1.score == this.setup.general.ScoreWin)
         {
-            this.isFinish = true;
+            this.gameFinish();
             console.log(this.player1.id + " win");
         }
         console.log(this.player0.score + "-" + this.player1.score);
@@ -156,6 +155,13 @@ export class Game {
         this.loop();
     }
     
+    public gameFinish(): void
+    {
+        this.isFinish = true;
+        this.player0.socket.emit("game:finish", this.player0.id);
+        this.player1.socket.emit("game:finish", this.player1.id);
+        this.handlerGameFinish(this.setup.general.id);
+    }
     public playerConnect(id: number, socket: Socket): boolean
     {
         console.log("Player " + id + " connected to game" + this.setup.general.id + ".");
@@ -238,31 +244,31 @@ export class Game {
             switch (key)
             {
                 case "+UP":
-                player.paddle.keyDownUp();
-                break;
+                    player.paddle.keyDownUp();
+                    break;
                 case "-UP":
-                player.paddle.keyUpX();
-                break;
+                    player.paddle.keyUpY();
+                    break;
                 case "+DOWN":
-                player.paddle.keyDownDown();
-                break;
+                    player.paddle.keyDownDown();
+                    break;
                 case "-DOWN":
-                player.paddle.keyUpX();
-                break;
+                    player.paddle.keyUpY();
+                    break;
                 case "+LEFT":
-                player.paddle.keyDownLeft();
-                break;
+                    player.paddle.keyDownLeft();
+                    break;
                 case "-LEFT":
-                player.paddle.keyUpY();
-                break;
+                    player.paddle.keyUpX();
+                    break;
                 case "+RIGHT":
-                player.paddle.keyDownRight();
-                break;
+                    player.paddle.keyDownRight();
+                    break;
                 case "-RIGHT":
-                player.paddle.keyUpY();
-                break;
+                    player.paddle.keyUpX();
+                    break;
                 default:
-                break;
+                    break;
             }
         }
     }
@@ -302,7 +308,7 @@ export class Game {
         };
     }
 
-    public getSetup(): any
+    public getSetup(): Setup
     {
         return this.setup;
     }

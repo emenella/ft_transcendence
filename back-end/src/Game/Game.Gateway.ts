@@ -85,7 +85,6 @@ export class GameGateway {
         }
     }
 
-
     @SubscribeMessage('game:setup')
     async onGameSetup(@ConnectedSocket() client: Socket): Promise<any> {
         const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
@@ -93,6 +92,16 @@ export class GameGateway {
         if (user) {
             let setup: Setup = this.gameService.getGameSetup(user.id);
             client.emit('game:setup', setup);
+        }
+    }
+
+    @SubscribeMessage('game:info')
+    async onGameInfo(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
+        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+        const user = await this.userService.getUserFromConnectionId(payload.userId);
+        if (user) {
+            let game = this.gameService.getGameInfo(user.id);
+            client.emit('game:info', game);
         }
     }
 

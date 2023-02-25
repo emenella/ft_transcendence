@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Game, Setup } from "./modele/Game.modele";
+import { Game, GameInfo, Setup } from "./modele/Game.modele";
 import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
 
@@ -12,7 +12,7 @@ export class GameService {
         general: {
             id: null,
             ScoreWin: 5,
-            Overtime: false,
+            Overtime: true,
             OvertimeScore: 3,
             height: 1000,
             width: 1000
@@ -54,12 +54,12 @@ export class GameService {
         if (setting)
         {
             setting.general.id = id;
-            game = new Game(setting);
+            game = new Game(setting, this.handlerGameFinish.bind(this));
         }
         else
         {
             this.default.general.id = id;
-            game = new Game(this.default);
+            game = new Game(this.default, this.handleGameEvent.bind(this));
         }
         this.games.set(id, game);
         return id;
@@ -124,6 +124,15 @@ export class GameService {
             return null;
     }
 
+    public getGameInfo(userId: number): GameInfo {
+        let game = this.users.get(userId);
+        if (game) {
+            return game.getGameInfo();
+        }
+        else
+            return null;
+    }
+
     public spectateGame(matchId: string, userId: number, socket: Socket): boolean {
         let game = this.games.get(matchId);
         if (game) {
@@ -132,6 +141,15 @@ export class GameService {
         }
         else {
             return false
+        }
+    }
+
+    public handlerGameFinish(gameId: string): void
+    {
+        let game = this.games.get(gameId);
+        if (game)
+        {
+            this.games.delete(gameId);
         }
     }
 }
