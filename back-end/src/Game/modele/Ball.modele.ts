@@ -1,5 +1,5 @@
 import { Player } from "./Player.modele";
-import { general } from "./Game.modele";
+import { general } from "../interface/Game.interface";
 
 export class Ball
 {
@@ -44,6 +44,7 @@ export class Ball
         if (this.posY + this.radius >= this.general.height || this.posY - this.radius <= 0)
         {
             this.veloY = -this.veloY;
+            this.accelerate();
             return true;
         }
         return false;

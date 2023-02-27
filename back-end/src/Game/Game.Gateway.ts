@@ -3,7 +3,7 @@ import {Server, Socket} from 'socket.io';
 import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../Users/service/User.service';
-import { Setup } from './modele/Game.modele';
+import { Setup } from './interface/Game.interface';
 import { Body } from '@nestjs/common';
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { Game, GameInfo, Setup } from "./modele/Game.modele";
+import { Game } from "./modele/Game.modele";
+import { Setup, GameInfo } from "./interface/Game.interface";
 import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
 
@@ -19,6 +20,7 @@ export class GameService {
         },
         player0: {
             id: 1,
+            username: "Player 1",
             color: "red",
             length: 100,
             width: 10,
@@ -27,6 +29,7 @@ export class GameService {
         },
         player1: {
             id: 2,
+            username: "Player 2",
             color: "blue",
             length: 100,
             width: 10,

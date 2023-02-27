@@ -1,5 +1,6 @@
 import { Paddle } from "./Paddle.modele";
 import { Socket } from "socket.io";
+import { emit } from "process";
 
 export enum Direction {
     UP = "UP",
@@ -57,5 +58,10 @@ export class Player {
                 this.paddle.keyUpX();
                 break;
         }
+    }
+
+    public reset() {
+        this.paddle.keyUpX();
+        this.paddle.keyUpY();
     }
 }

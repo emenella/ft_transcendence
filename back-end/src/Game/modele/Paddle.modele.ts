@@ -1,4 +1,4 @@
-import { general } from "./Game.modele";
+import { general } from "../interface/Game.interface";
 
 export class Paddle
 {
