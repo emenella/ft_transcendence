@@ -12,7 +12,24 @@ export class UserControllers {
     }
 
     @Get("/")
-    async getUser(@Query("id") id: number): Promise<User> {
+    async getUser(@Query('id') id: number): Promise<User> {
         return this.userService.getUserById(id);
+    }
+
+    @Get("/login/")
+    async getUserByLogin(@Query('username') username: string): Promise<User> {
+        return this.userService.getUserByLogin(username);
+    }
+
+    @Post("/update/")
+    async updateUser(@Req() req : any, @Body() body: User): Promise<User> {
+        const user: User = await this.getMe(req);
+        return this.userService.updateUser(user.id, body);
+    }
+
+    @Post("/upload/avatar/")
+    async uploadAvatar(@Req() req : any, @Body() body: User): Promise<User> {
+        const user: User = await this.getMe(req);
+        return this.userService.updateUser(user.id, body);
     }
 }

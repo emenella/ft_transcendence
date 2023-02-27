@@ -12,15 +12,24 @@ export class ConnectionService {
     ) {}
 
     async getConnectionByUserId(userId: number): Promise<Connection> {
-        return await this.connectionRepository.findOne({ relations: ["user"], where : { user: {id: userId} } });
+        const user:Connection = await this.connectionRepository.findOne({ relations: ["user"], where : { user: {id: userId} } });
+        if (!user)
+            throw new Error("Connection does not exist");
+        return user;
     }
 
     async getConnectionById42(id: number): Promise<Connection> {
-        return await this.connectionRepository.findOne({relations: ["user"],  where : { id42: id } });
+        const user:Connection = await this.connectionRepository.findOne({relations: ["user"],  where : { id42: id } });
+        if (!user)
+            throw new Error("Connection does not exist");
+        return user;
     }
 
     async getConnectionById(id: number): Promise<Connection> {
-        return await this.connectionRepository.findOne({ where : { id: id } });
+        const user:Connection = await this.connectionRepository.findOne({ where : { id: id } });
+        if (!user)
+            throw new Error("Connection does not exist");
+        return user;
     }
 
     async createConnection(connection: Connection): Promise<Connection> {
