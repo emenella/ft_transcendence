@@ -9,15 +9,17 @@ export class AuthenticationController {
     constructor(private readonly authenticationService: AuthenticationService) {}
     
     @Public()
-    @UseGuards(FortyTwoGuard)
     @Get('')
-    async getAuth() {}
+    async getUrl42() {
+        return await this.authenticationService.getUrl42();
+    }
     
     @Public()
     @UseGuards(FortyTwoGuard)
     @Get('callback')
-    async postAuth(@Req() req) {
-        return await this.authenticationService.login(req.user)
+    async postAuth(@Req() req, @Res() res) {
+        let token = this.authenticationService.login(req.user);
+        res.redirect('http://localhost/auth?token=' + token);
     }
 
     // Sign up without 42
