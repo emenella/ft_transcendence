@@ -1,26 +1,21 @@
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotConnected from './User_not_connected';
 import Connected from './User_connected';
-import Game from './Game';
 
-interface User {
-    status: boolean;
-    playing: boolean;
-}
-
-function Body({ status, playing }: User) {
-
-    // dev
-    status = true;
-    // playing = true;
-    // end dev
-
-    if (status && playing)
-        return <Game />;
-    else if (status)
-        return <Connected />;
-    else
-        return <NotConnected />;
+function Body() {
+    return (
+        <div>
+            <BrowserRouter>
+            <Routes>
+                <Route path="/connected" element={<Connected />} />
+            </Routes>
+            <Routes>
+                <Route path="/notconnected" element={<NotConnected />} />
+            </Routes>
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default Body;

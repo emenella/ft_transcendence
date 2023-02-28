@@ -2,45 +2,9 @@ import React from 'react';
 import './User_not_connected.css';
 import logo from '../assets/white_logo.png';
 
-{/* Onglet de connexion */ }
-function Connexion() {
-    return (
-        <div className='connexion'>
-            <form action="/api/login" method="post">
-                <label>Adresse mail : </label> <input type="email" /> <br />
-                <label>Mot de passe : </label> <input type="text" />
-                <button type="submit">Valider</button>
-            </form>
-        </div>
-    );
-}
-
-{/* Onglet d'inscription */ }
-function Registration() {
-    return (
-        <div className='registration'>
-            <form action="/api/users" method="post">
-                <label>Adresse mail : </label> <input type="email" /> <br />
-                <label>Pseudo : </label> <input type="text" /> <br />
-                <label>Photo de profil : </label> <input type="file" accept='.PNG,.JPG' /> <br />
-                <label>Mot de passe : </label> <input type="text" /> <br />
-                <label>Vérification du mot de passe : </label> <input type="text" />
-                <button type="submit">Valider</button>
-            </form>
-        </div>
-
-    );
-}
-
-{/* Accueil */ }
 function NotConnected() {
-    // if ()
-    //     return <Connexion />;
-    // else if ()
-    //     return <Registration />;
-    // else
     return (
-        <div className='welcome'>
+        <div>
             <h2>Bienvenue sur votre site préféré de pong codé par vos plus dévoués développeurs.</h2>
             <img src={logo} alt='Logo du site' />
             <h4>Venez vous mesurer aux meilleurs joueurs de tout Lyon !</h4>

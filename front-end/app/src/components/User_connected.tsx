@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './User_connected.css';
 import logo_matchmaking from '../assets/logo_pong.jpg';
 
@@ -15,7 +16,7 @@ function ChatSidebar() {
 				</thead>
 				<tbody>
 					<tr>
-						<td>nom du channel</td>
+						<td>Nom du channel</td>
 						<td>-</td>
 					</tr>
 				</tbody>
@@ -28,6 +29,10 @@ function ChatSidebar() {
 function UserSidebar() {
 	return (
 		<div className='userSidebar'>
+			<form action="?" method="post">
+				<label>Ajouter un ami : </label><input type="text" />
+			</form>
+			<br />
 			<table>
 				<thead>
 					<tr>
@@ -50,12 +55,8 @@ function Chat() {
 		<div className='chat'>
 			<table>
 				<tbody>
-					<tr>
-						<p>Bla bla des autres.</p>
-					</tr>
-					<tr>
-						<p>Mon blabla a écrire et envoyer.</p>
-					</tr>
+					<tr>Bla bla des autres.</tr>
+					<tr>Mon blabla a écrire et envoyer.</tr>
 				</tbody>
 			</table>
 		</div>
@@ -126,12 +127,7 @@ function AccountManagement() {
 }
 
 {/* Onglet "Jouer" */ }
-function Main() {
-	// if ()
-	//   return <Profil />;
-	// else if ()
-	//   return <AccountManagement />;
-	// else
+function Matchmaking() {
 	return (
 		<div className='matchmaking'>
 			<h2>JOUER</h2>
@@ -163,7 +159,19 @@ function Connected() {
 		<div className='connected'>
 			<ChatSidebar />
 			<div className='connectedCenter'>
-				<Main />
+				<div>
+					<BrowserRouter>
+                	<Routes>
+                	    <Route path="/profil" element={<Profil />} />
+                	</Routes>
+                	<Routes>
+                	    <Route path="/accountmanagement" element={<AccountManagement />} />
+                	</Routes>
+					<Routes>
+                	    <Route path="/matchmaking" element={<Matchmaking />} />
+                	</Routes>
+                	</BrowserRouter>
+				</div>
 				<Chat />
 			</div>
 			<UserSidebar />

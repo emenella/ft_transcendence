@@ -8,6 +8,8 @@
     width: 10%;
     border-style: solid;
     border-color: black;
+    margin-left: 1px;
+    margin-right: 5px;
 }
 
 .chatSidebar>table {
@@ -17,7 +19,7 @@
 }
 
 .chatSidebar>table>thead th:nth-child(1) {
-    width: 95%;
+    width: 90%;
 }
 
 .connectedCenter {
@@ -30,6 +32,12 @@
     width: 10%;
     border-style: solid;
     border-color: black;
+    margin-left: 5px;
+    margin-right: 1px;
+}
+
+.userSidebar>form {
+    text-align: center;
 }
 
 .userSidebar>table {
@@ -45,10 +53,10 @@
 .chat {
     border-style: solid;
     border-color: black;
+    margin-top: 5px;
 }
 
 .matchmaking {
-    background-color: grey;
     text-align: center;
 }
 
