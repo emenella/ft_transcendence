@@ -2,9 +2,12 @@ FROM node:14
 
 WORKDIR /usr/backend
 
+COPY package*.json ./
+
+RUN [ "npm", "install"]
+
 COPY . .
 
-RUN [ "npm", "install" ]
 RUN [ "npm", "run", "build" ]
 
 # Start the app

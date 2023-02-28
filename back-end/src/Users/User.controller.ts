@@ -1,35 +1,35 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from "@nestjs/common";
-import { User } from "./User.entity";
-import { UserService } from "./User.service";
+import { Controller, Get, Post, Put, Delete, Body, Param, Req, Query } from "@nestjs/common";
+import { User } from "./entity/User.entity";
+import { UserService } from "./service/User.service";
 
 @Controller("users")
 export class UserControllers {
     constructor(private readonly userService: UserService) {}
 
-    @Get()
-    async findAll(): Promise<User[]> {
-        return this.userService.getAllUsers();
+    @Get("/me/")
+    async getMe(@Req() req : any): Promise<User> {
+        return this.userService.getUserFromConnectionId(req.user.userId);
     }
 
-    @Get(":id")
-    async findOne(@Param("id") id: string): Promise<User> {
+    @Get("/")
+    async getUser(@Query('id') id: number): Promise<User> {
         return this.userService.getUserById(id);
     }
 
-    @Post()
-    async create(@Body() user: User): Promise<void> {
-        return this.userService.createUser(user);
+    @Get("/login/")
+    async getUserByLogin(@Query('username') username: string): Promise<User> {
+        return this.userService.getUserByLogin(username);
     }
 
-    @Put(":id")
-    async update(@Param("id") id: string, @Body() user: User): Promise<void> {
-        return this.userService.updateUser(id, user);
+    @Post("/update/")
+    async updateUser(@Req() req : any, @Body() body: User): Promise<User> {
+        const user: User = await this.getMe(req);
+        return this.userService.updateUser(user.id, body);
     }
 
-    @Delete(":id")
-    async delete(@Param("id") id: string): Promise<void> {
-        return this.userService.deleteUser(id);
+    @Post("/upload/avatar/")
+    async uploadAvatar(@Req() req : any, @Body() body: User): Promise<User> {
+        const user: User = await this.getMe(req);
+        return this.userService.updateUser(user.id, body);
     }
-
-
 }
