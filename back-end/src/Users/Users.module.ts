@@ -6,10 +6,10 @@ import { Connection } from "./entity/Connection.entity";
 import { ConnectionService } from "./service/Connection.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MulterModule } from "@nestjs/platform-express";
-import { filterAvatar } from "./utils/multer.utils";
+import { factory } from "./utils/multer.utils";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Connection])],
+    imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Connection]), MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}) ],
     controllers: [UserControllers],
     providers: [UserService, ConnectionService],
     exports: [UserService, ConnectionService]
