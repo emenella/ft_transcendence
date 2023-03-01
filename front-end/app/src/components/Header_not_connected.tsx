@@ -1,18 +1,19 @@
 import React from 'react';
 
-// try catch
-function connexionApi() {
-    fetch('/api/login', { method: 'POST' })
-        .then(data => data.json())
+async function connexionApi() :Promise<string> {
+    const req = await fetch('/auth/2fa/login', { method: 'POST' });
+    const data = await req.json();
+    return data as string;
 }
 
-// try catch
+// catch error
 function firstConnexionApi() {
-    fetch('/api/users', { method: 'POST' })
+    fetch('/auth', { method: 'POST' })
         .then(data => data.json())
 }
 
-function HeaderNotConnected() {
+async function HeaderNotConnected() {
+    const url = await connexionApi();
     return (
         <div>
             <button onClick={connexionApi}>Connexion</button>

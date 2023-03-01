@@ -7,12 +7,10 @@ function Body() {
     return (
         <div>
             <BrowserRouter>
-            <Routes>
-                <Route path="/connected" element={<Connected />} />
-            </Routes>
-            <Routes>
-                <Route path="/notconnected" element={<NotConnected />} />
-            </Routes>
+                <Routes>
+                    <Route path="/connected" element={<Connected />} />
+                    <Route path="/notconnected" element={<NotConnected />} />
+                </Routes>
             </BrowserRouter>
         </div>
     );

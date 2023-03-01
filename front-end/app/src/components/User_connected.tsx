@@ -106,22 +106,22 @@ function Profil() {
 	);
 }
 
+// catch error / renvoyer l'utilisateur sur la page d'accueil
+function deleteAccount() {
+    fetch('/api/users/{id}', { method: 'DELETE' })
+}
+
 {/* Onglet "Gestion du compte" */ }
 function AccountManagement() {
 	return (
 		<div className='account-management'>
 			<h2>GESTION DU COMPTE</h2>
 			<form action="/api/users/{id}" method='put'>
-				<label htmlFor="pseudo">Changer de pseudo : </label> <input type="text" name="pseudo" id="pseudo" /> <br />
-				<label htmlFor="mdp">Changer de mot de passe : </label> <input type="text" name='mdp' id='mdp' /> <br />
-				<label htmlFor="pdp">Changer de photo de profil : </label> <input type="file" accept='.PNG,.JPG' name='pdp' id='pdp' /> <br />
-				<label htmlFor="auth">Activer l'authentification à double facteur : </label> <input type="checkbox" name="auth" id="auth" value="2F" /> <br />
+				<label>Changer de photo de profil : </label> <input type="file" accept='.PNG,.JPG' /> <br />
 				<button type="submit">Valider</button>
 			</form>
 			<br />
-			<form action="/api/users/{id}" method="delete">
-				<button>Supprimer le compte</button>
-			</form>
+			<button onClick={deleteAccount}>Supprimer le compte</button>
 		</div>
 	);
 }
@@ -161,15 +161,11 @@ function Connected() {
 			<div className='connectedCenter'>
 				<div>
 					<BrowserRouter>
-                	<Routes>
-                	    <Route path="/profil" element={<Profil />} />
-                	</Routes>
-                	<Routes>
-                	    <Route path="/accountmanagement" element={<AccountManagement />} />
-                	</Routes>
-					<Routes>
-                	    <Route path="/matchmaking" element={<Matchmaking />} />
-                	</Routes>
+                		<Routes>
+                		    <Route path="/profil" element={<Profil />} />
+                		    <Route path="/accountmanagement" element={<AccountManagement />} />
+                		    <Route path="/matchmaking" element={<Matchmaking />} />
+                		</Routes>
                 	</BrowserRouter>
 				</div>
 				<Chat />
