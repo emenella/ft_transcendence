@@ -10,7 +10,7 @@ export class UserControllers {
 
     @Get("/me/")
     async getMe(@Req() req : any): Promise<User> {
-        return this.userService.getUserFromConnectionId(req.user.userId);
+        return req.user;
     }
 
     @Get("/")
