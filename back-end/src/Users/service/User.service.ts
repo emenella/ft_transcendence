@@ -46,6 +46,19 @@ export class UserService {
         return await this.userRepository.save(userToUpdate);
     }
 
+    async updateUser(id: number, updatedUser: User): Promise<User> {
+        const userToUpdate = await this.userRepository.findOne({where : { id: id }});
+        if (!userToUpdate) {
+            throw new HttpException(`User with ID ${id} not found.`, 404);
+        }
+        if (updatedUser.username)
+            userToUpdate.username = updatedUser.username;
+        if (updatedUser.connection)
+            userToUpdate.connection = updatedUser.connection;
+        return await this.userRepository.save(userToUpdate);
+    }
+
+
     async deleteUser(id: number): Promise<void> {
         await this.userRepository.delete(id);
     }
