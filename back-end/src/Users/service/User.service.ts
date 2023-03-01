@@ -12,7 +12,7 @@ export class UserService {
     ) {}
 
     async getAllUsers(): Promise<User[]> {
-        const users = await this.userRepository.find({ relations: ["avatar", "winMatch", "looseMatch"]});
+        const users = await this.userRepository.find({ relations: ["avatar", "winMatch", "looseMatch", "connection"]});
         return users;
     }
 
