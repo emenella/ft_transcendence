@@ -24,7 +24,7 @@ export class AuthenticationController {
 
     // Sign up without 42
     @Public()
-    @Get('admin')
+    @Post('admin')
     async getAdmin(@Body() body) {
         return await this.authenticationService.login(body.user);
     }
