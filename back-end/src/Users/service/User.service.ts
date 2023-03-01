@@ -2,6 +2,7 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
+import { Avatar } from "../entity/Avatar.entity";
 
 @Injectable()
 export class UserService {
@@ -11,7 +12,7 @@ export class UserService {
     ) {}
 
     async getAllUsers(): Promise<User[]> {
-        const users = await this.userRepository.find();
+        const users = await this.userRepository.find({ relations: ["avatar", "winMatch", "looseMatch"]});
         return users;
     }
 
@@ -33,13 +34,15 @@ export class UserService {
         return await this.userRepository.save(body);
     }
 
-    async updateUser(id: number, updatedUser: User): Promise<User> {
+    async updateUsername(id: number, updatedUser: User): Promise<User> {
         const userToUpdate = await this.userRepository.findOne({where : { id: id }, relations: ["avatar", "winMatch", "looseMatch"]});
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
-        userToUpdate.username = updatedUser.username;
-        userToUpdate.connection = updatedUser.connection;
+        if (updatedUser.username)
+            userToUpdate.username = updatedUser.username;
+        else
+            throw new HttpException(`Username is required.`, 400);
         return await this.userRepository.save(userToUpdate);
     }
 
@@ -53,4 +56,30 @@ export class UserService {
             throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
         return user;
     }
+
+    async uploadAvatar(id: number, file): Promise<void> {
+        let user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });
+        if (!user)
+            throw new HttpException(`User with ID ${id} not found.`, 404);
+        if (!user.avatar)
+        {
+            user.avatar = new Avatar();
+            user.avatar.user = user;
+            user.avatar.path = file.path;
+        }
+        else
+        {
+            user.avatar.path = file.path;
+        }
+    }
+
+    async getAvatar(id: number): Promise<Avatar> {
+        const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });
+        if (!user)
+            throw new HttpException(`User with ID ${id} not found.`, 404);
+        if (!user.avatar)
+            throw new HttpException(`User with ID ${id} has no avatar.`, 404);
+        return user.avatar;
+    }
+
 }

@@ -5,6 +5,8 @@ import { User } from "./entity/User.entity";
 import { Connection } from "./entity/Connection.entity";
 import { ConnectionService } from "./service/Connection.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { MulterModule } from "@nestjs/platform-express";
+import { filterAvatar } from "./utils/multer.utils";
 
 @Module({
     imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Connection])],
