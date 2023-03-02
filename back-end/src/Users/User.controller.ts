@@ -29,8 +29,9 @@ export class UserControllers {
     }
 
     @Post("/me/")
-    async updateUser(@Req() req : any, @Param() username: string): Promise<User> {
+    async updateUser(@Req() req : any, @Body("username") username: string): Promise<User> {
         const user: User = await this.getMe(req);
+        console.log(username);
         return this.userService.updateUsername(user.id, username);
     }
 
@@ -38,6 +39,7 @@ export class UserControllers {
     @UseInterceptors(FileInterceptor('file'))
     async uploadAvatar(@UploadedFile() file, @Req() req: any): Promise<string> {
         const user: User = await this.getMe(req);
+        console.log(file);
         return await this.userService.uploadAvatar(user.id, file);
     }
 }
