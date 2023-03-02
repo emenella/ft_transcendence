@@ -52,19 +52,21 @@ services:
     restart: on-failure
     init: true
     
-  # app:
-  #   container_name: app
-  #   image: transcendence-app
-  #   build:
-  #     context: ./front-end
-  #   depends_on:
-  #     - server
-  #   volumes:
-  #    - ./front-end:/usr/front-end
-  #   networks:
-  #     - front-end
-  #   restart: on-failure
-  #   init: true
+  app:
+    container_name: app
+    image: transcendence-app
+    build:
+      context: ./front-end
+    depends_on:
+      - server
+    ports:
+      - "3000"
+    # volumes:
+    #  - ./front-end:/usr/front-end
+    networks:
+      - front-end
+    restart: on-failure
+    init: true
 
 volumes:
   database:

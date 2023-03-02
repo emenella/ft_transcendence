@@ -1,15 +1,11 @@
 import React from 'react';
-
-// catch error
-function logOutApi() {
-    fetch('/api/logout', { method: 'POST' })
-}
+import { logOutApi } from '../api/Auth';
 
 function HeaderConnected() {
     return (
         <div>
             <button>Paramètres de compte</button>
-            {/* onClick -> changer la main part -> changer de route /accountmanagement */}
+            {/* onClick -> changer la main part -> Redirect /accountmanagement */}
             <br />
             <button onClick={logOutApi}>Déconnexion</button>
         </div>
