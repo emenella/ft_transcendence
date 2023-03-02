@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './User_connected.css';
+import { Route, Routes } from 'react-router-dom';
+import './Body_connected.css';
 import logo_matchmaking from '../assets/logo_pong.jpg';
 
 // ajouter boucle
@@ -154,19 +154,17 @@ function Matchmaking() {
 	);
 }
 
-function Connected() {
+function BodyConnected() {
 	return (
 		<div className='connected'>
 			<ChatSidebar />
 			<div className='connectedCenter'>
 				<div>
-					<BrowserRouter>
-                		<Routes>
-                		    <Route path="/profil" element={<Profil />} />
-                		    <Route path="/accountmanagement" element={<AccountManagement />} />
-                		    <Route path="/matchmaking" element={<Matchmaking />} />
-                		</Routes>
-                	</BrowserRouter>
+                	<Routes>
+                	    <Route path="/" element={<Matchmaking />} />
+                	    <Route path="/accountmanagement" element={<AccountManagement />} />
+                	    <Route path="/profil" element={<Profil />} />
+                	</Routes>
 				</div>
 				<Chat />
 			</div>
@@ -175,4 +173,4 @@ function Connected() {
 	);
 }
 
-export default Connected;
+export default BodyConnected;

@@ -1,8 +1,8 @@
 import React from 'react';
-import './User_not_connected.css';
+import './Body_not_connected.css';
 import logo from '../assets/white_logo.png';
 
-function NotConnected() {
+function BodyNotConnected() {
     return (
         <div>
             <h2>Bienvenue sur votre site préféré de pong codé par vos plus dévoués développeurs.</h2>
@@ -16,4 +16,4 @@ function NotConnected() {
     );
 }
 
-export default NotConnected;
+export default BodyNotConnected;

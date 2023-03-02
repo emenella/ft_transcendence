@@ -8,6 +8,7 @@ async function login() {
 
 async function signUp() {
     const url = await firstConnexion();
+    console.log(url);
     redirection(url);
 }
 
