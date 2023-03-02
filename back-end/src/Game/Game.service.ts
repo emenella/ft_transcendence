@@ -16,7 +16,7 @@ export class GameService {
             Overtime: true,
             OvertimeScore: 3,
             height: 1000,
-            width: 1000
+            width: 1000,
         },
         player0: {
             id: 1,
@@ -39,16 +39,21 @@ export class GameService {
         ball: {
             color: "green",
             radius: 20,
-            speed: 10
+            speed: 10,
+            maxSpeed: 20
         },
     };
 
     constructor() {
-        this.createGame(this.default);
+        this.createGame();
     }
 
-    public getGame(id: string): any {
+    public getGame(id: string): Game {
         return this.games.get(id);
+    }
+
+    public deleteGame(id: string): void {
+        this.games.delete(id);
     }
 
     public createGame(setting?: Setup, handleEnd?: (id: string) => Promise<void>): Game {
@@ -98,8 +103,8 @@ export class GameService {
     public findGamesIdWithPlayer(id: number): Array<string> {
         let games: Array<string> = [];
         for (const game of this.games.values()) {
-            if (game.player0.id === id || game.player1.id === id) {
-                games.push(game.setup.general.id);
+            if (game.getSetup().player0.id == id || game.getSetup().player1.id == id) {
+                games.push(game.getSetup().general.id);
             }
         }
         return games;
@@ -144,6 +149,7 @@ export class GameService {
     public async handlerGameFinish(gameId: string): Promise<void>
     {
         let game = this.games.get(gameId);
+        console.log("game finish "+gameId);
         if (game)
         {
             this.games.delete(gameId);

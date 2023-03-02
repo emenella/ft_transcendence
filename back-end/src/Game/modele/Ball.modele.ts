@@ -1,5 +1,5 @@
 import { Player } from "./Player.modele";
-import { general } from "../interface/Game.interface";
+import { general, Setup } from "../interface/Game.interface";
 
 export class Ball
 {
@@ -10,27 +10,29 @@ export class Ball
     private veloY: number;
     private color: string;
     private general: general;
+    private maxSpeed: number;
     
-    constructor(_radius: number, _startX: number, _startY: number, _speedX: number, _speedY: number, _color: string, _general: general)
+    constructor(_setup: Setup)
     {
-        this.posX = _startX;
-        this.posY = _startY;
-        this.radius = _radius;
-        this.veloX = _speedX;
-        this.veloY = _speedY;
-        this.color = _color;
-        this.general = _general;
+        this.general = _setup.general;
+        this.posX = this.general.width / 2;
+        this.posY = this.general.height / 2;
+        this.radius = _setup.ball.radius;
+        this.veloX = _setup.ball.speed;
+        this.veloY = 0;
+        this.color = _setup.ball.color;
+        this.maxSpeed = _setup.ball.maxSpeed;
     }
 
     
     
     private collisionPlayer(player: Player): boolean
     {
-        if (this.posX + this.radius > player.paddle.getPosX() - player.paddle.getWidth() && this.posX - this.radius < player.paddle.getPosX() + player.paddle.getWidth())
+        if (this.posX + this.radius > player.getPosX() - player.getPaddleWidth() && this.posX - this.radius < player.getPosX() + player.getPaddleWidth())
         {
-            if (this.posY + this.radius > player.paddle.getPosY() - player.paddle.getLength() && this.posY - this.radius < player.paddle.getPosY() + player.paddle.getLength())
+            if (this.posY + this.radius > player.getPosY() - player.getPaddleLength() && this.posY - this.radius < player.getPosY() + player.getPaddleLength())
             {
-                this.veloY = (player.paddle.getPosY() - this.posY) / player.paddle.getLength() * 10;
+                this.veloY = (player.getPosY() - this.posY) / player.getPaddleLength() * 10;
                 this.veloX = -this.veloX;
                 this.accelerate();
                 return true;
@@ -52,8 +54,10 @@ export class Ball
 
     public accelerate()
     {
-        this.veloX *= 1.01;
-        this.veloY *= 1.01;
+        if (this.veloX < this.maxSpeed && this.veloX > -this.maxSpeed)
+            this.veloX *= 1.1;
+        if (this.veloY < this.maxSpeed && this.veloY > -this.maxSpeed)
+            this.veloY *= 1.1;
     }
 
     public setPos(x: number, y: number, dx: number, dy: number)

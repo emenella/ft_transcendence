@@ -12,7 +12,6 @@ import { Socket } from "socket.io";
 
 @Injectable()
 export class MatchmakingService {
-    private games: Map<string, Game> = new Map();
     private sockets: Map<number, Socket> = new Map();
     private queue: Array<User> = new Array();
     private setup: general = {
@@ -27,7 +26,8 @@ export class MatchmakingService {
     private ball: ball = {
         color: "green",
         radius: 20,
-        speed: 10
+        speed: 10,
+        maxSpeed: 20
     };
 
     constructor(private readonly gameService: GameService, private readonly userService: UserService,
@@ -50,12 +50,16 @@ export class MatchmakingService {
         return true;
     }
 
-    async getQueue(): Promise<Array<User>> {
+    public getQueue(): Array<User> {
         return this.queue;
     }
 
-    async getGame(id: string): Promise<Game> {
-        return this.games.get(id);
+    public getGame(id: string): Game {
+        return this.gameService.getGame(id);
+    }
+
+    public deleteGame(id: string): void {
+        this.gameService.deleteGame(id);
     }
 
     async getPlayerSetup(user: User): Promise<player> {
@@ -84,15 +88,17 @@ export class MatchmakingService {
     async createGame(user1: User, user2: User): Promise<Game> {
         const setup: Setup = await this.createSetup(user1, user2);
         const game: Game = await this.gameService.createGame(setup, this.handleEndGame);
-        this.games.set(game.setup.general.id, game);
         return game;
     }
 
-    async getGameFromUser(user: User): Promise<Game> {
-        for (const game of this.games.values()) {
-            if (game.player0.id === user.id || game.player1.id === user.id)
-                return game;
+    async getGameFromUser(user: User): Promise<Game[]> {
+        const ids = this.gameService.findGamesIdWithPlayer(user.id);
+        const games: Game[] = [];
+        for (const id of ids) {
+            const game = await this.gameService.getGame(id);
+            games.push(game);
         }
+        return games;
     }
 
     public changeBallColor(color: string): boolean {
@@ -141,21 +147,22 @@ export class MatchmakingService {
             const game: Game = await this.createGame(bestMatch[0], bestMatch[1]);
             this.leaveQueue(bestMatch[0]);
             this.leaveQueue(bestMatch[1]);
-            this.games.set(game.setup.general.id, game);
             return true;
         }
         return false;
     }
 
     public async handleEndGame(id: string): Promise<void> {
-        const game = this.games.get(id);
-        const user0: User = await this.userService.getUserById(game.player0.id);
-        const user1: User = await this.userService.getUserById(game.player1.id);
-        if (game.player0.score > game.player1.score) {
+        const game = await this.gameService.getGame(id);
+        const score: Array<number> = game.getScore();
+        const ids: Array<number> = game.getPlayersId();
+        const user0: User = await this.userService.getUserById(ids[0]);
+        const user1: User = await this.userService.getUserById(ids[1]);
+        if (score[0] > score[1]) {
             user0.elo = updateElo(user0, user1, Result.WIN);
             user1.elo = updateElo(user1, user0, Result.LOSE);
         }
-        else if (game.player0.score < game.player1.score) {
+        else if (score[0] < score[1]) {
             user0.elo = updateElo(user0, user1, Result.LOSE);
             user1.elo = updateElo(user1, user0, Result.WIN);
         }
@@ -163,14 +170,20 @@ export class MatchmakingService {
             user0.elo = updateElo(user0, user1, Result.DRAW);
             user1.elo = updateElo(user1, user0, Result.DRAW);
         }
+        await this.userService.updateUser(user0.id, user0);
+        await this.userService.updateUser(user1.id, user1);
+        await this.createMatchHistory(id, score[0] > score[1] ? user0 : user1, score[0] < score[1] ? user0 : user1);
+        this.gameService.deleteGame(id);
     }
 
     private async createMatchHistory(id: string, winner: User, looser: User): Promise<void> {
-        const game: Game = this.games.get(id);
+        const game: Game = await this.gameService.getGame(id);
+        const score: Array<number> = game.getScore();
+        const ids: Array<number> = game.getPlayersId();
         const history: MatchHistory = new MatchHistory();
         history.winner = winner;
         history.looser = looser;
-        history.scores = [game.player0.id === winner.id ? game.player0.score : game.player1.score, game.player0.id === looser.id ? game.player0.score : game.player1.score];
+        history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];
         history.date = new Date();
         await this.historyService.addHistory(history);
     }

@@ -21,6 +21,7 @@ export interface ball {
     color: string;
     radius: number;
     speed: number;
+    maxSpeed: number;
 }
 
 export interface Setup {
