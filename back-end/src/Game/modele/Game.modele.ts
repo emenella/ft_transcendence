@@ -17,7 +17,7 @@ export class Game {
     private startSpeed: number;
     public setup: Setup;
     
-    constructor(_setup: Setup, readonly handlerGameFinish: (id: string) => void)
+    constructor(_setup: Setup, readonly handlerGameFinish: (id: string) => Promise<void>)
     {
         this.setup = _setup;
         this.startSpeed = this.setup.ball.speed;

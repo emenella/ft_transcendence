@@ -26,6 +26,6 @@ export class User {
     @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner)
     winMatch: MatchHistory[];
 
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.loser)
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser)
     looseMatch: MatchHistory[];
 }

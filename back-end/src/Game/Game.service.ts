@@ -51,19 +51,13 @@ export class GameService {
         return this.games.get(id);
     }
 
-    public createGame(setting?: Setup): Game {
+    public createGame(setting?: Setup, handleEnd?: (id: string) => Promise<void>): Game {
         let game: Game;
         const id = uuidv4();
-        if (setting)
-        {
-            setting.general.id = id;
-            game = new Game(setting, this.handlerGameFinish.bind(this));
-        }
-        else
-        {
-            this.default.general.id = id;
-            game = new Game(this.default, this.handleGameEvent.bind(this));
-        }
+        const setup: Setup = setting ? setting : this.default;
+        const handler: (id: string) => Promise<void> = handleEnd ? handleEnd : this.handlerGameFinish;
+        setup.general.id = id;
+        game = new Game(setup, handler);
         this.games.set(id, game);
         return id;
     }
@@ -147,7 +141,7 @@ export class GameService {
         }
     }
 
-    public handlerGameFinish(gameId: string): void
+    public async handlerGameFinish(gameId: string): Promise<void>
     {
         let game = this.games.get(gameId);
         if (game)

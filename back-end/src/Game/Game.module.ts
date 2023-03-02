@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { GameGateway } from "./Game.Gateway";
-import { WebSocketGateway } from "@nestjs/websockets"
 import { GameService } from "./Game.service";
 import { AuthenticationModule } from "../Auth/Authenfication.module";
 import { UserModule } from "../Users/Users.module";
