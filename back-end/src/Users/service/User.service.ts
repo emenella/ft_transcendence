@@ -36,10 +36,13 @@ export class UserService {
 
     async updateUsername(id: number, username: string): Promise<User> {
         const userToUpdate = await this.userRepository.findOne({where : { id: id }});
+        if(!username)
+            throw new HttpException(`Username is empty.`, 400);
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
         userToUpdate.username = username;
+        userToUpdate.isProfileComplete = true;
         return await this.userRepository.save(userToUpdate);
     }
 

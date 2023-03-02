@@ -7,9 +7,7 @@ export const factory = async (userService: UserService): Promise<MulterModuleOpt
     return { 
         storage: diskStorage({
             filename: async (req, file, cb) => {
-                const user = await userService.getUserFromConnectionId(req.user.userId);
-                console.log(file);
-                const filename = `avatar-${user.username}`;
+                const filename = `avatar-${req.user.username}`;
                 const extension = file.mimetype.split('/')[1];
                 console.log(`${filename}.${extension}`);
                 cb(null, `${filename}.${extension}`);
