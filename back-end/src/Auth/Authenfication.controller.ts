@@ -2,11 +2,12 @@ import { Get, Post, Controller, Param, Redirect, Body, Query, UseGuards, Req, Re
 import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
 import { Public } from './decorators/public.decoration';
+import { ConnectionService } from 'src/Users/service/Connection.service';
 
 @Controller('auth')
 export class AuthenticationController {
 
-    constructor(private readonly authenticationService: AuthenticationService) {}
+    constructor(private readonly authenticationService: AuthenticationService, private readonly connectionService: ConnectionService) {}
     
     @Public()
     @Get('')
@@ -17,11 +18,9 @@ export class AuthenticationController {
     @Public()
     @UseGuards(FortyTwoGuard)
     @Get('callback')
-    @Redirect('http://localhost/auth')
-    async postAuth(@Req() req) {
+    async postAuth(@Req() req, @Res() res) {
         let token = this.authenticationService.login(req.user);
-        //redirect to front with token in response
-        return await token;
+        res.redirect('http://localhost/auth?token=' + token);
     }
 
     // Sign up without 42
@@ -47,8 +46,9 @@ export class AuthenticationController {
         if (!req.headers.authorization) {
             return false;
         }
-        let token = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
-        return await this.authenticationService.otp(token, body.code);
+        let payload = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
+        let connection = await this.connectionService.getConnectionById(payload['connectionId']);
+        return await this.authenticationService.otp(connection, body.code);
     }
 
     @Delete('2fa/delete')

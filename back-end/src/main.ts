@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 
 async function bootstrap() {
-  // cors accept all origin
   const corsConfig = {
     "origin": "*",
     "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",

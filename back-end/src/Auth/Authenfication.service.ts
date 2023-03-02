@@ -33,31 +33,31 @@ export class AuthenticationService {
             foundUser.connection = connection;
             foundUser = await this.userService.updateUser(foundUser.id, foundUser);
         }
-        const payload = { userId: connection.id, otp: !connection.otp };
+        const payload = { connectionId: connection.id, otp: !connection.otp };
         return {
             access_token: this.jwtService.sign(payload),
         };
     }
     
     
-    async generateQR(payload: any) {
+    async generateQR(user: User) {
 
-        const connection = await this.connectionService.getConnectionById(payload.userId);
+        const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (connection.otp) {
             throw new HttpException('OTP already set', 401);
         }
-        if (!this.secret.get(payload.userId)) {
+        if (!this.secret.get(connection.id)) {
             const secret = speakeasy.generateSecret({ name: "ft_pong" });
-            this.secret.set(payload.userId, secret.base32); 
+            this.secret.set(connection.id, secret.base32); 
         }
-        const secret = this.secret.get(payload.userId);
+        const secret = this.secret.get(connection.id);
         const url = speakeasy.otpauthURL({ secret: secret, encoding: 'base32', label: "ft_pong" });
         const qr = await qrcode.toDataURL(url);
         return "<img src='" + qr + "' />";
     }
     
-    async verifyQR(id: number, code: string) {
-        const secret = this.secret.get(id);
+    async verifyQR(connectionId: number, code: string) {
+        const secret = this.secret.get(connectionId);
         if (!secret) {
             return false;
         }
@@ -72,8 +72,8 @@ export class AuthenticationService {
         return verified;
     }
     
-    async saveSecret(payload: any, code: string): Promise<any> {
-        const connection = await this.connectionService.getConnectionById(payload.userId);
+    async saveSecret(user: User, code: string): Promise<any> {
+        const connection = await this.connectionService.getConnectionByUserId(user.id);
         const verified = await this.verifyQR(connection.id, code);
         if (connection.otp) {
             throw new HttpException("Connection already has a secret", 400);
@@ -87,7 +87,7 @@ export class AuthenticationService {
         connection.otp = this.secret.get(connection.id);
         await this.connectionService.updateConnection(connection.id, connection.otp);
         this.secret.delete(connection.id);
-        return await this.otp(payload, code);
+        return await this.otp(connection, code);
     }
     
     async verify(connectionId: number, code: string)
@@ -107,33 +107,32 @@ export class AuthenticationService {
         return verified;
     }
     
-    async otp(user: any, code: string) {
-        const connection = await this.connectionService.getConnectionById(user.userId);
+    async otp(connection: Connection, code: string) {
         if (!connection) {
             throw new HttpException("Connection does not exist", 404);
         }
         if (!connection.otp) {
             throw new HttpException("Connection does not have a secret", 400);
         }
-        const verified = await this.verify(user.id, code);
+        const verified = await this.verify(connection.id, code);
         if (!verified) {
             throw new HttpException("Code is not valid", 401);
         }
-        const payload = { userId: user.userId, otp: true};
+        const payload = { connectionId: connection.id, otp: true};
         return {
             access_token: this.jwtService.sign(payload),
         };
     }
     
-    async deleteSecret(payload: any) {
-        const connection = await this.connectionService.getConnectionById(payload.userId);
+    async deleteSecret(user: User) {
+        const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!connection) {
             throw new Error("Connection does not exist");
         }
-        if (!payload.otp) {
+        if (!connection.otp) {
             throw new Error("User is not otp");
         }
-        await this.connectionService.updateConnection(payload.userId, null);
+        await this.connectionService.updateConnection(connection.id, null);
     }
 
     async verifyJWT(token: string) {
