@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import { logOutApi } from '../api/Auth';
-import redirection from '../utils/Redirection';
 
 function HeaderConnected() {
     return (
         <div>
-            <button onClick={() => redirection('/accountmanagement')}>Paramètres de compte</button>
+            <Link to="/accountmanagement">Paramètres de compte</Link>
             <br />
             <button onClick={logOutApi}>Déconnexion</button>
         </div>

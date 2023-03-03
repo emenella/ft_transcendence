@@ -3,7 +3,7 @@ import axios from '../api/Api';
 // try catch
 export async function connexion() {
     try {
-        const req = await axios.post('/auth/2fa/login');
+        const req = await axios.post('/api/auth/2fa/login');
         return req.data;
     }
     catch(e) {
@@ -14,7 +14,7 @@ export async function connexion() {
 // try catch
 export async function firstConnexion() {
     try {
-        const req = await axios.post('/auth');
+        const req = await axios.get('/api/auth');
         return req.data;
     }
     catch(e) {
