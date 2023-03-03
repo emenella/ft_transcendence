@@ -1,33 +1,10 @@
-import axios from '../api/Api';
+export default function authHeader() {
 
-// try catch
-export async function connexion() {
-    try {
-        const req = await axios.post('/api/auth/2fa/login');
-        return req.data;
-    }
-    catch(e) {
-        console.log(e);
-    }
-}
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-// try catch
-export async function firstConnexion() {
-    try {
-        const req = await axios.get('/api/auth');
-        return req.data;
-    }
-    catch(e) {
-        console.log(e);
-    }
-}
-
-// try catch
-export async function logOutApi() {
-    try {
-        await axios.post('/logout');
-    }
-    catch(e) {
-        console.log(e);
+    if (user && user.access_token) {
+        return { 'x-access-token': user.access_token };
+    } else {
+        return {};
     }
 }

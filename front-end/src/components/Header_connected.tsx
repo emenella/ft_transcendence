@@ -1,13 +1,18 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-import { logOutApi } from '../api/Auth';
+import { logOutApi } from '../api/Logout';
 
 function HeaderConnected() {
+    function logout() {
+        logOutApi();
+        localStorage.removeItem("user");
+    }
+    
     return (
         <div>
             <Link to="/accountmanagement">Paramètres de compte</Link>
             <br />
-            <button onClick={logOutApi}>Déconnexion</button>
+            <button onClick={logout}>Déconnexion</button>
         </div>
     );
 }

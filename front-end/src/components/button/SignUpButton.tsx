@@ -1,5 +1,5 @@
 import React from "react";
-import { firstConnexion } from '../../api/Auth'
+import { firstConnexion } from '../../api/Login'
 
 function SignUpButton() {
 	const [url, setUrl] = React.useState<string>();

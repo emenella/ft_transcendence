@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import './Body_connected.css';
 import logo_matchmaking from '../assets/logo_pong.jpg';
 
-// ajouter boucle
+// map sur retour de l'API pour afficher
 function ChatSidebar() {
 	return (
 		<div className='chatSidebar'>
@@ -25,7 +25,7 @@ function ChatSidebar() {
 	);
 }
 
-// ajouter boucle
+// map sur retour de l'API pour afficher
 function UserSidebar() {
 	return (
 		<div className='userSidebar'>
@@ -55,8 +55,12 @@ function Chat() {
 		<div className='chat'>
 			<table>
 				<tbody>
-					<tr>Bla bla des autres.</tr>
-					<tr>Mon blabla a écrire et envoyer.</tr>
+					<tr>
+						<td>Bla bla</td>
+					</tr>
+					<tr>
+						<td>Bla bla</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

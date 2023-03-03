@@ -1,6 +1,7 @@
 import React from 'react';
-import SignUpButton from './button/SignUp';
-import LoginButton from './button/Login';
+import SignUpButton from './button/SignUpButton';
+import LoginButton from './button/LoginButton';
+import LoginWithout42 from './button/LoginWithout42';
 
 function HeaderNotConnected() {
     return (
@@ -8,6 +9,8 @@ function HeaderNotConnected() {
             <LoginButton />
             <br />
             <SignUpButton />
+            <br />
+            <LoginWithout42 />
         </div>
     );
 }

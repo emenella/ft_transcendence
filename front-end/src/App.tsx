@@ -8,7 +8,7 @@ import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 
 function App() {
-    let isConnected: boolean = false;
+    let isConnected = false;
     // isConnected = true;
 
     if (isConnected)
