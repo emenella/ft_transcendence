@@ -34,15 +34,15 @@ export class UserService {
         return await this.userRepository.save(body);
     }
 
-    async updateUsername(id: number, updatedUser: User): Promise<User> {
-        const userToUpdate = await this.userRepository.findOne({where : { id: id }, relations: ["avatar", "winMatch", "looseMatch"]});
+    async updateUsername(id: number, username: string): Promise<User> {
+        const userToUpdate = await this.userRepository.findOne({where : { id: id }});
+        if(!username)
+            throw new HttpException(`Username is empty.`, 400);
         if (!userToUpdate) {
             throw new HttpException(`User with ID ${id} not found.`, 404);
         }
-        if (updatedUser.username)
-            userToUpdate.username = updatedUser.username;
-        else
-            throw new HttpException(`Username is required.`, 400);
+        userToUpdate.username = username;
+        userToUpdate.isProfileComplete = true;
         return await this.userRepository.save(userToUpdate);
     }
 
@@ -70,10 +70,12 @@ export class UserService {
         return user;
     }
 
-    async uploadAvatar(id: number, file): Promise<void> {
+    async uploadAvatar(id: number, file): Promise<string> {
         let user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });
         if (!user)
             throw new HttpException(`User with ID ${id} not found.`, 404);
+        if (!user.isProfileComplete)
+            throw new HttpException(`User with ID ${id} has not completed his profile.`, 400);
         if (!user.avatar)
         {
             user.avatar = new Avatar();
@@ -84,6 +86,8 @@ export class UserService {
         {
             user.avatar.path = file.path;
         }
+        await this.userRepository.save(user);
+        return file.path;
     }
 
     async getAvatar(id: number): Promise<Avatar> {

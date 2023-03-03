@@ -2,8 +2,6 @@ import { Controller, Get, Post, Put, Delete, Body, Param, Req, Query, UseInterce
 import { User } from "./entity/User.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "./service/User.service";
-import { diskStorage } from "multer";
-import { filenameFunc, filterAvatar } from "./utils/multer.utils";
 
 
 @Controller("users")
@@ -12,7 +10,7 @@ export class UserControllers {
 
     @Get("/me/")
     async getMe(@Req() req : any): Promise<User> {
-        return this.userService.getUserFromConnectionId(req.user.userId);
+        return req.user;
     }
 
     @Get("/")
@@ -31,15 +29,17 @@ export class UserControllers {
     }
 
     @Post("/me/")
-    async updateUser(@Req() req : any, @Body() body: User): Promise<User> {
+    async updateUser(@Req() req : any, @Body("username") username: string): Promise<User> {
         const user: User = await this.getMe(req);
-        return this.userService.updateUsername(user.id, body);
+        console.log(username);
+        return this.userService.updateUsername(user.id, username);
     }
 
     @Post("/upload/avatar/")
-    @UseInterceptors(FileInterceptor('image', { storage: diskStorage({ destination: './uploads', filename: filenameFunc }), fileFilter: filterAvatar }))
-    async uploadAvatar(@UploadedFile() file, @Req() req: any): Promise<void> {
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadAvatar(@UploadedFile() file, @Req() req: any): Promise<string> {
         const user: User = await this.getMe(req);
-        await this.userService.uploadAvatar(user.id, file);
+        console.log(file);
+        return await this.userService.uploadAvatar(user.id, file);
     }
 }
