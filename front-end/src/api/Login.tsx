@@ -1,14 +1,14 @@
 import axios from '../api/Api';
 
-// export async function connexion() {
-//     try {
-//         const req = await axios.post('/api/auth/2fa/login');
-//         return req.data;
-//     }
-//     catch(e) {
-//         console.log(e);
-//     }
-// }
+export async function connexion() {
+    try {
+        const req = await axios.post('/api/auth/2fa/login');
+        return req.data;
+    }
+    catch(e) {
+        console.log(e);
+    }
+}
 
 export async function firstConnexion() {
     try {

@@ -1,7 +1,8 @@
 import React from "react";
-// import { connexion } from '../../api/Auth'
+import { tokenFunction } from "../../utils/interface";
+import { connexion } from "../../api/Login";
 
-function LoginButton() {
+class LoginButton extends React.Component<tokenFunction> {
 // 	const [url, setUrl] = React.useState<string>();
 // 	React.useEffect(() => {
 // 		const getUrl = async () => {
@@ -11,11 +12,13 @@ function LoginButton() {
 // 		getUrl();
 // 	}, []);
 
-	return (
-		// <a href={url}>
-			<button>Connexion</button>
-		// </a>
-	);
+	render() {
+		return (
+			// <a href={url}>
+				<button>Connexion</button>
+			// </a>
+		);
+	}
 }
 
 export default LoginButton;
