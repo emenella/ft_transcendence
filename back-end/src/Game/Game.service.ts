@@ -60,7 +60,7 @@ export class GameService {
         let game: Game;
         const id = uuidv4();
         const setup: Setup = setting ? setting : this.default;
-        const handler: (id: string) => Promise<void> = handleEnd ? handleEnd : this.handlerGameFinish;
+        const handler: (id: string) => Promise<void> = handleEnd ? handleEnd : this.handlerGameFinish.bind(this);
         setup.general.id = id;
         game = new Game(setup, handler);
         this.games.set(id, game);
@@ -69,8 +69,7 @@ export class GameService {
 
     public joinPlayer(gameId: string, userId: number, socket: Socket): boolean {
         let game = this.games.get(gameId);
-        console.log("join player "+userId+" to game "+gameId);
-        if (game) {
+        if (game && !this.users.has(userId)) {
             this.users.set(userId, game);
             return game.playerConnect(userId, socket);
         }
@@ -137,8 +136,21 @@ export class GameService {
 
     public spectateGame(matchId: string, userId: number, socket: Socket): boolean {
         let game = this.games.get(matchId);
-        if (game) {
+        if (game && !this.users.has(userId)) {
+            this.users.set(userId, game);
             game.spectatorConnect(userId, socket);
+            return true;
+        }
+        else {
+            return false
+        }
+    }
+
+    public leaveSpectator(userId: number): boolean {
+        let game = this.users.get(userId);
+        if (game) {
+            this.users.delete(userId);
+            game.spectatorDisconnect(userId);
             return true;
         }
         else {
@@ -149,7 +161,6 @@ export class GameService {
     public async handlerGameFinish(gameId: string): Promise<void>
     {
         let game = this.games.get(gameId);
-        console.log("game finish "+gameId);
         if (game)
         {
             this.games.delete(gameId);

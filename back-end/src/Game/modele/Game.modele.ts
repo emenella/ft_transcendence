@@ -71,19 +71,15 @@ export class Game {
         if (this.setup.general.Overtime && this.setup.general.ScoreWin - 1 == this.player0.getScore() && this.setup.general.ScoreWin - 1 == this.player1.getScore())
         {
             this.setup.general.ScoreWin += this.setup.general.OvertimeScore;
-            console.log("Overtime");
         }
         if (this.player0.getScore() == this.setup.general.ScoreWin)
         {
             this.gameFinish();
-            console.log(this.player0.getId() + " win");
         }
         else if (this.player1.getScore() == this.setup.general.ScoreWin)
         {
             this.gameFinish();
-            console.log(this.player1.getId + " win");
         }
-        console.log(this.player0.getScore() + "-" + this.player1.getScore());
     }
     
     public launchGame(): void
@@ -102,11 +98,10 @@ export class Game {
 
     public playerConnect(id: number, socket: Socket): boolean
     {
-        console.log("Player " + id + " connected to game" + this.setup.general.id + ".");
         const player = this.getPlayer(id);
         if (player != null)
         {
-            player.playerConnect(socket, this.isLive);
+            player.playerConnect(socket, this.isLive, this.getSetup());
             return true;
         }
         return false;
@@ -114,11 +109,10 @@ export class Game {
     
     public playerDisconnect(id: number): boolean
     {
-        console.log("Player " + id + " disconnected from game" + this.setup.general.id + ".");
         const player = this.getPlayer(id);
         if (player != null)
         {
-            player.playerDisconnect(this.isLive, player == this.player0 ? this.player1 : this.player0);
+            this.isLive = player.playerDisconnect(this.isLive, player.getId() == this.player0.getId() ? this.player1 : this.player0);
             return true;
         }
         return false;
@@ -126,7 +120,6 @@ export class Game {
     
     public playerReady(id: number): boolean
     {
-        console.log("Player " + id + " is ready.");
         const player = this.getPlayer(id);
         if (player != null)
         {
@@ -139,7 +132,6 @@ export class Game {
 
     public playerUnready(id: number): boolean
     {
-        console.log("Player " + id + " is unready.");
         const player = this.getPlayer(id);
         if (player != null)
         {
@@ -241,13 +233,7 @@ export class Game {
 
     public sendGameInfoToSpectators(): void
     {
-        this.spectators.forEach(s => s.sendGameUpdate());
-    }
-    
-    private resetPlayers(): void
-    {
-        this.player0.reset();
-        this.player1.reset();
+        this.spectators.forEach(s => s.sendGameUpdate(this.getGameInfo()));
     }
 
     public getScore(): Array<number>

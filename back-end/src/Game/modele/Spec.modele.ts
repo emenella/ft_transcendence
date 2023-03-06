@@ -1,31 +1,39 @@
 import { Socket } from 'socket.io';
 import { Game } from './Game.modele';
+import { GameInfo, Setup } from '../interface/Game.interface';
+import { emit } from 'process';
 
 export class Spectator {
     private id: number;
     private socket: Socket;
-    private game: Game;
 
     constructor(id: number, socket: Socket, game: Game) {
         this.id = id;
         this.socket = socket;
-        this.game = game;
-        this.handleDisconnection();
+        this.emitJoin(game.getSetup());
+        this.emitGameInfo(game.getGameInfo());
     }
 
-    public handleDisconnection(): void {
-        this.socket.on('disconnect', () => {
-            console.log('Spectator disconnected');
-            this.game.spectatorDisconnect(this.id);
-        });
-    }
-
-    public sendGameUpdate(): void {
-        this.socket.emit('game:update', this.game.getGameInfo());
+    public sendGameUpdate(gameInfo: GameInfo): void {
+        this.socket.emit('game:info', gameInfo);
     }
 
     public getId(): number {
         return this.id;
     }
+
+    public emitFinish(winner: number) {
+        this.socket.emit('game:finish', winner);
+    }
+
+    public emitGameInfo(info: GameInfo) {
+        this.socket.emit('game:info', info);
+    }
+
+    public emitJoin(gameSetup: Setup) {
+        this.socket.emit('game:join', gameSetup);
+    }
+
+
 
 }

@@ -27,18 +27,18 @@ export class Player {
         this.paddle = new Paddle(_setup.player0.color, _setup.player0.width, _setup.player0.length, startX, startY, _setup.player0.speedX, _setup.player0.speedY, _setup.general);
     }
 
-    public playerConnect(socket: Socket, isLive: boolean) {
+    public playerConnect(socket: Socket, isLive: boolean, gameSetup: Setup) {
         this.socket = socket;
         this.isConnected = true;
-        this.emitJoin();
+        this.emitJoin(gameSetup);
         if (isLive) {
             this.emitLive();
         }
     }
 
-    public playerDisconnect(isLive: boolean, opp: Player) {
+    public playerDisconnect(isLive: boolean, opp: Player): boolean {
         this.isConnected = false;
-        this.unready(isLive, opp);
+        return this.unready(isLive, opp);
     }
 
     public ready(isLive: boolean, opp: Player): boolean {
@@ -102,27 +102,33 @@ export class Player {
     }
 
     private emitLive() {
-        this.socket.emit("game:live");
+        if (this.isConnected)
+            this.socket.emit("game:live");
     }
 
-    private emitJoin() {
-        this.socket.emit("game:join");
+    private emitJoin(gameSetup: Setup) {
+        if (this.isConnected)
+            this.socket.emit("game:join", gameSetup);
     }
 
     private emitUnready() {
-        this.socket.emit("game:unready", this.id);
+        if (this.isConnected)
+            this.socket.emit("game:unready", this.id);
     }
 
     private emitPlayerUnReady(id: number) {
-        this.socket.emit("game:unready", id);
+        if (this.isConnected)
+            this.socket.emit("game:unready", id);
     }
 
     public emitGameInfo(info: GameInfo) {
-        this.socket.emit("game:info", info);
+        if (this.isConnected)
+            this.socket.emit("game:info", info);
     }
 
     private emitFinish(winner: number) {
-        this.socket.emit("game:finish", winner);
+        if (this.isConnected)
+            this.socket.emit("game:finish", winner);
     }
 
     public move() {
@@ -181,6 +187,7 @@ export class Player {
     public goal(isLive: boolean, opp: Player): boolean {
         isLive = opp.unready(isLive, this);
         this.reset();
+        opp.reset();
         this.increaseScore();
         return isLive;
     }

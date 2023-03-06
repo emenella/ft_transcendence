@@ -87,7 +87,7 @@ export class MatchmakingService {
 
     async createGame(user1: User, user2: User): Promise<Game> {
         const setup: Setup = await this.createSetup(user1, user2);
-        const game: Game = await this.gameService.createGame(setup, this.handleEndGame);
+        const game: Game = await this.gameService.createGame(setup, this.handleEndGame.bind(this));
         return game;
     }
 
