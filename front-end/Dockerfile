@@ -1,6 +1,6 @@
 FROM node:19
 
-WORKDIR /usr/frontend
+WORKDIR /usr/front-end
 
 COPY package*.json ./
 

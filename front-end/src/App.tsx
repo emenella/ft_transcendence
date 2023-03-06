@@ -8,10 +8,9 @@ import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 
 function App() {
-    let isConnected = false;
-    // isConnected = true;
+    let hasToken = localStorage.getItem('user') !== null;
 
-    if (isConnected)
+    if (hasToken)
         return (
             <div>
                 <div className='flex-container'>

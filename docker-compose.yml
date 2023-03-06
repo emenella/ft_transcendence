@@ -63,8 +63,8 @@ services:
       - server
     ports:
       - "3000"
-    # volumes:
-    #  - ./front-end:/usr/front-end
+    volumes:
+     - ./front-end:/usr/front-end
     networks:
       - front-end
     restart: on-failure
