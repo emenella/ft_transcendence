@@ -64,7 +64,7 @@ export class GameService {
         setup.general.id = id;
         game = new Game(setup, handler);
         this.games.set(id, game);
-        return id;
+        return game;
     }
 
     public joinPlayer(gameId: string, userId: number, socket: Socket): boolean {

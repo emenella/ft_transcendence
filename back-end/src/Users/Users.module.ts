@@ -15,6 +15,6 @@ import { Avatar } from "./entity/Avatar.entity";
     imports: [TypeOrmModule.forFeature([User, Connection, Avatar, MatchHistory]) ,MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}) ],
     controllers: [UserControllers],
     providers: [UserService, ConnectionService, HistoryService],
-    exports: [UserService, ConnectionService]
+    exports: [UserService, ConnectionService, HistoryService]
 })
 export class UserModule {}

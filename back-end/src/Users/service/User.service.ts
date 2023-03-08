@@ -55,6 +55,10 @@ export class UserService {
             userToUpdate.username = updatedUser.username;
         if (updatedUser.connection)
             userToUpdate.connection = updatedUser.connection;
+        if (updatedUser.avatar)
+            userToUpdate.avatar = updatedUser.avatar;
+        if (updatedUser.elo)
+            userToUpdate.elo = updatedUser.elo;
         return await this.userRepository.save(userToUpdate);
     }
 

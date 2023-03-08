@@ -24,14 +24,15 @@ function checkMatch(users: Array<User>): { user0: User, user1: User } {
     return { user0, user1 };
 }
 
-function probabilityWin(user: User, opp: User): number {
-    return 1.0 / (1 + Math.pow(10, (opp.elo - user.elo) / 400));
+function probabilityWin(user: number, opp: number): number {
+    return 1.0 / (1 + Math.pow(10, (opp - user) / 400));
 }
 
-function updateElo(user: User, opp: User, resultat: Result): number {
+function updateElo(user: number, opp: number, resultat: Result): number {
     const k = 32;
     const prob = probabilityWin(user, opp);
-    return user.elo + k * (resultat - prob);
+    console.log("elo: " + user + " prob: " + prob + " result: " + resultat);
+    return user + k * (resultat - prob);
 }
 
 export { checkMatch, probabilityWin, updateElo, Result };

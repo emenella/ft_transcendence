@@ -34,19 +34,21 @@ export class MatchmakingService {
         private readonly historyService: HistoryService) { }
 
     async joinQueue(user: User, client: Socket): Promise<boolean> {
-        if (this.queue.includes(user))
+        console.log("join queue " + user.id);
+        if (this.queue.includes(user) || this.isInGame(user))
             return false;
         this.queue.push(user);
         this.sockets.set(user.id, client);
-        this.foundMatch();
+        await this.foundMatch().catch(err => console.log(err));
         return true;
     }
 
     async leaveQueue(user: User): Promise<boolean> {
+        console.log("leave queue " + user.id);
         if (!this.queue.includes(user))
             return false;
         this.queue.splice(this.queue.indexOf(user), 1);
-        this.foundMatch();
+        await this.foundMatch().catch(err => console.log(err));
         return true;
     }
 
@@ -62,7 +64,7 @@ export class MatchmakingService {
         this.gameService.deleteGame(id);
     }
 
-    async getPlayerSetup(user: User): Promise<player> {
+    public getPlayerSetup(user: User): player {
         const player: player = {
             id: user.id,
             username: user.username,
@@ -78,8 +80,8 @@ export class MatchmakingService {
     async createSetup(user1: User, user2: User): Promise<Setup> {
         const setup: Setup = {
             general: this.setup,
-            player0: await this.getPlayerSetup(user1),
-            player1: await this.getPlayerSetup(user2),
+            player0: this.getPlayerSetup(user1),
+            player1: this.getPlayerSetup(user2),
             ball: this.ball,
         };
         return setup;
@@ -99,6 +101,13 @@ export class MatchmakingService {
             games.push(game);
         }
         return games;
+    }
+
+    async isInGame(user: User): Promise<boolean> {
+        const games = await this.getGameFromUser(user);
+        if (games.length > 0)
+            return true;
+        return false;
     }
 
     public changeBallColor(color: string): boolean {
@@ -144,9 +153,11 @@ export class MatchmakingService {
     private async foundMatch(): Promise<boolean> {
         const bestMatch = checkMatch(this.queue);
         if (bestMatch) {
-            const game: Game = await this.createGame(bestMatch[0], bestMatch[1]);
-            this.leaveQueue(bestMatch[0]);
-            this.leaveQueue(bestMatch[1]);
+            const game: Game = await this.createGame(bestMatch.user0, bestMatch.user1);
+            this.sockets.get(bestMatch.user0.id).emit("matchmaking:foundMatch", game.getSetup().general.id);
+            this.sockets.get(bestMatch.user1.id).emit("matchmaking:foundMatch", game.getSetup().general.id);
+            this.leaveQueue(bestMatch.user0);
+            this.leaveQueue(bestMatch.user1);
             return true;
         }
         return false;
@@ -156,19 +167,20 @@ export class MatchmakingService {
         const game = await this.gameService.getGame(id);
         const score: Array<number> = game.getScore();
         const ids: Array<number> = game.getPlayersId();
-        const user0: User = await this.userService.getUserById(ids[0]);
-        const user1: User = await this.userService.getUserById(ids[1]);
+        let user0: User = await this.userService.getUserById(ids[0]);
+        let user1: User = await this.userService.getUserById(ids[1]);
+        let tmpUsers: Array<number> = [user0.elo, user1.elo];
         if (score[0] > score[1]) {
-            user0.elo = updateElo(user0, user1, Result.WIN);
-            user1.elo = updateElo(user1, user0, Result.LOSE);
+            user0.elo = Math.round(updateElo(tmpUsers[0], tmpUsers[1], Result.WIN));
+            user1.elo = Math.round(updateElo(tmpUsers[1], tmpUsers[0], Result.LOSE));
         }
         else if (score[0] < score[1]) {
-            user0.elo = updateElo(user0, user1, Result.LOSE);
-            user1.elo = updateElo(user1, user0, Result.WIN);
+            user0.elo = Math.round(updateElo(tmpUsers[0], tmpUsers[1], Result.LOSE));
+            user1.elo = Math.round(updateElo(tmpUsers[1], tmpUsers[0], Result.WIN));
         }
         else {
-            user0.elo = updateElo(user0, user1, Result.DRAW);
-            user1.elo = updateElo(user1, user0, Result.DRAW);
+            user0.elo = Math.round(updateElo(tmpUsers[0], tmpUsers[1], Result.DRAW));
+            user1.elo = Math.round(updateElo(tmpUsers[1], tmpUsers[0], Result.DRAW));
         }
         await this.userService.updateUser(user0.id, user0);
         await this.userService.updateUser(user1.id, user1);
