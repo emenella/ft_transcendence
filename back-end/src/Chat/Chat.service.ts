@@ -1,17 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from 'socket.io'
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Chan, RelationTable } from "./Chan/Chan.entity";
-import { ChanPasswordService } from "./Chan/Chan.password.service";
-import { User } from "src/Users/entity/User.entity";
-import { ChanListDTO, UserListDto, ELevelInChan } from './Dto/chanDto';
-import { UserService } from "src/Users/service/User.service";
+// import { InjectRepository } from "@nestjs/typeorm";
+// import { Repository } from "typeorm";
+import { Chan } from "./Chan/Chan.entity";
+// import { ChanPasswordService } from "./Chan/Chan.password.service";
+import { User } from "../Users/entity/User.entity";
+import { ELevelInChan } from './Dto/chanDto';
+import { UserService } from "../Users/service/User.service";
 import { ELevel, NoticeDTO } from "./Dto/notificationDto";
-import { ChatUser, UserDataDto, CreateChanDto, ChanJoinedDTO } from "./Dto/chatDto";
+import { ChatUser, CreateChanDto, ChanJoinedDTO } from "./Dto/chatDto";
 import { ChanService } from "./Chan/Chan.service";
 import { MessageService } from "./Message/Message.service";
-import { AuthenticationService } from "src/Auth/Authenfication.service";
+import { AuthenticationService } from "../Auth/Authenfication.service";
 
 @Injectable()
 export class ChatService {
@@ -138,8 +138,10 @@ export class ChatService {
                 chanJoinedDto.title = user1.username;
                 chanJoinedDto.owner = user1.id;
 
-                userDm.socket.join(chan.id.toString());
-                userDm.socket.emit("JOINED_ROOM", chanJoinedDto);
+                if (userDm){
+                    userDm.socket.join(chan.id.toString());
+                    userDm.socket.emit("JOINED_ROOM", chanJoinedDto);
+                }
             }
             else
             {

@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chan, RelationTable } from "./Chan.entity";
 import { ChanPasswordService } from "./Chan.password.service";
-import { User } from "src/Users/entity/User.entity";
+import { User } from "../../Users/entity/User.entity";
 import { ChanListDTO, UserListDto, ELevelInChan } from '../Dto/chanDto';
-import { UserService } from "src/Users/service/User.service";
+import { UserService } from "../../Users/service/User.service";
 
 @Injectable()
 export class ChanService {
@@ -82,7 +82,7 @@ export class ChanService {
 		return false;
 	}
 
-    async findDm(user1 : User, user2: User): Promise<boolean> {
+    async findDm(user1 : User, /*user2: User*/): Promise<boolean> {
 		const chansDm = await this.chanRepo.find({ where : { isDm: true } });
 
 		for (let c of chansDm)
@@ -116,7 +116,7 @@ export class ChanService {
 		chan.createdAt  	= new Date();
 		chan.isPrivate		= isPrivate;
 		chan.isProtected	= isProtected;
-		chan.password_key	= (password_key !== undefined) ? await this.passwordService.genHash(password_key) : null;
+		chan.password_key	= (password_key !== undefined) ? await this.passwordService.genHash(password_key) : undefined;
 		chan.isDm			= isDm;
 
 		chan = await this.chanRepo.save(chan);
@@ -149,7 +149,7 @@ export class ChanService {
             return ("banned !");
 		if (await this.isInChan(chan, user.id) === true)
 			return ("already in chan !");
-        if (await this.passwordService.isMatch(password_key, chan.password_key) !== true)
+        if (chan.password_key && await this.passwordService.isMatch(password_key, chan.password_key) !== true)
 			return ("Wrong password !");
         if (chan.isPrivate === true) {
             if (await this.checkInvite(chan.id, user.id) === false)
@@ -171,14 +171,20 @@ export class ChanService {
 
     async joinChanById(chanId: number, user: User, password_key: string) : Promise<string | Chan>  {
         const chan = await this.getChanById(chanId);
-
-		return (await this.joinChan(chan, user, password_key));
+		if (chan)
+			return (await this.joinChan(chan, user, password_key));
+		throw new HttpException("Chan doesn't exist", HttpStatus.NOT_FOUND);
 	}
 
 	async joinChanByTitle(title: string, user: User, password_key: string) : Promise<string | Chan> {
 		const chan = await this.getChanByTitle(title);
-
-		return (await this.joinChan(chan, user, password_key));
+		if (chan)
+		{
+			if (chan.isDm === true)
+				return ("You can't join dm chan");
+			return (await this.joinChan(chan, user, password_key));
+		}
+		throw new HttpException("Chan doesn't exist", HttpStatus.NOT_FOUND);
 	}
 
 	async leaveChanByTitle(title: string, userId: number) : Promise<boolean> {
@@ -208,7 +214,7 @@ export class ChanService {
 
 		await this.chanRelRepo.remove(ret);
 		const rels = await this.chanRelRepo.find({ relations : ["chan"],
-			        where : { chan : { id : chan.id }, ban_expire: null } })
+			        where : { chan : { id : chan.id}, ban_expire: null }})
 
 		if (rels.length === 0) {
 			await this.chanRelRepo.createQueryBuilder()

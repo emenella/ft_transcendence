@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
-import { Chan } from 'src/Chat/Chan/Chan.entity';
-import { RelationTable } from 'src/Chat/Chan/Chan.entity';
-import { Message } from 'src/Chat/Message/Message.entity';
+import { Chan } from '../../Chat/Chan/Chan.entity';
+import { RelationTable } from '../../Chat/Chan/Chan.entity';
+import { Message } from '../../Chat/Message/Message.entity';
 import { MatchHistory } from './History.entity';
 import { Connection } from './Connection.entity';
 import { Avatar } from './Avatar.entity';
@@ -41,6 +41,6 @@ export class User {
     @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner)
     winMatch: MatchHistory[];
 
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.loser)
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser)
     looseMatch: MatchHistory[];
 }

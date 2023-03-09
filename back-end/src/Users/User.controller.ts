@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Req, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { User } from "./entity/User.entity";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "./service/User.service";
+
 
 @Controller("users")
 export class UserControllers {
@@ -8,28 +10,36 @@ export class UserControllers {
 
     @Get("/me/")
     async getMe(@Req() req : any): Promise<User> {
-        return this.userService.getUserFromConnectionId(req.user.userId);
+        return req.user;
     }
 
     @Get("/")
-    async getUser(@Query('id') id: number): Promise<User> {
+    async getUser(): Promise<User[]> {
+        return this.userService.getAllUsers();
+    }
+
+    @Get("/id/")
+    async getUserById(@Query('id') id: number): Promise<User> {
         return this.userService.getUserById(id);
     }
 
-    @Get("/login/")
+    @Get("/username/")
     async getUserByLogin(@Query('username') username: string): Promise<User> {
         return this.userService.getUserByLogin(username);
     }
 
-    @Post("/update/")
-    async updateUser(@Req() req : any, @Body() body: User): Promise<User> {
+    @Post("/me/")
+    async updateUser(@Req() req : any, @Body("username") username: string): Promise<User> {
         const user: User = await this.getMe(req);
-        return this.userService.updateUser(user.id, body);
+        console.log(username);
+        return this.userService.updateUsername(user.id, username);
     }
 
     @Post("/upload/avatar/")
-    async uploadAvatar(@Req() req : any, @Body() body: User): Promise<User> {
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<string> {
         const user: User = await this.getMe(req);
-        return this.userService.updateUser(user.id, body);
+        console.log(file);
+        return await this.userService.uploadAvatar(user.id, file);
     }
 }

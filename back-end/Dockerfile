@@ -11,4 +11,4 @@ COPY . .
 RUN [ "npm", "run", "build" ]
 
 # Start the app
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "start:prod" ]
