@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { GameService } from "src/Game/Game.service";
-import { UserService } from "src/Users/service/User.service";
-import { Game } from "src/Game/modele/Game.modele";
-import { User } from "src/Users/entity/User.entity";
+import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
+import { GameService } from "../../Game/Game.service";
+import { UserService } from "../../Users/service/User.service";
+import { Game } from "../../Game/modele/Game.modele";
+import { User } from "../../Users/entity/User.entity";
 import { Setup, general, ball, player } from "../interface/Game.interface";
 import { updateElo, checkMatch, Result } from "./utils/elo.utils";
-import { MatchHistory } from "src/Users/entity/History.entity";
-import { HistoryService } from "src/Users/service/History.service";
+import { MatchHistory } from "../../Users/entity/History.entity";
+import { HistoryService } from "../../Users/service/History.service";
 import { Socket } from "socket.io";
 
 
@@ -54,7 +54,7 @@ export class MatchmakingService {
         return this.queue;
     }
 
-    public getGame(id: string): Game {
+    public getGame(id: string): Game | undefined {
         return this.gameService.getGame(id);
     }
 
@@ -96,7 +96,8 @@ export class MatchmakingService {
         const games: Game[] = [];
         for (const id of ids) {
             const game = await this.gameService.getGame(id);
-            games.push(game);
+            if (game)
+                games.push(game);
         }
         return games;
     }
@@ -144,9 +145,9 @@ export class MatchmakingService {
     private async foundMatch(): Promise<boolean> {
         const bestMatch = checkMatch(this.queue);
         if (bestMatch) {
-            const game: Game = await this.createGame(bestMatch[0], bestMatch[1]);
-            this.leaveQueue(bestMatch[0]);
-            this.leaveQueue(bestMatch[1]);
+            await this.createGame(bestMatch.user0, bestMatch.user1);
+            this.leaveQueue(bestMatch.user0);
+            this.leaveQueue(bestMatch.user1);
             return true;
         }
         return false;
@@ -154,6 +155,8 @@ export class MatchmakingService {
 
     public async handleEndGame(id: string): Promise<void> {
         const game = await this.gameService.getGame(id);
+        if (!game)
+            throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();
         const ids: Array<number> = game.getPlayersId();
         const user0: User = await this.userService.getUserById(ids[0]);
@@ -177,7 +180,9 @@ export class MatchmakingService {
     }
 
     private async createMatchHistory(id: string, winner: User, looser: User): Promise<void> {
-        const game: Game = await this.gameService.getGame(id);
+        const game = await this.gameService.getGame(id);
+        if (!game)
+            throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();
         const ids: Array<number> = game.getPlayersId();
         const history: MatchHistory = new MatchHistory();

@@ -124,4 +124,9 @@ export class Paddle
     {
         return this.length;
     }
+
+    public getColor(): string
+    {
+        return this.color;
+    }
 }

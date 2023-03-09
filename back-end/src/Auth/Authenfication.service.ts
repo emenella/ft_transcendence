@@ -1,12 +1,17 @@
-import { Injectable, Param, HttpException } from '@nestjs/common';
-import { UserService } from 'src/Users/service/User.service';
+import { Injectable, HttpException } from '@nestjs/common';
+import { UserService } from '../Users/service/User.service';
 import { JwtService } from '@nestjs/jwt';
 import { API } from './Authenfication.constants';
 import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
-import { ConnectionService } from 'src/Users/service/Connection.service';
-import { User } from 'src/Users/entity/User.entity';
-import { Connection } from 'src/Users/entity/Connection.entity';
+import { ConnectionService } from '../Users/service/Connection.service';
+import { User } from '../Users/entity/User.entity';
+import { Connection } from '../Users/entity/Connection.entity';
+
+interface IToken {
+    connectionId: number;
+    otp: boolean;
+}
 
 @Injectable()
 export class AuthenticationService {
@@ -20,8 +25,11 @@ export class AuthenticationService {
     }
     
     async login(user: any) {
-        let connection = await this.connectionService.getConnectionById42(user.id);
-        if (!connection) {
+        let connection;
+        try {
+            connection = await this.connectionService.getConnectionById42(user.id);
+        }
+        catch (e) {
             const newUser = new User();
             let foundUser = await this.userService.createUser(newUser);
             
@@ -33,10 +41,10 @@ export class AuthenticationService {
             foundUser.connection = connection;
             foundUser = await this.userService.updateUser(foundUser.id, foundUser);
         }
-        const payload = { connectionId: connection.id, otp: !connection.otp };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+        const payload: IToken = { connectionId: connection.id, otp: !connection.otp };
+            return {
+                access_token: this.jwtService.sign(payload),
+            };
     }
     
     
@@ -51,7 +59,10 @@ export class AuthenticationService {
             this.secret.set(connection.id, secret.base32); 
         }
         const secret = this.secret.get(connection.id);
-        const url = speakeasy.otpauthURL({ secret: secret, encoding: 'base32', label: "ft_pong" });
+        if (!secret) {
+            throw new HttpException('Secret not found', 404);
+        }
+        const url = speakeasy.otpauthURL({ secret: secret , encoding: 'base32', label: "ft_pong" });
         const qr = await qrcode.toDataURL(url);
         return "<img src='" + qr + "' />";
     }
@@ -84,17 +95,26 @@ export class AuthenticationService {
         if (!connection) {
             throw new HttpException("Connection does not exist", 404);
         }
-        connection.otp = this.secret.get(connection.id);
-        await this.connectionService.updateConnection(connection.id, connection.otp);
-        this.secret.delete(connection.id);
-        return await this.otp(connection, code);
+        if (this.secret.has(connection.id)) {
+            connection.otp = this.secret.get(connection.id) as string;
+            await this.connectionService.updateConnection(connection.id, connection.otp);
+            this.secret.delete(connection.id);
+            return await this.otp(connection, code);
+        }
+        else
+        {
+            throw new HttpException("Secret not found", 404);
+        }
     }
     
     async verify(connectionId: number, code: string)
     {
         const connection = await this.connectionService.getConnectionById(connectionId);
         if (!connection) {
-            return false;
+            throw new HttpException("Connection does not exist", 404);
+        }
+        if (!connection.otp) {
+            throw new HttpException("Connection does not have a secret", 400);
         }
         const verified = speakeasy.totp.verify({
             secret: connection.otp,
@@ -132,11 +152,15 @@ export class AuthenticationService {
         if (!connection.otp) {
             throw new Error("User is not otp");
         }
-        await this.connectionService.updateConnection(connection.id, null);
+        await this.connectionService.updateConnection(connection.id, undefined);
     }
 
-    async verifyJWT(token: string) {
-        return this.jwtService.decode(token);
+    async verifyJWT(token: string): Promise<IToken> {
+        let ret = this.jwtService.decode(token);
+        if (!ret) {
+            throw new HttpException('Invalid token', 401);
+        }
+        return ret as IToken;
     }
 }
 

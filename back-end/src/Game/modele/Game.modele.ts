@@ -1,9 +1,7 @@
 import { Player, Direction } from "./Player.modele";
 import { Ball } from "./Ball.modele";
-import { Paddle } from "./Paddle.modele";
 import { Socket } from "socket.io";
 import { Spectator } from "./Spec.modele";
-import { GameService } from "../Game.service";
 import { GameInfo, Setup } from "../interface/Game.interface";
 
 export class Game {
@@ -93,7 +91,7 @@ export class Game {
         const winner = this.player0.getScore() == this.setup.general.ScoreWin ? this.player0.getId() : this.player1.getId();
         this.player0.gameFinish(winner);
         this.player1.gameFinish(winner);
-        await this.handlerGameFinish(this.setup.general.id);
+        await this.handlerGameFinish(this.setup.general.id as string);
     }
 
     public playerConnect(id: number, socket: Socket): boolean
@@ -142,14 +140,17 @@ export class Game {
         return false;
     }
     
-    public getPlayer(id: number): Player
+    public getPlayer(id: number): Player | undefined
     {
-        if (id == this.player0.getId())
-        return this.player0;
-        else if (id == this.player1.getId())
-        return this.player1;
-        else
-        return null;
+        if (this.player0.getId() == id)
+        {
+            return this.player0;
+        }
+        else if (this.player1.getId() == id)
+        {
+            return this.player1;
+        }
+        return undefined;
     }
     
     public handleEvent(id: number, key: string): void

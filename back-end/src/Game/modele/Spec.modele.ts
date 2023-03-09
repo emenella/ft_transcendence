@@ -1,7 +1,6 @@
 import { Socket } from 'socket.io';
 import { Game } from './Game.modele';
 import { GameInfo, Setup } from '../interface/Game.interface';
-import { emit } from 'process';
 
 export class Spectator {
     private id: number;

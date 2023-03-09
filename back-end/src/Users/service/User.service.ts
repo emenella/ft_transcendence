@@ -70,7 +70,7 @@ export class UserService {
         return user;
     }
 
-    async uploadAvatar(id: number, file): Promise<string> {
+    async uploadAvatar(id: number, file: Express.Multer.File): Promise<string> {
         let user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });
         if (!user)
             throw new HttpException(`User with ID ${id} not found.`, 404);

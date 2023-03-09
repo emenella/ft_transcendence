@@ -6,7 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './Authenfication.constants';
 import { FortyTwoStrategy } from './strategy/42.strategy';
-import { UserModule } from 'src/Users/Users.module';
+import { UserModule } from '../Users/Users.module';
 
 @Module({
     imports: [

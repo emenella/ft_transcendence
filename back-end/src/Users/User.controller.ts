@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Req, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { User } from "./entity/User.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "./service/User.service";
@@ -37,7 +37,7 @@ export class UserControllers {
 
     @Post("/upload/avatar/")
     @UseInterceptors(FileInterceptor('file'))
-    async uploadAvatar(@UploadedFile() file, @Req() req: any): Promise<string> {
+    async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<string> {
         const user: User = await this.getMe(req);
         console.log(file);
         return await this.userService.uploadAvatar(user.id, file);

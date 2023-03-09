@@ -1,5 +1,5 @@
 export interface general {
-    id: string;
+    id: string | null;
     ScoreWin: number;
     Overtime: boolean;
     OvertimeScore: number;
