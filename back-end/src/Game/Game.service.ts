@@ -45,11 +45,14 @@ export class GameService {
     };
 
     constructor() {
-        this.createGame();
     }
 
-    public getGame(id: string): Game {
+    public getGame(id: string): Game | undefined {
         return this.games.get(id);
+    }
+
+    public getGames(): Map<string, Game> {
+        return this.games;
     }
 
     public deleteGame(id: string): void {
@@ -103,7 +106,7 @@ export class GameService {
         let games: Array<string> = [];
         for (const game of this.games.values()) {
             if (game.getSetup().player0.id == id || game.getSetup().player1.id == id) {
-                games.push(game.getSetup().general.id);
+                games.push(game.getSetup().general.id as string);
             }
         }
         return games;
@@ -116,22 +119,22 @@ export class GameService {
         }
     }
 
-    public getGameSetup(userId: number): Setup {
+    public getGameSetup(userId: number): Setup | undefined {
         let game = this.users.get(userId);
         if (game) {
             return game.getSetup();
         }
         else
-            return null;
+            return undefined;
     }
 
-    public getGameInfo(userId: number): GameInfo {
+    public getGameInfo(userId: number): GameInfo | undefined {
         let game = this.users.get(userId);
         if (game) {
             return game.getGameInfo();
         }
         else
-            return null;
+            return undefined;
     }
 
     public spectateGame(matchId: string, userId: number, socket: Socket): boolean {

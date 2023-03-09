@@ -3,8 +3,7 @@ import {Server, Socket} from 'socket.io';
 import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../Users/service/User.service';
-import { Setup } from './interface/Game.interface';
-import { Body } from '@nestjs/common';
+import { User } from '../Users/entity/User.entity';
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {
@@ -13,22 +12,19 @@ export class GameGateway {
 
     constructor(private readonly gameService: GameService, private readonly authService: AuthenticationService, private readonly userService: UserService) {}
 
-    afterInit(server: Server) {
+    afterInit() {
         console.log('GameGateway initialized');
     }
 
-    async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+    async handleConnection(@ConnectedSocket() client: Socket) {
+        const user = this.authentificate(client);
         if (!user) {
             client.disconnect();
         }
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket) {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
-        
+        const user = await this.authentificate(client);
         if (user) {
             let ret  = this.gameService.leavePlayer(user.id);
             if (!ret) {
@@ -40,8 +36,7 @@ export class GameGateway {
 
     @SubscribeMessage('game:event')
     async onGameEvent(@ConnectedSocket() client: Socket, @MessageBody() data: string): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             this.gameService.handleGameEvent(user.id, data);
         }
@@ -49,8 +44,7 @@ export class GameGateway {
 
     @SubscribeMessage('game:join')
     async onGameJoin(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             this.gameService.joinPlayer(data, user.id, client);
         }
@@ -58,8 +52,7 @@ export class GameGateway {
 
     @SubscribeMessage('game:search')
     async onGameSearch(@ConnectedSocket() client: Socket): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             const games = this.gameService.findGamesIdWithPlayer(user.id);
             client.emit('game:search', games);
@@ -68,8 +61,7 @@ export class GameGateway {
 
     @SubscribeMessage('game:leave')
     async onGameLeave(@ConnectedSocket() client: Socket): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             this.gameService.leavePlayer(user.id);
         }
@@ -77,8 +69,7 @@ export class GameGateway {
 
     @SubscribeMessage('game:ready')
     async onGameReady(client: Socket): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             this.gameService.setPlayerReady(user.id);
         }
@@ -95,9 +86,8 @@ export class GameGateway {
     // }
 
     @SubscribeMessage('game:info')
-    async onGameInfo(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+    async onGameInfo(@ConnectedSocket() client: Socket): Promise<any> {
+        const user = await this.authentificate(client);
         if (user) {
             let game = this.gameService.getGameInfo(user.id);
             client.emit('game:info', game);
@@ -106,10 +96,21 @@ export class GameGateway {
 
     @SubscribeMessage('game:spec')
     async onGameSpec(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user) {
             this.gameService.spectateGame(data, user.id, client);
         }
+    }
+
+    async authentificate(client: Socket): Promise<User> {
+        if (client.handshake.headers.authorization) {
+            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+            let user = await this.userService.getUserFromConnectionId(payload.connectionId);
+            if (user) {
+                return user;
+            }
+        }
+        client.disconnect();
+        throw new Error('Unauthorized');
     }
 }

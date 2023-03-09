@@ -1,8 +1,9 @@
-import {WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket} from '@nestjs/websockets';
+import {WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket} from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
-import { AuthenticationService } from 'src/Auth/Authenfication.service';
-import { UserService } from 'src/Users/service/User.service';
+import { AuthenticationService } from '../../Auth/Authenfication.service';
+import { UserService } from '../../Users/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
+import { User } from '../../Users/entity/User.entity';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{
@@ -16,8 +17,7 @@ export class MatchmakingGateway{
 
     async handleConnection(@ConnectedSocket() client: Socket)
     {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (!user)
         {
             client.disconnect()
@@ -26,8 +26,7 @@ export class MatchmakingGateway{
 
     async handleDisconnect(@ConnectedSocket() client: Socket)
     {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+        const user = await this.authentificate(client);
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
@@ -38,9 +37,7 @@ export class MatchmakingGateway{
     @SubscribeMessage('matchmaking:join')
     async joinQueue(@ConnectedSocket() client: Socket)
     {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
-
+        const user = await this.authentificate(client);
         if (user)
         {
             this.matchmakingService.joinQueue(user, client);
@@ -51,14 +48,23 @@ export class MatchmakingGateway{
     @SubscribeMessage('matchmaking:leave')
     async leaveQueue(@ConnectedSocket() client: Socket)
     {
-        const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-        const user = await this.userService.getUserFromConnectionId(payload.connectionId);
-        
+       const user = await this.authentificate(client);
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
             this.server.emit('matchmaking:leave', user.id);
         }
     }
-    
+
+    async authentificate(client: Socket): Promise<User> {
+        if (client.handshake.headers.authorization) {
+            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+            let user = await this.userService.getUserFromConnectionId(payload.connectionId);
+            if (user) {
+                return user;
+            }
+        }
+        client.disconnect();
+        throw new Error('Unauthorized');
+    }
 }

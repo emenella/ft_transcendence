@@ -1,4 +1,4 @@
-import { User } from 'src/Users/entity/User.entity';
+import { User } from '../../../Users/entity/User.entity';
 
 enum Result {
     WIN = 1,
@@ -6,21 +6,21 @@ enum Result {
     DRAW = 0.5
 }
 
-function checkMatch(users: Array<User>): { user0: User, user1: User } {
+function checkMatch(users: Array<User>): { user0: User, user1: User } | undefined {
     //return user with the lowest difference in elo
-    let user0: User = null;
-    let user1: User = null;
+    let user0 = undefined;
+    let user1 = undefined;
 
     for (let i = 0; i < users.length; i++) {
         for (let j = i + 1; j < users.length; j++) {
-            if (user0 === null || Math.abs(users[i].elo - users[j].elo) < Math.abs(user0.elo - user1.elo)) {
+            if (user0 === undefined || user1 === undefined || Math.abs(users[i].elo - users[j].elo) < Math.abs(user0.elo - user1.elo)) {
                 user0 = users[i];
                 user1 = users[j];
             }
         }
     }
-    if (user0 === null || user1 === null)
-        return null;
+    if (user0 === undefined || user1 === undefined)
+        return undefined;
     return { user0, user1 };
 }
 
