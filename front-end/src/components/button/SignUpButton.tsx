@@ -1,24 +1,21 @@
 import React from "react";
-import { firstConnexion } from '../../api/Login'
-import { tokenFunction } from "../../utils/interface";
+import { firstConnexion } from '../../api/Auth'
 
-class SignUpButton extends React.Component<tokenFunction> {
-	// const [url, setUrl] = React.useState<string>();
-	// React.useEffect(() => {
-	// 	const getUrl = async () => {
-	// 		const urltmp = await firstConnexion();
-	// 		setUrl(urltmp);
-	// 	};
-	// 	getUrl();
-	// }, []);
+function SignUpButton() {
+	const [url, setUrl] = React.useState<string>();
+	React.useEffect(() => {
+		const getUrl = async () => {
+			const urltmp = await firstConnexion();
+			setUrl(urltmp);
+		};
+		getUrl();
+	}, []);
 
-	render() {
-		return (
-			// <a href={url}>
-				<button>Création d'un compte</button>
-			// </a>
-		);
-	}
+	return (
+		<a href={url}>
+			<button>Création d'un compte</button>
+		</a>
+	);
 }
 
 export default SignUpButton;

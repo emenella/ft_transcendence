@@ -1,5 +1,5 @@
 import React from "react";
-import { login } from '../../api/Login'
+import { login } from '../../api/Auth'
 import { tokenFunction } from "../../utils/interface";
 
 function takeJWT() {

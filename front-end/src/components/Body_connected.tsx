@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './Body_connected.css';
 import logo_matchmaking from '../assets/logo_pong.jpg';
+import { deleteAccount } from '../api/User';
 
 // map sur retour de l'API pour afficher
 function ChatSidebar() {
@@ -110,12 +111,8 @@ function Profil() {
 	);
 }
 
-// catch error / renvoyer l'utilisateur sur la page d'accueil
-function deleteAccount() {
-    fetch('/api/users/{id}', { method: 'DELETE' })
-}
-
 {/* Onglet "Gestion du compte" */ }
+// ajouter redirection vers page d'accueil via setToken
 function AccountManagement() {
 	return (
 		<div className='account-management'>

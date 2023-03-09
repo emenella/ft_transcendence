@@ -1,6 +1,6 @@
 import React from "react";
 import { tokenFunction } from "../../utils/interface";
-import { connexion } from "../../api/Login";
+import { connexion } from "../../api/Auth";
 
 class LoginButton extends React.Component<tokenFunction> {
 	render() {
