@@ -28,4 +28,10 @@ export class User {
 
     @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser)
     looseMatch: MatchHistory[];
+
+	@Column()
+	friends: User[];
+
+	@Column()
+	blacklist: User[];
 }

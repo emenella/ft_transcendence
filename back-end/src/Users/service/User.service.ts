@@ -58,7 +58,6 @@ export class UserService {
         return await this.userRepository.save(userToUpdate);
     }
 
-
     async deleteUser(id: number): Promise<void> {
         await this.userRepository.delete(id);
     }
@@ -89,6 +88,46 @@ export class UserService {
         await this.userRepository.save(user);
         return file.path;
     }
+
+	async getFriends(user: User): Promise<User[]> {
+		return user.friends;
+	}
+
+	async addFriend(user: User, friend: User): Promise<void> {
+		if (user.friends.includes(friend))
+			throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
+		else {
+			user.friends.push(friend);
+			user.friends.sort();
+		}
+	}
+
+	async removeFriend(user: User, friend: User): Promise<void> {
+		if (!user.friends.includes(friend))
+			throw new HttpException(`User with ID ${friend.id} is not a friend of User with ID ${user.id}.`, 400);
+		else
+			user.friends.splice(user.friends.indexOf(friend), 1);
+	}
+
+	async getBlacklist(user: User): Promise<User[]> {
+		return user.blacklist;
+	}
+
+	async addBlacklist(user: User, userToBlacklist: User): Promise<void> {
+		if (user.blacklist.includes(userToBlacklist))
+			throw new HttpException(`User with ID ${userToBlacklist.id} is already blocked by User with ID ${user.id}.`, 400);
+		else {
+			user.blacklist.push(userToBlacklist);
+			user.blacklist.sort();
+		}
+	}
+
+	async removeBlacklist(user: User, userToBlacklist: User): Promise<void> {
+		if (!user.blacklist.includes(userToBlacklist))
+			throw new HttpException(`User with ID ${userToBlacklist.id} is not blocked by User with ID ${user.id}.`, 400);
+		else
+			user.blacklist.splice(user.friends.indexOf(userToBlacklist), 1);
+	}
 
     async getAvatar(id: number): Promise<Avatar> {
         const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });

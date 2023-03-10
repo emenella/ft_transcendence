@@ -35,6 +35,46 @@ export class UserControllers {
         return this.userService.updateUsername(user.id, username);
     }
 
+	@Get("/friends/")
+    async getFriends(@Req() req: any): Promise<User[]> {
+        const user: User = await this.getMe(req);
+        return this.userService.getFriends(user);
+    }
+
+	@Post("/friends/add")
+    async addFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+        const user: User = await this.getMe(req);
+		const friend: User = await this.getUserById(friendId);
+        this.userService.addFriend(user, friend);
+    }
+
+	@Post("/friends/remove")
+    async removeFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+        const user: User = await this.getMe(req);
+		const friend: User = await this.getUserById(friendId);
+        this.userService.removeFriend(user, friend);
+    }
+
+	@Get("/blacklist/")
+    async getBlacklist(@Req() req: any): Promise<User[]> {
+        const user: User = await this.getMe(req);
+        return this.userService.getBlacklist(user);
+    }
+
+	@Post("/blacklist/add")
+    async addBlacklist(@Req() req: any, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
+        const user: User = await this.getMe(req);
+		const userToBlacklist: User = await this.getUserById(userToBlacklistId);
+        this.userService.addBlacklist(user, userToBlacklist);
+    }
+
+	@Post("/blacklist/remove")
+    async removeBlacklist(@Req() req: any, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
+        const user: User = await this.getMe(req);
+		const userToBlacklist: User = await this.getUserById(userToBlacklistId);
+        this.userService.removeBlacklist(user, userToBlacklist);
+    }
+
     @Post("/upload/avatar/")
     @UseInterceptors(FileInterceptor('file'))
     async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<string> {
