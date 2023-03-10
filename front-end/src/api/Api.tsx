@@ -5,11 +5,17 @@ export const client = axios.create({
 });
 
 export function authHeader() {
-	const token = localStorage.getItem("token");
-
+	let token = localStorage.getItem("token");
+	
 	if (token) {
-		return { 'x-access-token': token };
-	} else {
-		return { 'x-access-token': null };
+		token = JSON.parse(token);
+		return {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + token
+		};
 	}
+	return {
+		"Content-Type": "application/json",
+		"Authorization": null
+	};
 }
