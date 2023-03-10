@@ -41,13 +41,26 @@ export class UserControllers {
         const user: User = await this.getMe(req);
         return this.userService.getFriends(user);
     }
-    
-    @Post("/friends/add")
-    async addFriend(@Req() req: Request, @Query('friendId') friendId: number): Promise<void> {
+
+	@Post("/friends/invite")
+    async inviteFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
         const user: User = await this.getMe(req);
-        console.log("addFriend " + friendId + " to " + user.id);
-        const friend: User = await this.getUserById(friendId);
-        await this.userService.addFriend(user, friend);
+		const friend: User = await this.getUserById(friendId);
+        this.userService.inviteFriend(user, friend);
+    }
+	
+	@Post("/friends/accept")
+	async acceptFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+		const user: User = await this.getMe(req);
+		const friend: User = await this.getUserById(friendId);
+		this.userService.acceptFriend(user, friend);
+	}
+
+	@Post("/friends/deny")
+    async denyFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+        const user: User = await this.getMe(req);
+		const friend: User = await this.getUserById(friendId);
+        this.userService.denyFriend(user, friend);
     }
     
     @Delete("/friends/remove")

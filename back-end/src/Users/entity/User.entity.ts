@@ -34,6 +34,11 @@ export class User {
     @JoinTable()
     friends: User[];
 
+    // default []
+	@ManyToMany(() => User)
+    @JoinTable()
+    friend_invites: User[];
+
     @ManyToMany(() => User)
     @JoinTable()
     blacklist: User[];

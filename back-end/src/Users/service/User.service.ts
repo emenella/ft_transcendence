@@ -93,25 +93,59 @@ export class UserService {
             return user.friends;
         }
         
-        async addFriend(user: User, friend: User): Promise<void> {
-            if (user.friends.some(f => f.id === friend.id)) {
+		async inviteFriend(user: User, friend: User): Promise<void> {
+			if (user.friends.some(f => f.id === friend.id))
+				throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
+			else if (friend.friend_invites.some(f => f.id === user.id))
+				throw new HttpException(`User with ID ${friend.id} already has pending friend invite from User with ID ${user.id}.`, 400);
+			else if (user.friend_invites.some(f => f.id === friend.id)) {
+				this.acceptFriend(user, friend);
+			}
+			else {
+				friend.friend_invites.push(user);
+				friend.friend_invites.sort((a, b) => (a.username > b.username ? -1 : 1));
+				await this.userRepository.save(user);
+				await this.userRepository.save(friend);
+			}
+		}
+
+        async acceptFriend(user: User, friend: User): Promise<void> {
+            if (user.friends.some(f => f.id === friend.id))
                 throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
-            } else {
-                user.friends.push(friend);
-                user.friends.sort((a, b) => a.id - b.id);
-                await this.userRepository.save(user);
+			else if (!user.friend_invites.some(f => f.id === friend.id)) {
+                throw new HttpException(`User with ID ${friend.id} has no pending friend invite from User with ID ${user.id}.`, 400);
+			}
+			else {
+                user.friend_invites.splice(user.friends.indexOf(friend), 1)
+				user.friends.push(friend);
+				user.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
+				friend.friends.push(user);
+				friend.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
+				await this.userRepository.save(user);
+				await this.userRepository.save(friend);
             }
         }
         
-        
+        async denyFriend(user: User, friend: User): Promise<void> {
+			if (!user.friend_invites.some(f => f.id === friend.id))
+                throw new HttpException(`User with ID ${friend.id} has no pending friend invite from User with ID ${user.id}.`, 400);
+			else {
+				user.friend_invites.splice(user.friends.indexOf(friend), 1);
+				await this.userRepository.save(user);
+			}
+		}
+
         async removeFriend(user: User, friend: User): Promise<void> {
+            const userIndex = friend.friends.findIndex(f => f.id === user.id);
             const friendIndex = user.friends.findIndex(f => f.id === friend.id);
-            if (friendIndex === -1) {
+            if (userIndex === -1 || friendIndex === -1) {
                 throw new HttpException(`User with ID ${friend.id} is not a friend of User with ID ${user.id}.`, 400);
             }
             else {
                 user.friends.splice(friendIndex, 1);
+                friend.friends.splice(userIndex, 1);
                 await this.userRepository.save(user);
+                await this.userRepository.save(friend);
             }
         }
         
