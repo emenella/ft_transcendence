@@ -64,7 +64,7 @@ export class AuthenticationService {
         }
         const url = speakeasy.otpauthURL({ secret: secret , encoding: 'base32', label: "ft_pong" });
         const qr = await qrcode.toDataURL(url);
-        return "<img src='" + qr + "' />";
+        return qr;
     }
     
     async verifyQR(connectionId: number, code: string) {
