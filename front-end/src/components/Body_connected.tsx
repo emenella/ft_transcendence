@@ -162,7 +162,7 @@ function BodyConnected() {
 			<div className='connectedCenter'>
 				<div>
                 	<Routes>
-                	    <Route path="/" element={<Matchmaking />} />
+                	    <Route path="/matchmaking" element={<Matchmaking />} />
                 	    <Route path="/accountmanagement" element={<AccountManagement />} />
                 	    <Route path="/profil" element={<Profil />} />
                 	</Routes>

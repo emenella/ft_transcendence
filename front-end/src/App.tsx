@@ -16,7 +16,7 @@ class App extends React.Component<Token, any> {
 	}
 
 	setToken(): void {
-		this.setState({ has_token: localStorage.getItem('user') !== null });
+		this.setState({ has_token: localStorage.getItem('token') !== null });
 	}
 
 	render() {

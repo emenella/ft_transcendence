@@ -1,18 +1,15 @@
 import axios from 'axios'
 
-const client = axios.create({
-    baseURL: "https://localhost/"
+export const client = axios.create({
+	baseURL: "https://localhost/"
 });
 
 export function authHeader() {
+	const token = localStorage.getItem("token");
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-    if (user && user.access_token) {
-        return { 'x-access-token': user.access_token };
-    } else {
-        return {};
-    }
+	if (token) {
+		return { 'x-access-token': token };
+	} else {
+		return { 'x-access-token': null };
+	}
 }
-
-export default client;

@@ -1,4 +1,4 @@
-import axios from './Api';
+import { client as axios, authHeader} from './Api';
 
 export async function connexion() {
     try {
@@ -31,4 +31,14 @@ export async function login(id: number): Promise<string> {
     body: JSON.stringify(json),
     });
     return await user.json().then( s => s.access_token) as string;
+}
+
+export async function getQRCode() {
+    try {
+        const req = await axios.get('/api/auth/2fa/qrcode', { headers: authHeader() });
+        return req.data as string;
+    }
+    catch(e) {
+        console.log(e);
+    }
 }

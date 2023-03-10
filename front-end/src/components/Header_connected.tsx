@@ -8,7 +8,7 @@ class HeaderConnected extends React.Component<tokenFunction> {
             <div>
                 <Link to="/accountmanagement">Paramètres de compte</Link>
                 <br />
-                <button onClick= {() => { localStorage.removeItem("user"); this.props.setToken(); }}>Déconnexion</button>
+                <button onClick= {() => { localStorage.removeItem("token"); this.props.setToken(); }}>Déconnexion</button>
             </div>
         );
     }

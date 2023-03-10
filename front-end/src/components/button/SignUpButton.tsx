@@ -5,8 +5,8 @@ function SignUpButton() {
 	const [url, setUrl] = React.useState<string>();
 	React.useEffect(() => {
 		const getUrl = async () => {
-			const urltmp = await firstConnexion();
-			setUrl(urltmp);
+			const tmp = await firstConnexion();
+			setUrl(tmp);
 		};
 		getUrl();
 	}, []);
