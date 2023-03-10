@@ -45,7 +45,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "4200:4200"
+      - "81:81"
     # volumes:
     #   - ./back-end:/usr/backend
     networks:

@@ -1,8 +1,10 @@
-import { Get, Post, Controller, Param, Redirect, Body, Query, UseGuards, Req, Res, Delete } from '@nestjs/common';
+import { Get, Post, Controller, UseGuards, Req, Res, Delete, HttpException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
 import { Public } from './decorators/public.decoration';
-import { ConnectionService } from 'src/Users/service/Connection.service';
+import { ConnectionService } from '../Users/service/Connection.service';
+import { User } from '../Users/entity/User.entity';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -18,42 +20,45 @@ export class AuthenticationController {
     @Public()
     @UseGuards(FortyTwoGuard)
     @Get('callback')
-    async postAuth(@Req() req, @Res() res) {
-        let token = await this.authenticationService.login(req.user);
+    async postAuth(@Req() req: Request, @Res() res: Response) {
+        let token = await this.authenticationService.login(req.body.user);
         res.redirect('http://localhost/auth?token=' + token.access_token);
     }
 
     // Sign up without 42
     @Public()
     @Post('admin')
-    async getAdmin(@Body() body) {
-        return await this.authenticationService.login(body.user);
+    async getAdmin(@Req() req: Request) {
+        return await this.authenticationService.login(req.body.user);
     }
     
     @Get('2fa/qrcode')
-    async getQrCode(@Req() req) {
-        return await this.authenticationService.generateQR(req.user);
+    async getQrCode(@Req() req: Request) {
+        return await this.authenticationService.generateQR(req.user as User);
     }
 
     @Post('2fa/save')
-    async saveSecret(@Req() req, @Body() body) {
-        return await this.authenticationService.saveSecret(req.user, body.code);
+    async saveSecret(@Req() req: Request) {
+        return await this.authenticationService.saveSecret(req.user as User, req.body.code);
     }
 
     @Public()
     @Post('2fa/login')
-    async Af2Login(@Req() req, @Body() body) {
+    async Af2Login(@Req() req: Request) {
         if (!req.headers.authorization) {
             return false;
         }
         let payload = await this.authenticationService.verifyJWT(req.headers.authorization.split(' ')[1]);
-        let connection = await this.connectionService.getConnectionById(payload['connectionId']);
-        return await this.authenticationService.otp(connection, body.code);
+        if (!payload) {
+            throw new HttpException('Invalid token', 401);
+        }
+        let connection = await this.connectionService.getConnectionById(payload.connectionId);
+        return await this.authenticationService.otp(connection, req.body.code);
     }
 
     @Delete('2fa/delete')
-    async deleteSecret(@Req() req) {
-        return await this.authenticationService.deleteSecret(req.user);
+    async deleteSecret(@Req() req: Request) {
+        return await this.authenticationService.deleteSecret(req.user as User);
     }
 
 }

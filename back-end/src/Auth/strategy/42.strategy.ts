@@ -1,18 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-42';
 import { API } from '../Authenfication.constants';
-import { AuthenticationService } from '../Authenfication.service';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
-    constructor(private readonly authService: AuthenticationService) {
+    constructor() {
         super({
             clientID: API.UID,
             clientSecret: API.KEY,
             callbackURL: API.URL,
             profileFields: {
-                'id': function (obj) { return String(obj.id); },
+                'id': function (obj: any) { return String(obj.id); },
                 'username': 'login',
                 'displayName': 'displayname',
                 'name.familyName': 'last_name',
@@ -26,6 +25,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
 
     async validate(accessToken: string, refreshToken: string, profile: any, done: any) {
         const { id, login, displayname } = profile;
+        accessToken;
+        refreshToken;
         const user = {
             id: id,
             login: login,

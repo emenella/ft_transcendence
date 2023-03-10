@@ -7,11 +7,14 @@ import { ConnectionService } from "./service/Connection.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MulterModule } from "@nestjs/platform-express";
 import { factory } from "./utils/multer.utils";
+import { HistoryService } from "./service/History.service";
+import { MatchHistory } from "./entity/History.entity";
+import { Avatar } from "./entity/Avatar.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Connection]), MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}) ],
+    imports: [TypeOrmModule.forFeature([User, Connection, Avatar, MatchHistory]) ,MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}) ],
     controllers: [UserControllers],
-    providers: [UserService, ConnectionService],
+    providers: [UserService, ConnectionService, HistoryService],
     exports: [UserService, ConnectionService]
 })
 export class UserModule {}
