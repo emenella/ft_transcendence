@@ -125,14 +125,17 @@ export class UserService {
 		else {
 			user.blacklist.push(userToBlacklist);
 			user.blacklist.sort();
+            await this.userRepository.save(user);
 		}
 	}
 
 	async removeBlacklist(user: User, userToBlacklist: User): Promise<void> {
 		if (!user.blacklist.some(f => f.id === userToBlacklist.id))
 			throw new HttpException(`User with ID ${userToBlacklist.id} is not blocked by User with ID ${user.id}.`, 400);
-		else
+		else {
 			user.blacklist.splice(user.friends.indexOf(userToBlacklist), 1);
+            await this.userRepository.save(user);
+        }
 	}
 
     async getAvatar(id: number): Promise<Avatar> {
