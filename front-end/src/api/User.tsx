@@ -1,4 +1,4 @@
-import axios from './Api'
+import { client as axios } from './Api'
 
 export async function deleteAccount() {
     try {
