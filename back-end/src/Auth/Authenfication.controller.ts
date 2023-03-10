@@ -21,7 +21,7 @@ export class AuthenticationController {
     @UseGuards(FortyTwoGuard)
     @Get('callback')
     async postAuth(@Req() req: Request, @Res() res: Response) {
-        let token = await this.authenticationService.login(req.body.user);
+        let token = await this.authenticationService.login(req.user);
         res.redirect('http://localhost/auth?token=' + token.access_token);
     }
 
