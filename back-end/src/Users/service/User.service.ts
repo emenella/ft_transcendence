@@ -17,14 +17,14 @@ export class UserService {
         }
         
         async getUserById(id: number): Promise<User> {
-            const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
+            const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch", "friends", "blacklist"] });
             if (!user)
             throw new HttpException(`User with ID ${id} not found.`, 404);
             return user;
         }
         
         async getUserByLogin(username: string): Promise<User> {
-            const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
+            const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch", "friends", "blacklist"] });
             if (!user)
             throw new HttpException(`User with username ${username} not found.`, 404);
             return user;
@@ -63,7 +63,7 @@ export class UserService {
         }
         
         async getUserFromConnectionId(connectionId: number): Promise<User> {
-            const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
+            const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch", "friends", "blacklist"] });
             if (!user)
             throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
             return user;
