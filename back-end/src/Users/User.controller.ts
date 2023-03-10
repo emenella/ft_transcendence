@@ -56,7 +56,7 @@ export class UserControllers {
 		this.userService.acceptFriend(user, friend);
 	}
 
-	@Post("/friends/deny")
+	@Delete("/friends/deny")
     async denyFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
         const user: User = await this.getMe(req);
 		const friend: User = await this.getUserById(friendId);
