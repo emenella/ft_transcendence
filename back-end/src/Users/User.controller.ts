@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Req, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Controller, Get, Post, Body, Req, Query, UseInterceptors, UploadedFile, Delete } from "@nestjs/common";
+import { Request } from "express";
 import { User } from "./entity/User.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "./service/User.service";
@@ -9,8 +10,8 @@ export class UserControllers {
     constructor(private readonly userService: UserService) {}
 
     @Get("/me/")
-    async getMe(@Req() req : any): Promise<User> {
-        return req.user;
+    async getMe(@Req() req : Request): Promise<User> {
+        return req.user as User;
     }
 
     @Get("/")
@@ -29,50 +30,51 @@ export class UserControllers {
     }
 
     @Post("/me/")
-    async updateUser(@Req() req : any, @Body("username") username: string): Promise<User> {
+    async updateUser(@Req() req : Request, @Body("username") username: string): Promise<User> {
         const user: User = await this.getMe(req);
         console.log(username);
         return this.userService.updateUsername(user.id, username);
     }
 
 	@Get("/friends/")
-    async getFriends(@Req() req: any): Promise<User[]> {
+    async getFriends(@Req() req: Request): Promise<User[]> {
         const user: User = await this.getMe(req);
         return this.userService.getFriends(user);
     }
 
 	@Post("/friends/add")
-    async addFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+    async addFriend(@Req() req: Request, @Query('friendId') friendId: number): Promise<void> {
         const user: User = await this.getMe(req);
+        console.log("addFriend " + friendId + " to " + user.id);
 		const friend: User = await this.getUserById(friendId);
-        this.userService.addFriend(user, friend);
+        await this.userService.addFriend(user, friend);
     }
 
-	@Post("/friends/remove")
-    async removeFriend(@Req() req: any, @Query('friendId') friendId: number): Promise<void> {
+	@Delete("/friends/remove")
+    async removeFriend(@Req() req: Request, @Query('friendId') friendId: number): Promise<void> {
         const user: User = await this.getMe(req);
 		const friend: User = await this.getUserById(friendId);
-        this.userService.removeFriend(user, friend);
+        await this.userService.removeFriend(user, friend);
     }
 
 	@Get("/blacklist/")
-    async getBlacklist(@Req() req: any): Promise<User[]> {
+    async getBlacklist(@Req() req: Request): Promise<User[]> {
         const user: User = await this.getMe(req);
         return this.userService.getBlacklist(user);
     }
 
 	@Post("/blacklist/add")
-    async addBlacklist(@Req() req: any, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
+    async addBlacklist(@Req() req: Request, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
         const user: User = await this.getMe(req);
 		const userToBlacklist: User = await this.getUserById(userToBlacklistId);
-        this.userService.addBlacklist(user, userToBlacklist);
+        await this.userService.addBlacklist(user, userToBlacklist);
     }
 
-	@Post("/blacklist/remove")
-    async removeBlacklist(@Req() req: any, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
+	@Delete("/blacklist/remove")
+    async removeBlacklist(@Req() req: Request, @Query('userToBlacklistId') userToBlacklistId: number): Promise<void> {
         const user: User = await this.getMe(req);
 		const userToBlacklist: User = await this.getUserById(userToBlacklistId);
-        this.userService.removeBlacklist(user, userToBlacklist);
+        await this.userService.removeBlacklist(user, userToBlacklist);
     }
 
     @Post("/upload/avatar/")

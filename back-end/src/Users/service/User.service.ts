@@ -12,19 +12,19 @@ export class UserService {
     ) {}
 
     async getAllUsers(): Promise<User[]> {
-        const users = await this.userRepository.find({ relations: ["avatar", "winMatch", "looseMatch"]});
+        const users = await this.userRepository.find({ relations: ["avatar", "winMatch", "looseMatch", "friends"] });
         return users;
     }
 
     async getUserById(id: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch"] });
+        const user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
         if (!user)
             throw new HttpException(`User with ID ${id} not found.`, 404);
         return user;
     }
 
     async getUserByLogin(username: string): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch"] });
+        const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
         if (!user)
             throw new HttpException(`User with username ${username} not found.`, 404);
         return user;
@@ -63,7 +63,7 @@ export class UserService {
     }
 
     async getUserFromConnectionId(connectionId: number): Promise<User> {
-        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch"] });
+        const user = await this.userRepository.findOne({ where: { connection: {id: connectionId} }, relations: ["avatar", "winMatch", "looseMatch", "friends"] });
         if (!user)
             throw new HttpException(`User with connectionID ${connectionId} not found.`, 404);
         return user;
@@ -94,27 +94,33 @@ export class UserService {
 	}
 
 	async addFriend(user: User, friend: User): Promise<void> {
-		if (user.friends.includes(friend))
-			throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
-		else {
-			user.friends.push(friend);
-			user.friends.sort();
-		}
-	}
+        if (user.friends.some(f => f.id === friend.id)) {
+            throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
+        } else {
+            user.friends.push(friend);
+            user.friends.sort((a, b) => a.id - b.id);
+            await this.userRepository.save(user);
+        }
+    }
+    
 
 	async removeFriend(user: User, friend: User): Promise<void> {
-		if (!user.friends.includes(friend))
-			throw new HttpException(`User with ID ${friend.id} is not a friend of User with ID ${user.id}.`, 400);
-		else
-			user.friends.splice(user.friends.indexOf(friend), 1);
-	}
+		const friendIndex = user.friends.findIndex(f => f.id === friend.id);
+        if (friendIndex === -1) {
+            throw new HttpException(`User with ID ${friend.id} is not a friend of User with ID ${user.id}.`, 400);
+        }
+        else {
+            user.friends.splice(friendIndex, 1);
+            await this.userRepository.save(user);
+        }
+    }
 
 	async getBlacklist(user: User): Promise<User[]> {
 		return user.blacklist;
 	}
 
 	async addBlacklist(user: User, userToBlacklist: User): Promise<void> {
-		if (user.blacklist.includes(userToBlacklist))
+		if (user.blacklist.some(f => f.id === userToBlacklist.id))
 			throw new HttpException(`User with ID ${userToBlacklist.id} is already blocked by User with ID ${user.id}.`, 400);
 		else {
 			user.blacklist.push(userToBlacklist);
@@ -123,7 +129,7 @@ export class UserService {
 	}
 
 	async removeBlacklist(user: User, userToBlacklist: User): Promise<void> {
-		if (!user.blacklist.includes(userToBlacklist))
+		if (!user.blacklist.some(f => f.id === userToBlacklist.id))
 			throw new HttpException(`User with ID ${userToBlacklist.id} is not blocked by User with ID ${user.id}.`, 400);
 		else
 			user.blacklist.splice(user.friends.indexOf(userToBlacklist), 1);
