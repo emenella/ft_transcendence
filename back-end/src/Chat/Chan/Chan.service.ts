@@ -82,13 +82,13 @@ export class ChanService {
 		return false;
 	}
 
-    async findDm(user1 : User, /*user2: User*/): Promise<boolean> {
+    async findDm(user1 : User, user2: User): Promise<boolean> {
 		const chansDm = await this.chanRepo.find({ where : { isDm: true } });
 
 		for (let c of chansDm)
 		{
 			const resp = await this.chanRelRepo.find({ relations : ["user", "chan"],
-				        where: [ {chan: { id: c.id }, user: {id: user1.id}}, {chan: { id: c.id }, user: {id: user1.id} } ] })
+				        where: [ {chan: { id: c.id }, user: {id: user1.id}}, {chan: { id: c.id }, user: {id: user2.id} } ] })
 			if (resp.length === 2)
 				return true;
 		}
@@ -170,14 +170,14 @@ export class ChanService {
         return (chan);
     }  
 
-    async joinChanById(chanId: number, user: User, password_key: string) : Promise<string | Chan>  {
+    async joinChanById(chanId: number, user: User, password_key: string | null) : Promise<string | Chan>  {
         const chan = await this.getChanById(chanId);
 		if (chan)
 			return (await this.joinChan(chan, user, password_key));
 		throw new HttpException("Chan doesn't exist", HttpStatus.NOT_FOUND);
 	}
 
-	async joinChanByTitle(title: string, user: User, password_key: string) : Promise<string | Chan> {
+	async joinChanByTitle(title: string, user: User, password_key: string | null) : Promise<string | Chan> {
 		const chan = await this.getChanByTitle(title);
 		if (chan)
 		{
@@ -215,7 +215,7 @@ export class ChanService {
 
 		await this.chanRelRepo.remove(ret);
 		const rels = await this.chanRelRepo.find({ relations : ["chan"],
-			        where : { chan : { id : chan.id}, ban_expire: null }})
+			        where : { chan : { id : chan.id}, ban_expire: undefined }})
 
 		if (rels.length === 0) {
 			await this.chanRelRepo.createQueryBuilder()
@@ -232,20 +232,25 @@ export class ChanService {
 				        where : { chan : { id : chan.id }, isAdmin: true } })
 			if (rel) {
 				newOwner = rel.user;
+				chan.owner = newOwner;
+            	chan.owner.id = newOwner.id;
+				this.chanRepo.save(chan);
+				return (chan.owner.id);
 			}
 			else {
 				const rel = await this.chanRelRepo.findOne({ relations : ["chan", "user"],
-					        where : { chan : { id : chan.id }, ban_expire: null } })
-				rel.mute_expire = null;
-				rel.isAdmin = true;
-				newOwner = rel.user;
-
-				await this.chanRelRepo.save(rel);
+					        where : { chan : { id : chan.id }, ban_expire: undefined } })
+				if (rel) {
+					rel.mute_expire = null;
+					rel.isAdmin = true;
+					newOwner = rel.user;
+					await this.chanRelRepo.save(rel);
+					chan.owner = newOwner;
+            		chan.owner.id = newOwner.id;
+					this.chanRepo.save(chan);
+					return (chan.owner.id);
+				}
 			}
-			chan.owner = newOwner;
-            chan.owner.id = newOwner.id;
-			this.chanRepo.save(chan);
-			return (chan.owner.id);
 		}
 		return (undefined);
 	}
@@ -255,7 +260,7 @@ export class ChanService {
 
 		if (rel === undefined || rel === null)
 			return false;
-		if (rel.ban_expire === null)
+		if (rel.ban_expire === null || rel.ban_expire === undefined)
 			return (false);
 
 		if (rel.ban_expire <= new Date())
@@ -305,7 +310,7 @@ export class ChanService {
 		const rel = await this.getRelOf(chanId, unbanId);
 		if (rel === undefined || rel === null)
 			return "User not in chan !";
-		if (rel.ban_expire === null)
+		if (rel.ban_expire === null || rel.ban_expire === undefined)
 			return "User is not Banned !";
 
 		await this.chanRelRepo.remove(rel);
@@ -319,7 +324,7 @@ export class ChanService {
 		if (rel === undefined || rel === null)
 			return false;
 
-        if (rel.ban_expire !== null)
+        if (rel.ban_expire !== null && rel.ban_expire !== undefined)
             return false;
 
         if (rel.isInvite === true)
@@ -375,7 +380,7 @@ export class ChanService {
 		return chan;
 	}
 
-	async chanChangePass(id: number, userId: number, password: string | undefined) {
+	async chanChangePass(id: number, userId: number, password: string | null) {
 		const chan = await this.getChanById(id);
 
 		if (chan === undefined || chan === null)

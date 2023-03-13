@@ -30,9 +30,9 @@ export class Chan {
 	isProtected : boolean;
 
 	@Column({ nullable: true, type: 'varchar' })
-	password_key : string | undefined;
+	password_key : string | undefined | null;
 
-	@Column({ nullable: true })
+	@Column({default: false})
 	isDm : boolean;
 
     @ManyToOne(() => User, (user: User) => user.ownedChans)
@@ -72,8 +72,8 @@ export class RelationTable
 	isInvite: boolean;
 
 	@Column({ nullable: true })
-	mute_expire: Date;
+	mute_expire: Date | null;
 
 	@Column({ nullable: true })
-	ban_expire: Date;
+	ban_expire: Date | null;
 }

@@ -6,8 +6,8 @@ import { MessageService } from './Message/Message.service';
 import { Message } from './Message/Message.entity';
 import { ChanService } from './Chan/Chan.service';
 import { Chan } from './Chan/Chan.entity';
-import { UserService } from 'src/Users/service/User.service';
-import { User } from 'src/Users/entity/User.entity';
+import { UserService } from '../Users/service/User.service';
+import { User } from '../Users/entity/User.entity';
 import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
@@ -35,23 +35,23 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     this.logger.log('Initialized');
   }
 
-  async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);
-    const user : ChatUser = await this.chatService.connectUserFromSocket(client);
+    const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
 
     if (user !== undefined) {
       const chanToJoin : ChanListDTO[] = await this.chanService.chanListOfUser(user.id);
 
       chanToJoin.forEach(async (chan) => {
         const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
-        let sendList : string[];
-        let data : {chan: string, messages: string[]};
-
+        let sendList : string[] = [];
+        
         messages.forEach((message) => {
           sendList.push(" --- " + message.author + ": " + message.content);
         })
-        data.chan = chan.title;
-        data.messages = sendList;
+
+        let data : {chan: string, messages: string[]} = {chan : chan.title, messages : sendList};
+
         client.join(chan.id.toString());
         client.emit('joinedChan', data);
       })
@@ -60,7 +60,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   async handleDisconnect(client: Socket) {
-    const user : ChatUser = await this.chatService.getUserFromSocket(client);
+    const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
       const chanToLeave : ChanListDTO[] = await this.chanService.chanListOfUser(user.id);
@@ -76,10 +76,10 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   @SubscribeMessage('msgToServer')
   async handleMessage(client: Socket, data: {author: string, chan: string, msg: string}): Promise<void> {
     this.logger.log(data);
-    const user : ChatUser = await this.chatService.getUserFromSocket(client);
+    const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
-      const chan: Chan = await this.chanService.getChanByTitle(data.chan);
+      const chan: Chan | undefined = await this.chanService.getChanByTitle(data.chan);
 
       if (chan !== undefined) {
         if (await this.chanService.isInChan(chan, user.id) === false) {
@@ -101,7 +101,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
   @SubscribeMessage('joinChan')
   async handleJoinChan(client: Socket, data: {chan: string, password: string | null}) {  
-    const user : ChatUser = await this.chatService.getUserFromSocket(client);
+    const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
       let ret: Chan | string = await this.chanService.joinChanByTitle(data.chan, await this.userService.getUserById(user.id), data.password);
@@ -110,17 +110,17 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         client.emit('error', ret);
         return;
       }
-      client.join(ret.id.toString());
-
+      
       const messages : Message[] = await this.messageService.getMessagesFromChanTitle(data.chan);
-      let sendList : string[];
-      let joinData : {chan: string, messages: string[]};
-
+      let sendList : string[] = [];
+      
       messages.forEach((message) => {
         sendList.push(" --- " + message.author + ": " + message.content);
       })
-      joinData.chan = data.chan;
-      joinData.messages = sendList;
+      
+      let joinData : {chan: string, messages: string[]} = {chan : data.chan, messages : sendList};
+
+      client.join(ret.id.toString());
       client.emit('joinedChan', joinData);
     }
   }

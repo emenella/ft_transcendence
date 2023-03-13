@@ -1,16 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { Socket } from 'socket.io'
-// import { InjectRepository } from "@nestjs/typeorm";
-// import { Repository } from "typeorm";
-import { Chan } from "./Chan/Chan.entity";
-// import { ChanPasswordService } from "./Chan/Chan.password.service";
 import { User } from "../Users/entity/User.entity";
-import { ELevelInChan } from './Dto/chanDto';
 import { UserService } from "../Users/service/User.service";
-import { ELevel, NoticeDTO } from "./Dto/notificationDto";
-import { ChatUser, CreateChanDto, ChanJoinedDTO } from "./Dto/chatDto";
-import { ChanService } from "./Chan/Chan.service";
-import { MessageService } from "./Message/Message.service";
+import { ChatUser } from "./Dto/chatDto";
 import { AuthenticationService } from "../Auth/Authenfication.service";
 
 @Injectable()
@@ -21,8 +13,6 @@ export class ChatService {
     constructor(
         private userService: UserService,
         private authService: AuthenticationService,
-        private chanService: ChanService,
-        private messageService: MessageService
     ) {}
 
     async connectUserFromSocket(socket: Socket): Promise<ChatUser | undefined> {
