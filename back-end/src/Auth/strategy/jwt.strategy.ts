@@ -1,7 +1,7 @@
 import { ExtractJwt, Strategy, } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { HttpException, HttpStatus, Injectable,  } from '@nestjs/common';
-import { UserService } from 'src/Users/service/User.service';
+import { UserService } from '../../Users/service/User.service';
 import { jwtConstants } from '../Authenfication.constants';
 
 @Injectable()
@@ -18,6 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (!payload.otp) {
             throw new HttpException('OTP required', HttpStatus.UNAUTHORIZED);
         }
-        return { userId: payload.userId, otp: payload.otp };
+        return await this.usersService.getUserFromConnectionId(payload.connectionId);
     }
 }

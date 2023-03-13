@@ -18,5 +18,5 @@ export class MatchHistory {
 
     @ManyToOne(() => User)
     @JoinColumn()
-    loser: User;
+    looser: User;
 }

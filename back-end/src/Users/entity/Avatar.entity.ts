@@ -7,10 +7,7 @@ export class Avatar {
     id: number;
 
     @Column()
-    filename: string;
-
-    @Column({type : 'bytea'})
-    data: Buffer;
+    path: string;
 
     @ManyToOne(() => User, user => user.avatar)
     @JoinColumn({ name: 'user_id' })

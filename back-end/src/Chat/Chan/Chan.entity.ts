@@ -29,8 +29,8 @@ export class Chan {
     @Column({default: false})
 	isProtected : boolean;
 
-	@Column({ nullable: true })
-	password_key : string
+	@Column({ nullable: true, type: 'varchar' })
+	password_key : string | undefined;
 
 	@Column({ nullable: true })
 	isDm : boolean;
