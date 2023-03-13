@@ -124,7 +124,7 @@ export class ChanService {
 
 		chanRel.chan	= chan;
 		chanRel.user	= owner;
-		chanRel.isAdmin = false;
+		chanRel.isAdmin = true;
 
 		if (isDm && owner.id !== user2.id)
 		{
@@ -132,6 +132,7 @@ export class ChanService {
 
 			chanRel2.chan	= chan;
 			chanRel2.user	= user2;
+			chanRel.isAdmin = false;
 			chanRel2.isAdmin = false;
 			await this.chanRelRepo.save(chanRel2);
 		}

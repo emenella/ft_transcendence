@@ -89,6 +89,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
           client.emit('error', 'Muted in this chan !');
           return;
         }
+        if (await this.chatService.handleCommand(client, user, chan, data.msg) === true) {
+          return;
+        }
 
         data.author = user.username;
         this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
