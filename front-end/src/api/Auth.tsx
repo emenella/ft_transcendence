@@ -42,3 +42,12 @@ export async function getQRCode() {
 		console.log(e);
 	}
 }
+
+export async function saveQRCode(secret: string) {
+	try {
+		await axios.post('/api/auth/2fa/save', { code: secret }, { headers: authHeader() } );
+	}
+	catch (e) {
+		console.log(e);
+	}
+}

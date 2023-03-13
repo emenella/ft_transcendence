@@ -1,7 +1,7 @@
 import React from "react";
 import { useSearchParams } from 'react-router-dom'
-import { Navigate } from "react-router-dom";
 import { getQRCode } from "../api/Auth";
+import QRCodeForm from "../components/QRCodeForm";
 
 function Auth() {
 	const [searchParams] = useSearchParams();
@@ -18,10 +18,11 @@ function Auth() {
 	}, []);
 
 	return (
-		<img src={qrcode} />
+		<div>
+			<img src={qrcode} />
+			<QRCodeForm />
+		</div>
 	);
 }
-
-// return <Navigate to="/" />;
 
 export default Auth;
