@@ -1,9 +1,9 @@
 import { client as axios, authHeader} from './Api';
 
-export async function connexion() {
+export async function connexion(secret: string) {
 	try {
-		const req = await axios.post('/api/auth/2fa/login');
-		return req.data;
+		const req = await axios.post('/api/auth/2fa/login', { code: secret });
+		return JSON.parse(req.data).code;
 	}
 	catch(e) {
 		console.log(e);
@@ -45,7 +45,8 @@ export async function getQRCode() {
 
 export async function saveQRCode(secret: string) {
 	try {
-		await axios.post('/api/auth/2fa/save', { code: secret }, { headers: authHeader() } );
+		const req = await axios.post('/api/auth/2fa/save', { code: secret }, { headers: authHeader() } );
+		return JSON.parse(req.data).code;
 	}
 	catch (e) {
 		console.log(e);

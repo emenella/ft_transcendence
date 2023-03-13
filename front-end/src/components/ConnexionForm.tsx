@@ -1,8 +1,8 @@
 import React, { ChangeEvent } from "react";
-import { saveQRCode } from "../api/Auth";
+import { connexion } from "../api/Auth";
 import { redirect } from "react-router-dom";
 
-class QRCodeForm extends React.Component {
+class Connexion extends React.Component {
 	state = {
 		secret : ''
 	}
@@ -14,9 +14,9 @@ class QRCodeForm extends React.Component {
 	}
 
 	handleClick() {
-		const res = saveQRCode(this.state.secret);
+        const res = connexion(this.state.secret);
 		localStorage.setItem("token", JSON.stringify(res));
-		redirect("/matchmaking");
+        redirect("/matchmaking");
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {
@@ -33,4 +33,4 @@ class QRCodeForm extends React.Component {
 	}
 }
 
-export default QRCodeForm;
+export default Connexion;

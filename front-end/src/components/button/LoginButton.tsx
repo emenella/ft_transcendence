@@ -1,13 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { tokenFunction } from "../../utils/interface";
-import { connexion } from "../../api/Auth";
 
 class LoginButton extends React.Component<tokenFunction> {
 	render() {
 		return (
-			// <a href={url}>
-				<button>Connexion</button>
-			// </a>
+			<Link to="/connexion">Connexion</Link>
 		);
 	}
 }
