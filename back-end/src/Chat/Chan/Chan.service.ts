@@ -21,7 +21,7 @@ export class ChanService {
     ) {}
 
     async getChanByTitle(title: string) : Promise<Chan | undefined> {
-		const ret = await this.chanRepo.findOne({ where: { title: title, isDm: false } })
+		const ret = await this.chanRepo.findOne({ where: { title: title } })
 
 		if (ret === undefined || ret === null)
 			return undefined;
@@ -97,20 +97,19 @@ export class ChanService {
 	}
 
 	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string, isDm: boolean, user2: User) : Promise<string | Chan> {
-		let chan	: Chan 			= new Chan();
-		let chanRel	: RelationTable	= new RelationTable();
-
+		let chan: Chan = new Chan();
+		
 		if (isDm !== true && await this.getChanByTitle(title))
-			return "Chan already exists";
+		return "Chan already exists";
 		if (isDm && user2 === undefined)
 			return "User doesn't exist";
 		if (isDm && await this.findDm(owner, user2))
 			return "DM chan already exists";
 		if (title.length < 3 || title.length > 16)
-			return "Title length must be between 3 and 16";
+		return "Title length must be between 3 and 16";
 		if (password_key && password_key.length > 16)
-			return "Password length must be less than 16";
-
+		return "Password length must be less than 16";
+		
 		chan.title			= title;
 		chan.owner.id		= owner.id;
 		chan.createdAt  	= new Date();
@@ -118,8 +117,10 @@ export class ChanService {
 		chan.isProtected	= isProtected;
 		chan.password_key	= (password_key !== undefined) ? await this.passwordService.genHash(password_key) : null;
 		chan.isDm			= isDm;
-
+		
 		chan = await this.chanRepo.save(chan);
+
+		let chanRel: RelationTable = new RelationTable();
 
 		chanRel.chan	= chan;
 		chanRel.user	= owner;
@@ -142,7 +143,7 @@ export class ChanService {
     
 	async joinChan(chan: Chan, user: User, password_key: string | null) : Promise<Chan | string> {
         if (chan === undefined || chan === null)
-            return ("no chan exist !");
+            return ("No such chan !");
 		if(chan.isDm === true)
             return ("You can't join dm chan");
 		if (await this.checkBan(chan.id, user.id) === true)
