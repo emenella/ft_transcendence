@@ -19,3 +19,8 @@ export function authHeader() {
 		"Authorization": null
 	};
 }
+
+export function setToken(token: string) {
+	localStorage.setItem("token", JSON.stringify(token));
+	client.defaults.headers.common["Authorization"] = "Bearer " + token;
+}

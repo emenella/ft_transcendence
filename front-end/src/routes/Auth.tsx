@@ -1,12 +1,14 @@
 import React from "react";
 import { useSearchParams } from 'react-router-dom'
+import { setToken } from "../api/Api";
 import { getQRCode } from "../api/Auth";
 import QRCodeForm from "../components/QRCodeForm";
 
 function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
-	localStorage.setItem("token", JSON.stringify(access_token));
+	if(access_token)
+		setToken(access_token);
 
 	const [qrcode, setQRCode] = React.useState<string>();
 	React.useEffect(() => {

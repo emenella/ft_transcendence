@@ -1,9 +1,10 @@
-import { client as axios, authHeader} from './Api';
+import { client as axios, authHeader, setToken} from './Api';
 
 export async function connexion(secret: string) {
 	try {
 		const req = await axios.post('/api/auth/2fa/login', { code: secret });
-		return JSON.parse(req.data).code;
+		const token = req.data.access_token;
+		setToken(token);
 	}
 	catch(e) {
 		console.log(e);
@@ -20,7 +21,7 @@ export async function firstConnexion() {
 	}
 }
 
-export async function login(id: number): Promise<string> {
+export async function login(id: number): Promise<void> {
 	let json = { user: { id: id } };
 	let user = await fetch("https://localhost/api/auth/admin", {
 		method: "POST",
@@ -30,7 +31,7 @@ export async function login(id: number): Promise<string> {
 		},
 		body: JSON.stringify(json),
 	});
-	return await user.json().then(s => s.access_token) as string;
+	setToken(await user.json().then(s => s.access_token) as string);
 }
 
 export async function getQRCode() {
@@ -46,7 +47,8 @@ export async function getQRCode() {
 export async function saveQRCode(secret: string) {
 	try {
 		const req = await axios.post('/api/auth/2fa/save', { code: secret }, { headers: authHeader() } );
-		return JSON.parse(req.data).code;
+		const json = JSON.parse(req.data);
+		setToken(json.access_token);
 	}
 	catch (e) {
 		console.log(e);

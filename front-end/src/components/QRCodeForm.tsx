@@ -14,8 +14,7 @@ class QRCodeForm extends React.Component {
 	}
 
 	handleClick() {
-		const res = saveQRCode(this.state.secret);
-		localStorage.setItem("token", JSON.stringify(res));
+		saveQRCode(this.state.secret);
 		redirect("/matchmaking");
 	}
 
