@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Socket } from 'socket.io'
+import { Socket, Server } from 'socket.io'
 import { User } from "../Users/entity/User.entity";
 import { UserService } from "../Users/service/User.service";
 import { ChatUser } from "./Dto/chatDto";
@@ -98,7 +98,7 @@ export class ChatService {
     	this.removeUser(user.id);
 	}
 
-    async handleCommand(socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {
+    async handleCommand(server: Server, socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {
         const command: string[] = msg.split(" ");
         const isAdm: boolean = await this.chanService.isAdmin(chan.id, user.id);
 
@@ -132,6 +132,35 @@ export class ChatService {
                     socket.emit('error', 'Only admin or owner can send command !');
                     return true;
                 }
+                if (command.length != 3) {
+                    socket.emit('error', 'ban command need exactly two argument : /ban <Username> <Duration(minute)>.');
+                    return true;
+                }
+
+                const bannedUser : ChatUser | undefined = this.getUserFromUsername(command[1]);
+                if (bannedUser === undefined) {
+                    socket.emit('error', 'User: ' + command[1] + ' does not exist !');
+                    return true;
+                }
+                const duration : number = parseInt(command[2]);
+                if (duration <= 0) {
+                    socket.emit('error', 'ban duration is 1 minute minimum');
+                    return true;
+                }
+
+                const hours = new Date(0);
+                hours.setHours(0, duration);
+                const expires_in = new Date(Date.now() + hours.getTime());
+
+                const ret : Chan | string = await this.chanService.banUser(chan.id, user.id, bannedUser.id, expires_in);
+                if (typeof ret === 'string') {
+                    socket.emit('error', ret);
+                    return true;
+                }
+                server.to(ret.id.toString()).emit('msgToClient', {author: user.username, chan: chan.title, msg: bannedUser.username + ' has been banned !'});
+                socket.leave(ret.id.toString());
+                socket.emit('error', 'You have been ban from ' + ret.title + ' channel.\nPay attention to your behavior next time !');
+                socket.emit('ban', ret.title);
                 return true;
             }
             case "/mute" : {
@@ -139,6 +168,42 @@ export class ChatService {
                     socket.emit('error', 'Only admin or owner can send command !');
                     return true;
                 }
+                if (command.length != 3) {
+                    socket.emit('error', 'mute command need exactly two argument : /mute <Username> <Duration(minute)>.');
+                    return true;
+                }
+
+                const mutedUser : ChatUser | undefined = this.getUserFromUsername(command[1]);
+                if (mutedUser === undefined) {
+                    socket.emit('error', 'User: ' + command[1] + ' does not exist !');
+                    return true;
+                }
+                const duration : number = parseInt(command[2]);
+                if (duration <= 0) {
+                    socket.emit('error', 'ban duration is 1 minute minimum');
+                    return true;
+                }
+
+                const hours = new Date(0);
+                hours.setHours(0, duration);
+                const expires_in = new Date(Date.now() + hours.getTime());
+
+                const ret : boolean | string = await this.chanService.chanMute(chan.id, user.id, mutedUser.id, expires_in);
+                if (typeof ret === 'string') {
+                    socket.emit('error', ret);
+                    return true;
+                }
+                server.to(chan.id.toString()).emit('msgToClient', {author: user.username, chan: chan.title, msg: mutedUser.username + ' has been muted !'});
+                socket.emit('error', 'You have been mute in ' + chan.title + ' channel.\nBe carefull not to be banned !');
+                return true;
+            }
+            case "/promote" : {
+                return true;
+            }
+            case "/demote" : {
+                return true;
+            }
+            case "/password" : {
                 return true;
             }
             default : {

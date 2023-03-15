@@ -89,7 +89,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
           client.emit('error', 'Muted in this chan !');
           return;
         }
-        if (await this.chatService.handleCommand(client, user, chan, data.msg) === true) {
+        if (await this.chatService.handleCommand(this.server, client, user, chan, data.msg) === true) {
           return;
         }
 
@@ -154,6 +154,4 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     this.logger.log('check');
     this.logger.log(data);
   }
-
-  // TO DO : mute/ban/invite(/block?) user
 }
