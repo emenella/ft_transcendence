@@ -6,12 +6,12 @@ import Connexion from "./components/ConnexionForm";
 
 export const router = createBrowserRouter([
 {
-    path: "/",
-    element: <App hasToken={localStorage.getItem('token') !== null} />,
+    path: "*",
+    element: <App hasToken={localStorage.getItem('token') !== null} />
 },
 {
     path: "/auth",
-    element: <Auth />,
+    element: <Auth />
 },
 {
     path: "/connexion",

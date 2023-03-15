@@ -1,0 +1,19 @@
+
+.profil {
+    text-align: center;
+}
+
+.player-info {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+.history>table {
+    table-layout: fixed;
+    text-align: center;
+}
+
+.history>table>tbody>tr>td {
+    padding: 10px;
+}

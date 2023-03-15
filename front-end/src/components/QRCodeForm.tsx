@@ -15,7 +15,7 @@ class QRCodeForm extends React.Component {
 
 	handleClick() {
 		saveQRCode(this.state.secret);
-		redirect("/matchmaking");
+		redirect("/");
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {

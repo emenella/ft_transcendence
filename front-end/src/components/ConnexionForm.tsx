@@ -14,9 +14,8 @@ class Connexion extends React.Component {
 	}
 
 	handleClick() {
-        const res = connexion(this.state.secret);
-		localStorage.setItem("token", JSON.stringify(res));
-        redirect("/matchmaking");
+        connexion(this.state.secret);
+		redirect("/");
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {
