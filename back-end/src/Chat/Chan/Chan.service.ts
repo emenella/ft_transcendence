@@ -205,7 +205,7 @@ export class ChanService {
 		const chan = await this.getChanById(chanId);
 
 		if (chan === undefined || chan === null)
-			 return "no chan !";
+			 return "No such chan !";
 		if (chan.isDm === true)
 			return ("You can't leave dm chan !");
 

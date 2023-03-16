@@ -129,10 +129,30 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   @SubscribeMessage('leaveChan')
-  handleLeaveChan(client: Socket, chan: string) {
-    // TO DO : check with chanService
-    client.leave(chan);
-    client.emit('leftChan', chan);
+  async handleLeaveChan(client: Socket, chan: string) {
+    const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
+
+    if (user !== undefined) {
+      const chanToLeave : Chan | undefined = await this.chanService.getChanByTitle(chan);
+
+      if (chanToLeave !== undefined) {
+        const ret : string | number | undefined = await this.chanService.leaveChanById(chanToLeave.id, user.id);
+
+        if (typeof ret === 'string') {
+          client.emit('error', ret);
+          return;
+        }
+        if (ret === undefined && chanToLeave.isPrivate === false) {
+          this.chans.splice(this.chans.findIndex((c) => {return c === chanToLeave.title}), 1);
+        }
+        else if (ret !== undefined) {
+          this.server.to(chanToLeave.id.toString()).emit('msgToClient', {author: user.username, chan: chanToLeave.title, msg: ' leaved the channel !'});
+        }
+
+        client.leave(chan);
+        client.emit('leftChan', chan);
+      }
+    }
   }
 
   @SubscribeMessage('createChan')
