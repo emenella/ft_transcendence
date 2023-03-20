@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { saveQRCode } from "../api/Auth";
+import { saveQRCode } from "../../api/Auth";
 import { redirect } from "react-router-dom";
 
 class QRCodeForm extends React.Component {

@@ -2,7 +2,7 @@ import React from "react";
 import { useSearchParams } from 'react-router-dom'
 import { setToken } from "../api/Api";
 import { getQRCode } from "../api/Auth";
-import QRCodeForm from "../components/QRCodeForm";
+import QRCodeForm from "../components/form/QRCodeForm";
 
 function Auth() {
 	const [searchParams] = useSearchParams();

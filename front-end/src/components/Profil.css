@@ -17,3 +17,11 @@
 .history>table>tbody>tr>td {
     padding: 10px;
 }
+
+.win {
+    background-color: green;
+}
+
+.loose {
+    background-color: red;
+}

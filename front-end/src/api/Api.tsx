@@ -8,10 +8,10 @@ export function authHeader() {
 	let token = localStorage.getItem("token");
 	
 	if (token) {
-		token = JSON.parse(token);
+		let access_token = JSON.parse(token);
 		return {
 			"Content-Type": "application/json",
-			"Authorization": "Bearer " + token
+			"Authorization": "Bearer " + access_token
 		};
 	}
 	return {

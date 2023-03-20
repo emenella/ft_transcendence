@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { connexion } from "../api/Auth";
+import { connexion } from "../../api/Auth";
 import { redirect } from "react-router-dom";
 
 class Connexion extends React.Component {
