@@ -7,7 +7,8 @@ import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../a
 class AccountManagement extends React.Component {
 	state = {
 		username : '',
-		image : ''
+		image : '',
+		id : 0
 	}
 
 	constructor(props: any) {
@@ -15,6 +16,7 @@ class AccountManagement extends React.Component {
 		this.setUsername = this.setUsername.bind(this);
 		this.setImage = this.setImage.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.setId = this.setId.bind(this);
 	}
 
 	handleSubmit() {
@@ -36,17 +38,14 @@ class AccountManagement extends React.Component {
 		this.setState({ image : e.target.files });
 	}
 
-	deleteUser() {
-		const [user, setUser] = React.useState<any>();
-		React.useEffect(() => {
-			const getUser = async () => {
-				const tmp = await getMe();
-				setUser(JSON.parse(tmp));
-			};
-			getUser();
-		}, []);
-		deleteAccount(user.id);
-		redirect('*');
+	setId() {
+		const getUser = async () => {
+			const tmp = await getMe();
+			const user = JSON.parse(tmp);
+			return user.id;
+		};
+		const id = getUser();
+		this.setState({ id : id})
 	}
 
 	render() {
@@ -62,7 +61,7 @@ class AccountManagement extends React.Component {
 				<br />
 				<label>Désactivation 2FA : </label> <button onClick={delete2FA} />
 				<br />
-				<button onClick={this.deleteUser}>Supprimer le compte</button>
+				<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('*'); }}>Supprimer le compte</button>
 			</div>
 		);
 	}
