@@ -14,8 +14,9 @@ class UsernameForm extends React.Component {
 	}
 
 	handleClick() {
-		setUsername(this.state.username);
+		setUsername(this.state.username).then(() => {;
 		redirect("/");
+	});
 	}
 
 	setUsername(e: ChangeEvent<HTMLInputElement>) : void {

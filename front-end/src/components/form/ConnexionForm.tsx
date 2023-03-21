@@ -1,10 +1,11 @@
-import React, { ChangeEvent } from "react";
-import { connexion } from "../../api/Auth";
+import React, { ChangeEvent, useState } from "react";
+import { submitCode2FA } from "../../api/Auth";
 import { redirect } from "react-router-dom";
 
-class Connexion extends React.Component {
+class Connexion extends React.Component<{acces_code: string}> {
 	state = {
-		secret : ''
+		secret : '',
+		acces_code: this.props.acces_code
 	}
 
 	constructor(props: any) {
@@ -14,8 +15,8 @@ class Connexion extends React.Component {
 	}
 
 	handleClick() {
-        connexion(this.state.secret);
-		redirect("/");
+        submitCode2FA(this.state.secret, this.state.acces_code).then(() => {;
+		redirect("/"); });
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {

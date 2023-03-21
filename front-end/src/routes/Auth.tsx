@@ -7,22 +7,29 @@ import QRCodeForm from "../components/form/QRCodeForm";
 function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
-	if(access_token)
-		setToken(access_token);
-
 	const [qrcode, setQRCode] = React.useState<string>();
 	React.useEffect(() => {
 		const getQRCodeSrc = async () => {
-			const tmp = await getQRCode();
+			const tmp = await getQRCode(access_token);
 			setQRCode(tmp);
 		};
 		getQRCodeSrc();
 	}, []);
+	
+	if(!access_token) {
+		return (
+			<div>
+				<h1>Erreur</h1>
+				<p>Vous n'avez pas accès à cette page</p>
+			</div>
+		);
+	}
+
 
 	return (
 		<div>
 			<img src={qrcode} />
-			<QRCodeForm />
+			<QRCodeForm acces_token={access_token} />
 		</div>
 	);
 }

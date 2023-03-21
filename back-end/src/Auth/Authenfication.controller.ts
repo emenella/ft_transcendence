@@ -22,7 +22,13 @@ export class AuthenticationController {
     @Get('callback')
     async postAuth(@Req() req: Request, @Res() res: Response) {
         let token = await this.authenticationService.login(req.user);
-        res.redirect('http://localhost/auth?token=' + token.access_token);
+        let payload = await this.authenticationService.verifyJWT(token.access_token);
+        if (!payload.otp) {
+            return res.redirect('http://localhost/2fa?token=' + token.access_token);
+        }
+        else {
+            res.redirect('http://localhost/auth?token=' + token.access_token);
+        }
     }
 
     // Sign up without 42

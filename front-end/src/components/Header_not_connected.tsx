@@ -8,8 +8,6 @@ class HeaderNotConnected extends React.Component<tokenFunction> {
     render() {
         return (
             <div>
-            <LoginButton setToken={this.props.setToken} />
-            <br />
             <SignUpButton />
             <br />
             <LoginWithout42 setToken={this.props.setToken} />

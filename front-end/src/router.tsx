@@ -2,12 +2,13 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App"
 import Auth from "./routes/Auth";
-import Connexion from "./components/form/ConnexionForm";
+import DoubleFA from "./routes/2FA";
+import UsernameForm from "./components/form/UsernameForm";
 import Error from "./components/Error";
 
 export const router = createBrowserRouter([
 {
-    path: "*",
+    path: "/",
     element: <App hasToken={localStorage.getItem('token') !== null} />
 },
 {
@@ -15,8 +16,12 @@ export const router = createBrowserRouter([
     element: <Auth />
 },
 {
-    path: "/connexion",
-    element: <Connexion />
+    path: "/2fa",
+    element: <DoubleFA />
+},
+{
+    path: "/set-username",
+    element: <UsernameForm />
 },
 {
     path: "/error",

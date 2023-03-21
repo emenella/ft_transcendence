@@ -1,10 +1,10 @@
-import { client as axios, authHeader, setToken} from './Api';
+import { cp } from 'fs';
+import { client as axios, setToken} from './Api';
 
-export async function connexion(secret: string) {
+export async function submitCode2FA(secret: string, access_token: string) {
 	try {
-		const req = await axios.post('/api/auth/2fa/login', { code: secret });
-		const token = req.data.access_token;
-		setToken(token);
+		const req = await axios.post('/api/auth/2fa/login', { code: secret }, { headers: { Authorization: `Bearer ${access_token}` }});
+		setToken(req.data.access_token);
 	}
 	catch(e) {
 		console.log(e);
@@ -34,9 +34,12 @@ export async function login(id: number): Promise<void> {
 	setToken(await user.json().then(s => s.access_token) as string);
 }
 
-export async function getQRCode() {
+export async function getQRCode(access_token: string | null) {
 	try {
-		const req = await axios.get('/api/auth/2fa/qrcode', { headers: authHeader() });
+		if (access_token == null) {
+			return;
+		}
+		const req = await axios.get('/api/auth/2fa/qrcode', { headers: { Authorization: `Bearer ${access_token}` }});
 		return req.data as string;
 	}
 	catch(e) {
@@ -44,11 +47,10 @@ export async function getQRCode() {
 	}
 }
 
-export async function saveQRCode(secret: string) {
+export async function saveQRCode(secret: string, access_token: string) {
 	try {
-		const req = await axios.post('/api/auth/2fa/save', { code: secret }, { headers: authHeader() } );
-		const json = JSON.parse(req.data);
-		setToken(json.access_token);
+		const req = await axios.post('/api/auth/2fa/save', { code: secret }, { headers: { Authorization: `Bearer ${access_token}` }});
+		setToken(req.data.access_token);
 	}
 	catch (e) {
 		console.log(e);

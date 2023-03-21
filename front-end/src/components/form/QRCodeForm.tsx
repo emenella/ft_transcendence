@@ -2,9 +2,10 @@ import React, { ChangeEvent } from "react";
 import { saveQRCode } from "../../api/Auth";
 import { redirect } from "react-router-dom";
 
-class QRCodeForm extends React.Component {
+class QRCodeForm extends React.Component<{acces_token: string}> {
 	state = {
-		secret : ''
+		secret : '',
+		acces_token: this.props.acces_token
 	}
 
 	constructor(props: any) {
@@ -14,8 +15,8 @@ class QRCodeForm extends React.Component {
 	}
 
 	handleClick() {
-		saveQRCode(this.state.secret);
-		redirect("/");
+		saveQRCode(this.state.secret, this.state.acces_token).then(() => {;
+		redirect("/set-username");});
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {

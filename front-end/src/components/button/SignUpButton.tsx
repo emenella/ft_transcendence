@@ -1,7 +1,7 @@
 import React from "react";
 import { firstConnexion } from '../../api/Auth'
 
-function SignUpButton() {
+function ConnectionButton() {
 	const [url, setUrl] = React.useState<string>();
 	React.useEffect(() => {
 		const getUrl = async () => {
@@ -13,9 +13,9 @@ function SignUpButton() {
 
 	return (
 		<a href={url}>
-			<button>Création d'un compte</button>
+			<button>Connexion</button>
 		</a>
 	);
 }
 
-export default SignUpButton;
+export default ConnectionButton;
