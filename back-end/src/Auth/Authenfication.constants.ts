@@ -11,3 +11,7 @@ export const API = {
     KEY: process.env.API_SECRET,
     URL: process.env.API_URL,
 };
+
+export const passPhrase = {
+    secret: process.env.PASSPHRASE,
+};
