@@ -80,7 +80,7 @@ export class AuthenticationService {
         }
         const url = speakeasy.otpauthURL({ secret: secret , encoding: 'base32', label: "ft_pong" });
         const qr = await qrcode.toDataURL(url);
-        return "<img src='" + qr + "'/>";
+        return qr;
     }
 
     async decodeSecret(secret: string, iv: string) {
@@ -171,7 +171,7 @@ export class AuthenticationService {
         if (!verified) {
             throw new HttpException("Code is not valid", 401);
         }
-        const payload = { connectionId: connection.id, otp: true};
+        const payload: IToken = { connectionId: connection.id, otp: true};
         return {
             access_token: this.jwtService.sign(payload),
         };
