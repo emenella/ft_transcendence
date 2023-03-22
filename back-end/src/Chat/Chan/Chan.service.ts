@@ -96,19 +96,19 @@ export class ChanService {
 		return false;
 	}
 
-	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string, isDm: boolean, user2: User) : Promise<string | Chan> {
-		let chan: Chan = new Chan();
-		
+	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string | undefined, isDm: boolean, user2: User) : Promise<string | Chan> {
 		if (isDm !== true && await this.getChanByTitle(title))
-		return "Chan already exists";
+			return "Chan already exists";
+		let chan: Chan = new Chan();
+
 		if (isDm && user2 === undefined)
 			return "User doesn't exist";
 		if (isDm && await this.findDm(owner, user2))
 			return "DM chan already exists";
 		if (title.length < 3 || title.length > 16)
-		return "Title length must be between 3 and 16";
-		if (password_key && password_key.length > 16)
-		return "Password length must be less than 16";
+			return "Title length must be between 3 and 16";
+		if (password_key && (password_key.length < 3 || password_key.length > 16))
+			return "Password length must be between 3 and 16";
 		
 		chan.title			= title;
 		chan.owner.id		= owner.id;

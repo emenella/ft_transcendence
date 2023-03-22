@@ -93,7 +93,15 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
           return;
         }
 
-        data.author = user.username;
+        if (chan.owner.id === user.id) {
+          data.author = '[owner] ' + user.username; 
+        }
+        else if (await this.chanService.isAdmin(chan.id, user.id) === true) {
+          data.author = '[admin] ' + user.username;
+        }
+        else {
+          data.author = user.username;
+        }
         this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
         this.server.to(chan.id.toString()).emit('msgToClient', data);
       }
@@ -107,6 +115,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
+      if (data.password === "") {
+        data.password = null;
+      }
       let ret: Chan | string = await this.chanService.joinChanByTitle(data.chan, await this.userService.getUserById(user.id), data.password);
 
       if (typeof ret === 'string') {
@@ -156,17 +167,30 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   @SubscribeMessage('createChan')
-  handleCreateChan(client: Socket, chan: string) {
-    this.logger.log(chan);
-    // TO DO : check with chanService
-    if (this.chans.find(c => c === chan) !== undefined) {
-      client.emit('error', 'This channel already exist ! You can join it in the joinChan section');
-      return;
+  async handleCreateChan(client: Socket, data: {title: string, isPrivate: boolean, password: string | undefined}) {
+    const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
+
+    if (user !== undefined) {
+      if (data.password === "") {
+        data.password = undefined;
+      }
+
+      let ret: Chan | string = await this.chanService.createChan(data.title, await this.userService.getUserById(user.id), data.isPrivate, data.password !== undefined,
+                                                                  data.password, false, await this.userService.getUserById(user.id));
+
+      if (typeof ret === 'string') {
+        client.emit('error', ret);
+        return;
+      }
+
+      if (ret.isPrivate === false) {
+        this.chans.push(data.title);
+        this.server.emit('listOfChan', this.chans);
+      }
+      client.join(ret.id.toString());
+      client.emit('createdChan', ret.title);
     }
-    this.chans.push(chan);
-    this.server.emit('listOfChan', this.chans);
-    client.join(chan);
-    client.emit('createdChan', chan);
+    
   }
 
   @SubscribeMessage('check')
