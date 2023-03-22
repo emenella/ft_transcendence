@@ -7,7 +7,6 @@ import { Message } from './Message/Message.entity';
 import { ChanService } from './Chan/Chan.service';
 import { Chan } from './Chan/Chan.entity';
 import { UserService } from '../Users/service/User.service';
-import { User } from '../Users/entity/User.entity';
 import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
@@ -26,7 +25,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   private logger: Logger = new Logger('AppGateway');
   private chans: string[] = [];
 
-  async afterInit(server: Server) {
+  async afterInit() {
     const publicChans : ChanListDTO[] = await this.chanService.publicChanList();
 
     publicChans.forEach((chan) => {
@@ -194,8 +193,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   }
 
   @SubscribeMessage('check')
-  checking(client: Socket, data: string[]) {
+  async checking(client: Socket, data: string[]) {
     this.logger.log('check');
+    this.logger.log((await this.chatService.getUserFromSocket(client))?.username);
     this.logger.log(data);
   }
 }
