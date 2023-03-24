@@ -78,6 +78,18 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
+      if (data.chan[0] !== '#') {
+        const dmChan : Chan | undefined = await this.chanService.getDm(await this.userService.getUserById(user.id), await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number))
+        if (dmChan !== undefined) {
+          data.author = user.username;
+          this.messageService.createMessage(await this.userService.getUserById(user.id), dmChan, data.msg);
+          this.server.to(dmChan.id.toString()).emit('msgToClient', data);
+          return;
+        }
+        client.emit('error', 'No such DM');
+        return;
+      }
+
       const chan: Chan | undefined = await this.chanService.getChanByTitle(data.chan);
 
       if (chan !== undefined) {
@@ -101,8 +113,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         else {
           data.author = user.username;
         }
-        this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
+        await this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
         this.server.to(chan.id.toString()).emit('msgToClient', data);
+        return;
       }
       client.emit('error', 'No such channel !');
       return;
@@ -183,7 +196,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       }
 
       if (ret.isPrivate === false) {
-        this.chans.push(data.title);
+        this.chans.push(ret.title);
         this.server.emit('listOfChan', this.chans);
       }
       client.join(ret.id.toString());

@@ -96,20 +96,36 @@ export class ChanService {
 		return false;
 	}
 
+	async getDm(user1 : User, user2: User): Promise<Chan | undefined> {
+		const chansDm = await this.chanRepo.find({ where : { isDm: true } });
+
+		for (let c of chansDm)
+		{
+			const resp = await this.chanRelRepo.find({ relations : ["user", "chan"],
+				        where: [ {chan: { id: c.id }, user: {id: user1.id}}, {chan: { id: c.id }, user: {id: user2.id} } ] })
+			if (resp.length === 2)
+				return c;
+		}
+
+		return undefined;
+	}
+
 	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string | undefined, isDm: boolean, user2: User) : Promise<string | Chan> {
+		if (isDm !== true && title[0] !== '#')
+			return "Chan title must begin by '#' !";
 		if (isDm !== true && await this.getChanByTitle(title))
 			return "Chan already exists";
-		let chan: Chan = new Chan();
-
 		if (isDm && user2 === undefined)
 			return "User doesn't exist";
 		if (isDm && await this.findDm(owner, user2))
-			return "DM chan already exists";
+		return "DM chan already exists";
 		if (title.length < 3 || title.length > 16)
-			return "Title length must be between 3 and 16";
+		return "Title length must be between 3 and 16";
 		if (password_key && (password_key.length < 3 || password_key.length > 16))
-			return "Password length must be between 3 and 16";
+		return "Password length must be between 3 and 16";
 		
+		let chan: Chan = new Chan();
+
 		chan.title			= title;
 		chan.owner.id		= owner.id;
 		chan.createdAt  	= new Date();
