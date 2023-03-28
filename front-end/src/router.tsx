@@ -5,11 +5,12 @@ import Auth from "./routes/Auth";
 import DoubleFA from "./routes/2FA";
 import UsernameForm from "./components/form/UsernameForm";
 import Error from "./components/Error";
+import { getToken } from "./api/Api";
 
 export const router = createBrowserRouter([
 {
     path: "/",
-    element: <App hasToken={localStorage.getItem('token') !== null} />
+    element: <App hasToken={getToken() !== null} />
 },
 {
     path: "/auth",

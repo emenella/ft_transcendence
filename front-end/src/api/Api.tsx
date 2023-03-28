@@ -24,3 +24,10 @@ export function setToken(token: string) {
 	localStorage.setItem("token", JSON.stringify(token));
 	client.defaults.headers.common["Authorization"] = "Bearer " + token;
 }
+
+export function getToken() {
+	let token = localStorage.getItem("token")
+	if (token === null)
+		return null;
+	return JSON.parse(token);
+}

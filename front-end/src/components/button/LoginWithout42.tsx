@@ -3,7 +3,7 @@ import { login } from '../../api/Auth'
 import { tokenFunction } from "../../utils/interface";
 
 function takeJWT() {
-    const access_token = login(1);
+    const access_token = login(2);
     localStorage.setItem("token", JSON.stringify(access_token));
 }
 
