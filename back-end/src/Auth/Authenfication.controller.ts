@@ -30,7 +30,7 @@ export class AuthenticationController {
             res.redirect('http://localhost/auth?token=' + token.access_token);
         }
     }
-
+    
     // Sign up without 42
     @Public()
     @Post('admin')

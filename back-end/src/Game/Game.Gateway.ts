@@ -4,6 +4,7 @@ import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../Users/service/User.service';
 import { User } from '../Users/entity/User.entity';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {
@@ -111,6 +112,6 @@ export class GameGateway {
             }
         }
         client.disconnect();
-        throw new Error('Unauthorized');
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 }
