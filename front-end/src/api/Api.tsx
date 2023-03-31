@@ -4,18 +4,18 @@ export const client = axios.create({
 	baseURL: "https://localhost/"
 });
 
-export function authHeader() {
+export function authHeader(type?: string) {
 	let token = localStorage.getItem("token");
 	
 	if (token) {
 		let access_token = token;
 		return {
-			"Content-Type": "application/json",
+			"Content-Type": type ? type : "application/json",
 			"Authorization": "Bearer " + access_token
 		};
 	}
 	return {
-		"Content-Type": "application/json",
+		"Content-Type": type ? type : "application/json",
 		"Authorization": null
 	};
 }

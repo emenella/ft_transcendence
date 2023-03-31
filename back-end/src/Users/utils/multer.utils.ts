@@ -1,14 +1,17 @@
 import { MulterModuleOptions } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
+import { User } from "../entity/User.entity";
 
 export const factory = async (): Promise<MulterModuleOptions> => {
+    console.log("Multer factory called!");
     return { 
         storage: diskStorage({
-            filename: async (req, file, cb) => {
-                if (!req.body.user) {
+            filename: async (req , file, cb) => {
+                if (!req.user) {
                     cb(new Error('User not found!'), "");
                 }
-                const filename = `avatar-${req.body.user.username}`;
+                const user: User = req.user as User;
+                const filename = `avatar-${user.username}`;
                 const extension = file.mimetype.split('/')[1];
                 console.log(`${filename}.${extension}`);
                 cb(null, `${filename}.${extension}`);

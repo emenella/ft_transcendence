@@ -4,10 +4,19 @@ import './AccountManagement.css'
 import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../api/User';
 
 {/* Onglet "Gestion du compte" */ }
-class AccountManagement extends React.Component {
-	state = {
+
+interface AccountManagementState
+{
+	username : string;
+	image: File | undefined;
+	id : number;
+}
+
+
+class AccountManagement extends React.Component<any, AccountManagementState> {
+	state: AccountManagementState = {
 		username : '',
-		image : '',
+		image: undefined,
 		id : 0
 	}
 
@@ -19,14 +28,15 @@ class AccountManagement extends React.Component {
 		this.setId = this.setId.bind(this);
 	}
 
-	handleSubmit() {
+	async handleSubmit() {
 		if (this.state.username !== '')
-			setUsername(this.state.username);
-		if (this.state.image !== '')
+			await setUsername(this.state.username);
+		if (this.state.image)
 		{
+			console.log(this.state.image);
 			const formData = new FormData();
-			formData.append("avatar", this.state.image);
-			uploadAvatar(formData);
+			formData.append("file", this.state.image);
+			await uploadAvatar(formData);
 		}
 	}
 
@@ -35,16 +45,16 @@ class AccountManagement extends React.Component {
 	}
 
 	setImage(e: ChangeEvent<HTMLInputElement>) : void {
-		this.setState({ image : e.target.files });
+		this.setState({ image : e.target.files![0] });
 	}
 
-	setId() {
-		const getUser = async () => {
+	async setId() {
+		const getUser = async (): Promise<number> => {
 			const tmp = await getMe();
 			const user = JSON.parse(tmp);
 			return user.id;
 		};
-		const id = getUser();
+		const id = await getUser();
 		this.setState({ id : id})
 	}
 

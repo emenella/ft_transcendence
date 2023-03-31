@@ -19,7 +19,7 @@ function Profil() {
 	React.useEffect(() => {
 		const getAvatar = async () => {
 			const tmp = await getMe();
-			setAvatar(JSON.parse(tmp));
+			setAvatar(JSON.parse(tmp).avatar);
 		};
 		getAvatar();
 	}, []);
@@ -33,7 +33,7 @@ function Profil() {
 		getMatchs();
 	}, []);
 
-	const winrate = (user.wins / user.matchs) * 100;
+	// const winrate = (user.winMatch / user.matchs) * 100;
 
 	const listMatchs = matchs.map((match : any) => {
 		if (match.winner.username === user.username) {
@@ -67,7 +67,7 @@ function Profil() {
 				<div className='statistics'>
 					<h2>Statistiques du joueur</h2>
 					<p>Nombre de games : {user.matchs}</p>
-					<p>Win rate : {winrate}%</p>
+					{/* <p>Win rate : {winrate}%</p> */}
 				</div>
 				<div className='history'>
 					<h2>Historique des parties</h2>

@@ -22,7 +22,7 @@ all:		up
 re:			fclean all
 # Create and start containers
 up:			build
-			$(COMPOSE) up --detach
+			$(COMPOSE) up --detach --remove-orphans
 # Stop and remove containers and networks
 down:
 			$(COMPOSE) down
