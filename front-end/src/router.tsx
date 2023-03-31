@@ -8,24 +8,24 @@ import Error from "./components/Error";
 import { getToken } from "./api/Api";
 
 export const router = createBrowserRouter([
-{
-    path: "/",
-    element: <App hasToken={getToken() !== null} />
-},
-{
-    path: "/auth",
-    element: <Auth />
-},
-{
-    path: "/2fa",
-    element: <DoubleFA />
-},
-{
-    path: "/set-username",
-    element: <UsernameForm />
-},
-{
-    path: "/error",
-    element: <Error />
-}
+    {
+        path: "/auth",
+        element: <Auth />
+    },
+    {
+        path: "/2fa",
+        element: <DoubleFA />
+    },
+    {
+        path: "/set-username",
+        element: <UsernameForm />
+    },
+    {
+        path: "/error",
+        element: <Error />
+    },
+    {
+        path: "/*",
+        element: <App hasToken={getToken() !== null} />
+    },
 ]);
