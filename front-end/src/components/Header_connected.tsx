@@ -3,6 +3,11 @@ import { isConnected } from '../utils/interface';
 import { Link } from "react-router-dom";
 
 class HeaderConnected extends React.Component<isConnected> {
+
+    constructor(props: isConnected) {
+        super(props);
+    }
+
     render() {
         return (
             <div>
@@ -10,7 +15,7 @@ class HeaderConnected extends React.Component<isConnected> {
                 <br />
                 <Link to="/accountmanagement">Paramètres de compte</Link>
                 <br />
-                <button onClick= {this.props.lougout}>Déconnexion</button>
+                <button onClick= {this.props.logout}>Déconnexion</button>
             </div>
         );
     }

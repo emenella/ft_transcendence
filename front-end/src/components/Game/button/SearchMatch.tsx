@@ -13,9 +13,6 @@ class SearchButton extends Component<ButtonProps> {
   handleClick = () => {
     this.setState({ isLoading: true });
     this.props.onClick();
-    setTimeout(() => {
-      this.setState({ isLoading: false });
-    }, 3000); // Temps d'attente de 3 secondes pour la démonstration
   };
 
   render() {

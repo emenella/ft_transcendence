@@ -22,14 +22,16 @@ class Matchmaking extends React.Component<any, MatchmakingState> {
 
 	joinQueueHandler = () => { 
 		this.setState({ isSearching: true });
-		this.state.pongGame.current?.setGame();
 		this.state.pongGame.current?.joinQueue();
 	}
 
 	leaveQueueHandler = () => { 
 		this.setState({ isSearching: false });
-		this.state.pongGame.current?.setGame();
 		this.state.pongGame.current?.leaveQueue();
+	}
+
+	async componentDidMount() {
+		this.state.pongGame.current?.getUser();
 	}
 
 	render() {

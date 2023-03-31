@@ -3,7 +3,7 @@ export interface Token {
 }
 
 export interface isConnected {
-    lougout: () => void;
+    logout: () => void;
 }
 
 export interface isNotConnected {

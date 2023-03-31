@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './assets/black_logo.png';
 import Footer from './components/Footer';
@@ -9,44 +9,39 @@ import BodyConnected from './components/Body_connected';
 import { getToken, setToken } from './api/Api';
 
 function App() {
-	const [hasToken, setHasToken] = useState(!!getToken());
-	
-	// navigate = userNavigate;
-	
-	function handleTokenChange() {
-		setHasToken(!!getToken());
-	}
-	
-	function handleLogout() {
-		localStorage.removeItem('token');
-		handleTokenChange();
-	}
-	
-	function handleLogin(token: string) {
-		setToken(token);
-		handleTokenChange();
-	}
-	
-	return (
-		<div>
-			<div className='flex-container'>
-			<div>
-				<img src={logo} alt='Logo du site' />
-			</div>
-			<div>
-				<h1>Le meilleur jeu de pong de tout 42</h1>
-			</div>
-			<div>
-				{hasToken ? (
-				<HeaderConnected lougout={handleLogout} />
-				) : (
-				<HeaderNotConnected login={handleLogin} />
-				)}
-			</div>
-			</div>
-				{hasToken ? <BodyConnected /> : <BodyNotConnected />}
-				<Footer />
-			</div>);
+  const [hasToken, setHasToken] = useState(!!getToken());
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    setHasToken(false);
+  }
+
+  function handleLogin(token: string) {
+    setToken(token);
+    setHasToken(true);
+  }
+
+  return (
+    <div>
+      <div className='flex-container'>
+        <div>
+          <img src={logo} alt='Logo du site' />
+        </div>
+        <div>
+          <h1>Le meilleur jeu de pong de tout 42</h1>
+        </div>
+        <div>
+          {hasToken ? (
+            <HeaderConnected logout={handleLogout} />
+          ) : (
+            <HeaderNotConnected login={handleLogin} />
+          )}
+        </div>
+      </div>
+      {hasToken ? <BodyConnected /> : <BodyNotConnected />}
+      <Footer />
+    </div>
+  );
 }
-			
+
 export default App;

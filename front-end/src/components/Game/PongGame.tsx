@@ -3,6 +3,7 @@ import { Game } from './engine/Game';
 import { Socket, io } from 'socket.io-client';
 import { getMe } from '../../api/User';
 import { User } from './engine/interfaces/ft_pong.interface';
+import { cp } from "fs";
 
 
 const WebGame = "https://localhost/game";
@@ -39,19 +40,20 @@ class PongGame extends Component<PongGameProps, PongGameState> {
 
     async setGame() {
         this.ctx = this.state.canvasRef.current?.getContext('2d');
-        this.getUser();
         if (!this.state.me || !this.ctx)
             return;
         let game = new Game(this.state.socketGame, this.state.socketMatchmaking, this.state.me, this.ctx);
-        this.setState({ game: game});
+        this.setState({ game: game });
     }
 
     async getUser () {
         const user = await getMe();
+        console.log(user);
         this.setState({ me: user });
     }
 
     async joinQueue() {
+        console.log(this.state.game);
         if (!this.state.game)
             return;
         this.state.game.joinQueue();
@@ -69,10 +71,11 @@ class PongGame extends Component<PongGameProps, PongGameState> {
         this.state.game.searchGame();
     }
 
-    componentDidMount() {
-        this.setGame();
+    async componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<PongGameState>, snapshot?: any) {
+        if (this.state.me && !this.state.game) {
+            this.setGame();
+        }
     }
-
 
     render() {
         return (
