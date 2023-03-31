@@ -30,8 +30,14 @@ class Matchmaking extends React.Component<any, MatchmakingState> {
 		this.state.pongGame.current?.leaveQueue();
 	}
 
+	searchGame = () => {
+		this.state.pongGame.current?.searchGame();
+	}
+
 	async componentDidMount() {
-		this.state.pongGame.current?.getUser();
+		await this.state.pongGame.current?.getUser();
+		await this.state.pongGame.current?.setGame();
+		this.searchGame();
 	}
 
 	render() {

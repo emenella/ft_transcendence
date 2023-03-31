@@ -17,8 +17,6 @@ interface PongGameProps {
 
 interface PongGameState {
     game: Game | null;
-    socketGame: Socket;
-    socketMatchmaking: Socket;
     me: User | null;
     canvasRef: React.RefObject<HTMLCanvasElement>;
 }
@@ -26,23 +24,25 @@ interface PongGameState {
 
 class PongGame extends Component<PongGameProps, PongGameState> {
     private ctx: CanvasRenderingContext2D | undefined | null;
+    private socketGame: Socket;
+    private socketMatchmaking: Socket;
 
     constructor(props: PongGameProps) {
         super(props);
         this.state = {
-            socketGame: io(WebGame, { extraHeaders: { Authorization: this.props.token } }),
-            socketMatchmaking: io(WebMatchmaking, { extraHeaders: { Authorization: this.props.token } }),
             me: null,
             canvasRef: React.createRef(),
             game: null
         };
+        this.socketGame = io(WebGame, { extraHeaders: { Authorization: this.props.token } });
+        this.socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: this.props.token } });
     }
 
     async setGame() {
         this.ctx = this.state.canvasRef.current?.getContext('2d');
         if (!this.state.me || !this.ctx)
             return;
-        let game = new Game(this.state.socketGame, this.state.socketMatchmaking, this.state.me, this.ctx);
+        let game = new Game(this.socketGame, this.socketMatchmaking, this.state.me, this.ctx);
         this.setState({ game: game });
     }
 
@@ -53,7 +53,6 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     }
 
     async joinQueue() {
-        console.log(this.state.game);
         if (!this.state.game)
             return;
         this.state.game.joinQueue();
@@ -65,7 +64,8 @@ class PongGame extends Component<PongGameProps, PongGameState> {
         this.state.game.leaveQueue();
     }
 
-    async searcheGame() {
+    async searchGame() {
+        console.log(this.state.game);
         if (!this.state.game)
             return;
         this.state.game.searchGame();
