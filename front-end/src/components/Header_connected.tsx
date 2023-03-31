@@ -1,8 +1,8 @@
 import React from 'react';
-import { tokenFunction } from '../utils/interface';
+import { isConnected } from '../utils/interface';
 import { Link } from "react-router-dom";
 
-class HeaderConnected extends React.Component<tokenFunction> {
+class HeaderConnected extends React.Component<isConnected> {
     render() {
         return (
             <div>
@@ -10,7 +10,7 @@ class HeaderConnected extends React.Component<tokenFunction> {
                 <br />
                 <Link to="/accountmanagement">Paramètres de compte</Link>
                 <br />
-                <button onClick= {() => { localStorage.removeItem("token"); this.props.setToken(); }}>Déconnexion</button>
+                <button onClick= {this.props.lougout}>Déconnexion</button>
             </div>
         );
     }

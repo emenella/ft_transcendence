@@ -1,32 +1,47 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { saveQRCode } from "../../api/Auth";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-class QRCodeForm extends React.Component<{acces_token: string}> {
-	state = {
-		secret : '',
-		acces_token: this.props.acces_token
-	}
 
+interface QRCodeFormProps {
+	accessToken: string;
+	navigate: any;
+}
+
+interface QRCodeFormState {
+	secret: string;
+}
+
+class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
+	
 	constructor(props: any) {
 		super(props);
-		this.setSecret = this.setSecret.bind(this);
+		this.state = {
+			secret: "",
+		};
 		this.handleClick = this.handleClick.bind(this);
+		this.setSecret = this.setSecret.bind(this);
 	}
 
-	handleClick() {
-		saveQRCode(this.state.secret, this.state.acces_token).then(() => {;
-		redirect("/set-username");});
+	async handleClick() {
+		const token = await saveQRCode(this.state.secret, this.props.accessToken);
+		if (token) {
+			localStorage.setItem("token", token);
+			this.props.navigate("/set-username");
+		}
 	}
 
-	setSecret(e: ChangeEvent<HTMLInputElement>) : void {
-		this.setState({ secret : e.target.value });
+	setSecret(e: React.ChangeEvent<HTMLInputElement>): void {
+		this.setState({ secret: e.target.value });
 	}
 
 	render() {
 		return (
 			<div>
-				<label>Secret : <input type="text" onChange={this.setSecret} /> </label>
+				<label>
+					Secret :{" "}
+					<input type="text" onChange={this.setSecret} />
+				</label>
 				<button onClick={this.handleClick}>Envoyer</button>
 			</div>
 		);

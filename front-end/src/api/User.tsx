@@ -12,7 +12,7 @@ export async function getMe() {
 
 export async function setUsername(username: string) {
     try {
-        await axios.post('api/users/me', { username: username }, { headers: authHeader() });
+        return await axios.post('api/users/me', { username: username }, { headers: authHeader() });
     }
     catch(e) {
         console.log(e);

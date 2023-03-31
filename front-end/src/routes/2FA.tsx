@@ -1,11 +1,12 @@
 import React from "react";
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { setToken } from "../api/Api";
 import Connexion from "../components/form/ConnexionForm";
 
 export default function DoubleFA() {
     const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
+    const navigate = useNavigate();
     if(!access_token) {
         return (
             <div>
@@ -15,6 +16,6 @@ export default function DoubleFA() {
         );
     }
     return (
-        <Connexion acces_code={access_token}></Connexion>
+        <Connexion acces_code={access_token} navigate={navigate} />
     );
 };

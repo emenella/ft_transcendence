@@ -1,16 +1,22 @@
 import React from "react";
 import { login } from '../../api/Auth'
-import { tokenFunction } from "../../utils/interface";
+import { isNotConnected } from "../../utils/interface";
 
-function takeJWT() {
-    const access_token = login(2);
-    localStorage.setItem("token", JSON.stringify(access_token));
-}
 
-class LoginWithout42 extends React.Component<tokenFunction> {
+class LoginWithout42 extends React.Component<isNotConnected> {
+
+    constructor(props: isNotConnected) {
+        super(props);
+    }
+
+    async takeJWT() {
+        const access_token = await login(2);
+        this.props.login(access_token);
+    }
+
     render() {
         return (
-            <button onClick={() => { takeJWT(); this.props.setToken(); }}>Connexion sans 42</button>
+            <button onClick={() => { this.takeJWT(); }}>Connexion sans 42</button>
         );
     }
 }

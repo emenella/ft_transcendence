@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { tokenFunction } from "../../utils/interface";
+import { isNotConnected } from "../../utils/interface";
 
-class LoginButton extends React.Component<tokenFunction> {
+class LoginButton extends React.Component<isNotConnected> {
 	render() {
 		return (
 			<Link to="/connexion">Connexion</Link>

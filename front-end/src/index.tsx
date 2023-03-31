@@ -1,14 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
-import './index.css';
-import { router } from './router'
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { createRoot } from 'react-dom/client';
+import App from "./App";
+import Auth from "./routes/Auth";
+import DoubleFA from "./routes/2FA";
+import SetUsername from "./routes/SetUsername";
+import Error from "./components/Error";
 
-const root = ReactDOM.createRoot(
+const root = createRoot(
     document.getElementById('root') as HTMLElement
 );
+
 root.render(
-    <React.StrictMode>
-            <RouterProvider router={router} />
-    </React.StrictMode>
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/2fa" element={<DoubleFA />} />
+        <Route path="/set-username" element={<SetUsername />} />
+        <Route path="/error" element={<Error />} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
 );

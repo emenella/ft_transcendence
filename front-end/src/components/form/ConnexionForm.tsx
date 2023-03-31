@@ -1,11 +1,15 @@
 import React, { ChangeEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { submitCode2FA } from "../../api/Auth";
-import { redirect } from "react-router-dom";
 
-class Connexion extends React.Component<{acces_code: string}> {
+interface ConnexionProps {
+	acces_code: string;
+	navigate: any;
+}
+
+class Connexion extends React.Component<ConnexionProps, {secret: string}> {
 	state = {
 		secret : '',
-		acces_code: this.props.acces_code
 	}
 
 	constructor(props: any) {
@@ -14,9 +18,13 @@ class Connexion extends React.Component<{acces_code: string}> {
 		this.handleClick = this.handleClick.bind(this);
 	}
 
-	handleClick() {
-        submitCode2FA(this.state.secret, this.state.acces_code).then(() => {;
-		redirect("/"); });
+	async handleClick() {
+        const token = await submitCode2FA(this.state.secret, this.props.acces_code);
+		if (token)
+		{
+			localStorage.setItem("token", token);
+			this.props.navigate("/");
+		}
 	}
 
 	setSecret(e: ChangeEvent<HTMLInputElement>) : void {
@@ -32,5 +40,12 @@ class Connexion extends React.Component<{acces_code: string}> {
 		);
 	}
 }
+
+function ConnexionWrap(props: any) {
+	const navigate = useNavigate();
+
+	return (<Connexion acces_code={props.acces_code} navigate={navigate} />);
+}
+
 
 export default Connexion;

@@ -1,5 +1,5 @@
 import React from "react";
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { setToken } from "../api/Api";
 import { getQRCode } from "../api/Auth";
 import QRCodeForm from "../components/form/QRCodeForm";
@@ -8,6 +8,7 @@ function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
 	const [qrcode, setQRCode] = React.useState<string>();
+	const navigate = useNavigate();
 	React.useEffect(() => {
 		const getQRCodeSrc = async () => {
 			const tmp = await getQRCode(access_token);
@@ -17,19 +18,14 @@ function Auth() {
 	}, []);
 	
 	if(!access_token) {
-		return (
-			<div>
-				<h1>Erreur</h1>
-				<p>Vous n'avez pas accès à cette page</p>
-			</div>
-		);
+		navigate("/error");
 	}
 
 
 	return (
 		<div>
 			<img src={qrcode} />
-			<QRCodeForm acces_token={access_token} />
+			<QRCodeForm accessToken={access_token as string} navigate={navigate} />
 		</div>
 	);
 }

@@ -1,8 +1,15 @@
 import React, { ChangeEvent } from "react";
 import { setUsername } from "../../api/User";
-import { redirect } from "react-router-dom";
 
-class UsernameForm extends React.Component {
+interface UsernameFormProps {
+	navigate: any;
+}
+
+interface UsernameFormState {
+	username: string;
+}
+
+class UsernameForm extends React.Component<UsernameFormProps, UsernameFormState> {
 	state = {
 		username : ''
 	}
@@ -11,12 +18,15 @@ class UsernameForm extends React.Component {
 		super(props);
 		this.setUsername = this.setUsername.bind(this);
 		this.handleClick = this.handleClick.bind(this);
+		
 	}
 
-	handleClick() {
-		setUsername(this.state.username).then(() => {;
-		redirect("/");
-	});
+	async handleClick() {
+		const req = await setUsername(this.state.username);
+		if (req?.status === 200)
+		{
+			this.props.navigate("/");
+		}
 	}
 
 	setUsername(e: ChangeEvent<HTMLInputElement>) : void {

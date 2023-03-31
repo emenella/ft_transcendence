@@ -2,6 +2,10 @@ export interface Token {
 	hasToken : boolean;
 }
 
-export interface tokenFunction {
-    setToken: () => void;
+export interface isConnected {
+    lougout: () => void;
+}
+
+export interface isNotConnected {
+    login: (token: string) => void;
 }
