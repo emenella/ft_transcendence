@@ -4,7 +4,6 @@ import { AuthenticationService } from '../../Auth/Authenfication.service';
 import { UserService } from '../../Users/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
 import { User } from '../../Users/entity/User.entity';
-import { HttpException, HttpStatus } from '@nestjs/common';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{
@@ -66,6 +65,6 @@ export class MatchmakingGateway{
             }
         }
         client.disconnect();
-        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+        throw new Error('Unauthorized');
     }
 }

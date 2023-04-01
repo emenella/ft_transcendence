@@ -7,6 +7,7 @@ export const factory = async (): Promise<MulterModuleOptions> => {
     return { 
         storage: diskStorage({
             filename: async (req , file, cb) => {
+                console.log("Multer filename called!");
                 if (!req.user) {
                     cb(new Error('User not found!'), "");
                 }
@@ -19,6 +20,7 @@ export const factory = async (): Promise<MulterModuleOptions> => {
             destination: "./uploads/",
         }),
         fileFilter: (req, file, cb) => {
+            console.log("Multer fileFilter called!");
             req;
             if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
                 cb(null, true);
