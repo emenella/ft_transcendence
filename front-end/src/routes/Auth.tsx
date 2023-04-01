@@ -21,7 +21,6 @@ function Auth() {
 		navigate("/error");
 	}
 
-
 	return (
 		<div>
 			<img src={qrcode} />

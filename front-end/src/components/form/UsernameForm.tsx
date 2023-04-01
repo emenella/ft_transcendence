@@ -23,7 +23,7 @@ class UsernameForm extends React.Component<UsernameFormProps, UsernameFormState>
 
 	async handleClick() {
 		const req = await setUsername(this.state.username);
-		if (req?.status === 200)
+		if (req?.status === 201)
 		{
 			this.props.navigate("/");
 		}
