@@ -76,8 +76,8 @@ export class Game {
 
     private handleSearchGame(ids: string[]) {
         this.gameFind = ids;
-        if (ids.length > 0) {
-            this.joinGame(ids[0]);
+        for (let i = 0; i < this.gameFind.length; i++) {
+            console.log(this.gameFind[i]);
         }
     }
 

@@ -1,10 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from 'react';
 import { Game } from './engine/Game';
 import { Socket, io } from 'socket.io-client';
 import { getMe } from '../../api/User';
 import { User } from './engine/interfaces/ft_pong.interface';
-import { cp } from "fs";
-
 
 const WebGame = "https://localhost/game";
 const WebMatchmaking = "https://localhost/matchmaking";
@@ -21,66 +19,71 @@ interface PongGameState {
     canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
-
 class PongGame extends Component<PongGameProps, PongGameState> {
-    private ctx: CanvasRenderingContext2D | undefined | null;
-    private socketGame: Socket;
-    private socketMatchmaking: Socket;
+    canvasRef: React.RefObject<HTMLCanvasElement>;
+    socketGame: Socket;
+    socketMatchmaking: Socket;
 
     constructor(props: PongGameProps) {
         super(props);
+        this.canvasRef = createRef();
+        this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
+        this.socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: props.token } });
         this.state = {
+            game: null,
             me: null,
-            canvasRef: React.createRef(),
-            game: null
+            canvasRef: this.canvasRef
         };
-        this.socketGame = io(WebGame, { extraHeaders: { Authorization: this.props.token } });
-        this.socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: this.props.token } });
     }
 
-    async setGame() {
-        this.ctx = this.state.canvasRef.current?.getContext('2d');
-        if (!this.state.me || !this.ctx)
-            return;
-        let game = new Game(this.socketGame, this.socketMatchmaking, this.state.me, this.ctx);
-        this.setState({ game: game });
+    componentDidMount() {
+        this.fetchUser();
     }
 
-    async getUser () {
+    async fetchUser() {
         const user = await getMe();
         console.log(user);
         this.setState({ me: user });
     }
 
-    async joinQueue() {
-        if (!this.state.game)
-            return;
-        this.state.game.joinQueue();
-    }
-
-    async leaveQueue() {
-        if (!this.state.game)
-            return;
-        this.state.game.leaveQueue();
-    }
-
-    async searchGame() {
-        console.log(this.state.game);
-        if (!this.state.game)
-            return;
-        this.state.game.searchGame();
-    }
-
-    async componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<PongGameState>, snapshot?: any) {
-        if (this.state.me && !this.state.game) {
-            this.setGame();
+    componentDidUpdate(prevProps: PongGameProps, prevState: PongGameState) {
+        const { me } = this.state;
+        const ctx = this.canvasRef.current!.getContext('2d');
+        if (me && ctx && !prevState.me) {
+            const newGame = new Game(this.socketGame, this.socketMatchmaking, me, ctx);
+            this.setState({ game: newGame });
         }
     }
 
+    joinQueue = () => {
+        const { game } = this.state;
+        if (!game) {
+            return;
+        }
+        game.joinQueue();
+    };
+
+    leaveQueue = () => {
+        const { game } = this.state;
+        if (!game) {
+            return;
+        }
+        game.leaveQueue();
+    };
+
+    searchGame = () => {
+        const { game } = this.state;
+        if (!game) {
+            return;
+        }
+        game.searchGame();
+    };
+
     render() {
+        const { width, height } = this.props;
         return (
             <div>
-                <canvas ref={this.state.canvasRef} width={this.props.width} height={this.props.height} />
+                <canvas ref={this.canvasRef} width={width} height={height} />
             </div>
         );
     }
