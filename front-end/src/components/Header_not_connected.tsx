@@ -14,7 +14,8 @@ class HeaderNotConnected extends React.Component<isNotConnected> {
                 <SignUpButton />
                 <br />
                 <LoginWithout42 login={this.props.login} />
-            </div>);
+            </div>
+        );
     }
 }
 

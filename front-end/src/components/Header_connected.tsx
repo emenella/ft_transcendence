@@ -3,17 +3,20 @@ import { isConnected } from '../utils/interface';
 import { Link } from "react-router-dom";
 
 class HeaderConnected extends React.Component<isConnected> {
-
     constructor(props: isConnected) {
         super(props);
     }
 
     render() {
+        const linkStyle = {
+            color: "white",
+        }
+
         return (
             <div>
-                <Link to="/profil">Profil</Link>
+                <Link to="/profil" style={linkStyle}>Profil</Link>
                 <br />
-                <Link to="/accountmanagement">Paramètres de compte</Link>
+                <Link to="/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
                 <br />
                 <button onClick= {this.props.logout}>Déconnexion</button>
             </div>

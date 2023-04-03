@@ -5,7 +5,7 @@ import logo from '../assets/white_logo.png';
 class BodyNotConnected extends React.Component {
 	render() {
 		return (
-			<div>
+			<div className='notconnected'>
 				<h2>
 					Bienvenue sur votre site préféré de pong codé par vos plus dévoués
 					développeurs.
