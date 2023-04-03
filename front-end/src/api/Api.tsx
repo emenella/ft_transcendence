@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const client = axios.create({
-	baseURL: "https://localhost/"
+	baseURL: "https://localhost:4430",
 });
 
 export function authHeader(type?: string) {
