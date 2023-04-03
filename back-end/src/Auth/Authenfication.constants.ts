@@ -15,3 +15,9 @@ export const API = {
 export const passPhrase = {
     secret: process.env.PASSPHRASE,
 };
+
+export const serverOption = {
+    protocole: process.env.PROTOCOLE,
+    hostname: process.env.HOSTNAME,
+    port: process.env.PORT
+}
