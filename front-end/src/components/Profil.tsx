@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './Profil.css';
 import { getMe } from '../api/User';
 
-{/* Onglet "Profil" */ }
 // Besoin de fix l'arrangement photo et pseudo
 function Profil() {
 	const [user, setUser] = React.useState<any>();
@@ -35,7 +34,7 @@ function Profil() {
 
 	// const winrate = (user.winMatch / user.matchs) * 100;
 
-	const listMatchs = matchs.map((match : any) => {
+	const listMatchs = matchs.map((match: any) => {
 		if (match.winner.username === user.username) {
 			<div className="winner">
 				<tr>

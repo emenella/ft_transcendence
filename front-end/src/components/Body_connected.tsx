@@ -5,7 +5,6 @@ import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
 
-// map sur retour de l'API pour afficher
 function ChatSidebar() {
 	return (
 		<div className='chatSidebar'>
@@ -27,7 +26,6 @@ function ChatSidebar() {
 	);
 }
 
-// map sur retour de l'API pour afficher
 function UserSidebar() {
 	return (
 		<div className='userSidebar'>
@@ -70,29 +68,28 @@ function Chat() {
 }
 
 class BodyConnected extends React.Component {
-	
 	constructor(props: any) {
 		super(props);
 	}
-  
+
 	render() {
-	  return (
-		<div className="connected">
-		  <ChatSidebar />
-		  <div className="connectedCenter">
-			<div>
-			  <Routes>
-				<Route path="/" element={<Matchmaking />} />
-				<Route path="/accountmanagement" element={<AccountManagement />} />
-				<Route path="/profil" element={<Profil />} />
-			  </Routes>
+		return (
+			<div className="connected">
+				<ChatSidebar />
+				<div className="connectedCenter">
+					<div>
+						<Routes>
+							<Route path="/" element={<Matchmaking />} />
+							<Route path="/accountmanagement" element={<AccountManagement />} />
+							<Route path="/profil" element={<Profil />} />
+						</Routes>
+					</div>
+					<Chat />
+				</div>
+				<UserSidebar />
 			</div>
-			<Chat />
-		  </div>
-		  <UserSidebar />
-		</div>
-	  );
+		);
 	}
-  }
+}
 
 export default BodyConnected;

@@ -2,22 +2,13 @@ import React, { ChangeEvent } from 'react';
 import { Link, redirect } from 'react-router-dom';
 import './AccountManagement.css'
 import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../api/User';
-
-{/* Onglet "Gestion du compte" */ }
-
-interface AccountManagementState
-{
-	username : string;
-	image: File | undefined;
-	id : number;
-}
-
+import { AccountManagementState } from '../utils/interface';
 
 class AccountManagement extends React.Component<any, AccountManagementState> {
 	state: AccountManagementState = {
-		username : '',
+		username: '',
 		image: undefined,
-		id : 0
+		id: 0
 	}
 
 	constructor(props: any) {
@@ -31,8 +22,7 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 	async handleSubmit() {
 		if (this.state.username !== '')
 			await setUsername(this.state.username);
-		if (this.state.image)
-		{
+		if (this.state.image) {
 			console.log(this.state.image);
 			const formData = new FormData();
 			formData.append("file", this.state.image);
@@ -40,12 +30,12 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		}
 	}
 
-	setUsername(e: ChangeEvent<HTMLInputElement>) : void {
-		this.setState({ username : e.target.value });
+	setUsername(e: ChangeEvent<HTMLInputElement>): void {
+		this.setState({ username: e.target.value });
 	}
 
-	setImage(e: ChangeEvent<HTMLInputElement>) : void {
-		this.setState({ image : e.target.files![0] });
+	setImage(e: ChangeEvent<HTMLInputElement>): void {
+		this.setState({ image: e.target.files![0] });
 	}
 
 	async setId() {
@@ -55,7 +45,7 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 			return user.id;
 		};
 		const id = await getUser();
-		this.setState({ id : id})
+		this.setState({ id: id })
 	}
 
 	render() {

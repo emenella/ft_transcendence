@@ -1,19 +1,9 @@
 import React from "react";
+import "./Form.css";
 import { saveQRCode } from "../../api/Auth";
-import { useNavigate } from "react-router-dom";
-
-
-interface QRCodeFormProps {
-	accessToken: string;
-	navigate: any;
-}
-
-interface QRCodeFormState {
-	secret: string;
-}
+import { QRCodeFormProps, QRCodeFormState } from "../../utils/interface";
 
 class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
-	
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -37,12 +27,14 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 
 	render() {
 		return (
-			<div>
-				<label>
-					Secret :{" "}
-					<input type="text" onChange={this.setSecret} />
-				</label>
-				<button onClick={this.handleClick}>Envoyer</button>
+			<div className="parent">
+				<p>Veuillez scanner ce QRCode avec votre application Google Authenticator.</p>
+				<img src={this.props.qrcode} />
+				<br />
+				<div className="form">
+					<label>Veuillez entrer votre code secret correspondant : <input type="text" onChange={this.setSecret} /> </label>
+					<button onClick={this.handleClick}>Envoyer</button>
+				</div>
 			</div>
 		);
 	}

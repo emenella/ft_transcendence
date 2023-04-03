@@ -6,7 +6,7 @@ export const client = axios.create({
 
 export function authHeader(type?: string) {
 	let token = localStorage.getItem("token");
-	
+
 	if (token) {
 		let access_token = token;
 		return {
