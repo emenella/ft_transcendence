@@ -45,3 +45,43 @@ export async function delete2FA() {
         console.log(e);
     }
 }
+
+export async function getFriends() {
+    try {
+        const res = await axios.get('api/users/friends', { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function getAvatar(id: number) {
+    try {
+        const res = await axios.get('api/users/' + id + '/avatar', { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function getUserById(id: number) {
+    try {
+        const res = await axios.get('/api/users/id/?id=' + id, { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function getMatchs(id: number) {
+    try {
+        const res = await axios.get('?', { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
