@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
 import { Avatar } from "../entity/Avatar.entity";
+import { MatchHistory } from '../entity/History.entity';
 
 @Injectable()
 export class UserService {
@@ -108,6 +109,12 @@ export class UserService {
 				await this.userRepository.save(friend);
 			}
 		}
+
+		async getMatchHistory(user: User): Promise<MatchHistory[]> {
+			const matchHistory: MatchHistory[] = user.winMatch.concat(user.looseMatch);
+			matchHistory.sort((a, b) => (a.date > b.date ? -1 : 1));
+            return matchHistory;
+        }
 
         async acceptFriend(user: User, friend: User): Promise<void> {
             if (user.friends.some(f => f.id === friend.id))
