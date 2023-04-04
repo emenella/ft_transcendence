@@ -94,6 +94,12 @@ export class UserService {
             await this.userRepository.save(user);
             return file.path;
         }
+		
+		async getMatchHistory(user: User): Promise<MatchHistory[]> {
+			const matchHistory: MatchHistory[] = user.winMatch.concat(user.looseMatch);
+			matchHistory.sort((a, b) => (a.date > b.date ? -1 : 1));
+			return matchHistory;
+		}
         
         async getFriends(user: User): Promise<User[]> {
             return user.friends;
@@ -114,12 +120,6 @@ export class UserService {
 				await this.userRepository.save(friend);
 			}
 		}
-
-		async getMatchHistory(user: User): Promise<MatchHistory[]> {
-			const matchHistory: MatchHistory[] = user.winMatch.concat(user.looseMatch);
-			matchHistory.sort((a, b) => (a.date > b.date ? -1 : 1));
-            return matchHistory;
-        }
 
         async acceptFriend(user: User, friend: User): Promise<void> {
             if (user.friends.some(f => f.id === friend.id))
