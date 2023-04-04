@@ -72,9 +72,9 @@ export class UserService {
         async uploadAvatar(id: number, file: Express.Multer.File): Promise<string> {
             let user = await this.userRepository.findOne({ where: { id: id }, relations: ["avatar"] });
             if (!user)
-            throw new HttpException(`User with ID ${id} not found.`, 404);
+                throw new HttpException(`User with ID ${id} not found.`, 404);
             if (!user.isProfileComplete)
-            throw new HttpException(`User with ID ${id} has not completed his profile.`, 400);
+                throw new HttpException(`User with ID ${id} has not completed his profile.`, 400);
             if (!user.avatar)
             {
                 user.avatar = new Avatar();
