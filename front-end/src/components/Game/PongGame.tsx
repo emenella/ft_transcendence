@@ -2,15 +2,16 @@ import React, { Component, createRef } from 'react';
 import { Game } from './engine/Game';
 import { Socket, io } from 'socket.io-client';
 import { getMe } from '../../api/User';
+import { url } from '../../api/Api';
 import { User } from './engine/interfaces/ft_pong.interface';
 
-const WebGame = "https://localhost/game";
-const WebMatchmaking = "https://localhost/matchmaking";
+const WebGame = url + '/game';
 
 interface PongGameProps {
     width: number;
     height: number;
     token: string;
+    socketMatchmaking: Socket
 }
 
 interface PongGameState {
@@ -22,13 +23,11 @@ interface PongGameState {
 class PongGame extends Component<PongGameProps, PongGameState> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     socketGame: Socket;
-    socketMatchmaking: Socket;
 
     constructor(props: PongGameProps) {
         super(props);
         this.canvasRef = createRef();
         this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
-        this.socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: props.token } });
         this.state = {
             game: null,
             me: null,
@@ -50,7 +49,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
         const { me } = this.state;
         const ctx = this.canvasRef.current!.getContext('2d');
         if (me && ctx && !prevState.me) {
-            const newGame = new Game(this.socketGame, this.socketMatchmaking, me, ctx);
+            const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
             this.setState({ game: newGame });
         }
     }
@@ -74,6 +73,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     searchGame = () => {
         const { game } = this.state;
         if (!game) {
+            console.log('no state game');
             return;
         }
         game.searchGame();
