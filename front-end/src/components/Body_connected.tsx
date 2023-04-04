@@ -89,8 +89,7 @@ function BodyConnected() {
 	const [user, setUser] = React.useState<any>();
 	React.useEffect(() => {
 		const getUser = async () => {
-			const tmp = await getMe();
-			setUser(tmp);
+			setUser(await getMe());
 		};
 		getUser();
 	}, []);
@@ -103,7 +102,7 @@ function BodyConnected() {
 					<Routes>
 						<Route path="/" element={<Matchmaking />} />
 						<Route path="/accountmanagement" element={<AccountManagement />} />
-						<Route path="/profil" element={<Profil user={user} />} />
+						<Route path="/profil" element={<Profil id={user?.id} />} />
 					</Routes>
 				</div>
 				<Chat />

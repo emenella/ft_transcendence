@@ -11,7 +11,7 @@ export interface isNotConnected {
 }
 
 export interface ConnexionProps {
-	acces_code: string;
+	access_code: string;
 	navigate: any;
 }
 
@@ -33,9 +33,13 @@ export interface UsernameFormState {
 	username: string;
 }
 
-export interface AccountManagementState
-{
+export interface AccountManagementState {
 	username : string;
 	image: File | undefined;
 	id : number;
+}
+
+export interface emojiProps {
+    label: string;
+    symbol: any;
 }

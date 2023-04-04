@@ -13,7 +13,7 @@ interface MatchmakingState {
 class Matchmaking extends React.Component<any, MatchmakingState> {
 	constructor(props: any) {
 		super(props);
-		console.log(getToken() as string);
+		// console.log(getToken() as string);
 		this.state = { isSearching: false, pongGame: React.createRef() };
 	}
 
@@ -40,9 +40,9 @@ class Matchmaking extends React.Component<any, MatchmakingState> {
 	render() {
 		return (
 			<div className='matchmaking'>
-				<PongGame ref={this.state.pongGame} width={800} height={600} token={getToken() as string} />
+				{/* <PongGame ref={this.state.pongGame} width={800} height={600} token={getToken() as string} />
 				<SearchButton onClick={this.joinQueueHandler} isSearching={this.state.isSearching} ></SearchButton>
-				{this.state.isSearching ? <LeaveButton onClick={this.leaveQueueHandler} ></LeaveButton> : null}
+				{this.state.isSearching ? <LeaveButton onClick={this.leaveQueueHandler} ></LeaveButton> : null} */}
 			</div>
 		);
 	}

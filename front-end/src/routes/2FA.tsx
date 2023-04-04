@@ -17,6 +17,6 @@ export default function DoubleFA() {
     }
     
     return (
-        <Connexion acces_code={access_token} navigate={navigate} />
+        <Connexion access_code={access_token} navigate={navigate} />
     );
 };

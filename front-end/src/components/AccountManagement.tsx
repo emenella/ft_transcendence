@@ -1,4 +1,5 @@
 import React, { ChangeEvent } from 'react';
+import toast from 'react-hot-toast';
 import { Link, redirect } from 'react-router-dom';
 import './AccountManagement.css'
 import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../api/User';
@@ -22,7 +23,13 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 
 	async handleSubmit() {
 		if (this.state.username !== '')
-			await setUsername(this.state.username);
+		{
+			const req = await setUsername(this.state.username);
+			// if (req?.status === 201)
+			// 	toast.success('Pseudo enregistré.');
+			// else
+			// 	toast.error('Erreur. Veuillez réessayer.')
+		}
 		if (this.state.image) {
 			console.log(this.state.image);
 			const formData = new FormData();
@@ -70,7 +77,7 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 					<br /><br />
 					<label>Désactivation 2FA : </label> <button onClick={delete2FA}><Emoji label="heavy_check_mark" symbol="✔️" /></button>
 					<br /><br />
-					<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('*'); }}>Supprimer le compte</button>
+					<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('/'); }}>Supprimer le compte</button>
 				</div>
 			</div>
 		);
