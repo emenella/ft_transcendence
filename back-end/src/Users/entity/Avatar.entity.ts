@@ -6,7 +6,7 @@ export class Avatar {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({default: "../../../../front-end/src/assets/stormtrooper.jpg"})
     path: string;
 
     @ManyToOne(() => User, user => user.avatar)
