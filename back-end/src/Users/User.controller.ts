@@ -38,7 +38,7 @@ export class UserControllers {
     }
     
     @Get("/match_history/")
-    async getMatchHistory(@Req() req: Request, @Query('playerId') playerId: number): Promise<MatchHistory[]> {
+    async getMatchHistory(@Query('playerId') playerId: number): Promise<MatchHistory[]> {
 		const player: User = await this.getUserById(playerId);
         return this.userService.getMatchHistory(player);
     }
