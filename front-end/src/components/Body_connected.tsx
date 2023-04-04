@@ -4,7 +4,7 @@ import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
-import { getMe, getFriends, getAvatar } from '../api/User';
+import { getMe, getFriends } from '../api/User';
 
 function ChatSidebar() {
 	return (
@@ -28,14 +28,14 @@ function ChatSidebar() {
 }
 
 function UserSidebar() {
-	const [friends, setFriends] = React.useState<any>();
-	React.useEffect(() => {
-		const getFriendsList = async () => {
-			const tmp = await getFriends();
-			setFriends(tmp);
-		};
-		getFriendsList();
-	}, []);
+	// const [friends, setFriends] = React.useState<any>();
+	// React.useEffect(() => {
+	// 	const getFriendsList = async () => {
+	// 		const tmp = await getFriends();
+	// 		setFriends(tmp);
+	// 	};
+	// 	getFriendsList();
+	// }, []);
 
 	// const listFriends = friends.map((friend: any) => {
 	// 	const [avatar, setAvatar] = React.useState<any>();

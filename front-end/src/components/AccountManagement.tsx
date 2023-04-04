@@ -3,6 +3,7 @@ import { Link, redirect } from 'react-router-dom';
 import './AccountManagement.css'
 import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../api/User';
 import { AccountManagementState } from '../utils/interface';
+import Emoji from './Emoji';
 
 class AccountManagement extends React.Component<any, AccountManagementState> {
 	state: AccountManagementState = {
@@ -49,19 +50,28 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 	}
 
 	render() {
+		const linkStyle = {
+            color: "black",
+			textDecoration: "none"
+        }
+
 		return (
-			<div className='account-management'>
-				<Link to={"/"}>&#60;- Retour au matchmaking</Link>
-				<h2>GESTION DU COMPTE</h2>
-				<form onSubmit={this.handleSubmit}>
-					<label>Changer de pseudo : </label> <input type="text" onChange={this.setUsername} ></input> <br />
-					<label>Changer de photo de profil : </label> <input type="file" accept='.PNG,.JPG' onChange={this.setImage} /> <br />
-					<button type="submit">Valider</button>
-				</form>
-				<br />
-				<label>Désactivation 2FA : </label> <button onClick={delete2FA} />
-				<br />
-				<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('*'); }}>Supprimer le compte</button>
+			<div>
+				<Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
+				<div className='account-management'>
+					<h2>Gestion du compte</h2>
+					<form onSubmit={this.handleSubmit}>
+						<label>Changer de pseudo : </label> <input type="text" onChange={this.setUsername} ></input>
+						<br /><br />
+						<label>Changer de photo de profil : </label> <input type="file" accept='.PNG,.JPG' onChange={this.setImage} />
+						<br /><br />
+						<button type="submit">Valider</button>
+					</form>
+					<br /><br />
+					<label>Désactivation 2FA : </label> <button onClick={delete2FA}><Emoji label="heavy_check_mark" symbol="✔️" /></button>
+					<br /><br />
+					<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('*'); }}>Supprimer le compte</button>
+				</div>
 			</div>
 		);
 	}

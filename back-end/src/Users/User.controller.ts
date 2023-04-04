@@ -3,6 +3,7 @@ import { Request } from "express";
 import { User } from "./entity/User.entity";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { UserService } from "./service/User.service";
+import { MatchHistory } from './entity/History.entity';
 
 
 @Controller("users")
@@ -36,6 +37,12 @@ export class UserControllers {
         return this.userService.updateUsername(user.id, username);
     }
     
+    @Get("/match_history/")
+    async getMatchHistory(@Req() req: Request): Promise<MatchHistory[]> {
+        const user: User = await this.getMe(req);
+        return this.userService.getMatchHistory(user);
+    }
+
     @Get("/friends/")
     async getFriends(@Req() req: Request): Promise<User[]> {
         const user: User = await this.getMe(req);

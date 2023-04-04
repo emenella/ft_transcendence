@@ -56,16 +56,6 @@ export async function getFriends() {
     }
 }
 
-export async function getAvatar(id: number) {
-    try {
-        const res = await axios.get('api/users/' + id + '/avatar', { headers: authHeader() });
-        return res.data;
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-
 export async function getUserById(id: number) {
     try {
         const res = await axios.get('/api/users/id/?id=' + id, { headers: authHeader() });
