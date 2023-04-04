@@ -3,11 +3,11 @@ import { ChanService } from "./Chan.service";
 import { Chan, RelationTable } from "./Chan.entity";
 import { ChanPasswordService } from "./Chan.password.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserService } from "../../Users/service/User.service";
+import { UserModule } from "../../Users/Users.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Chan, RelationTable])],
-    providers: [ChanPasswordService, ChanService, UserService],
+    imports: [TypeOrmModule.forFeature([Chan, RelationTable]), UserModule],
+    providers: [ChanPasswordService, ChanService],
     exports: [ChanService]
 })
 export class ChanModule {}

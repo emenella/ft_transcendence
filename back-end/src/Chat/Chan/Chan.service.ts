@@ -258,7 +258,7 @@ export class ChanService {
 				const rel = await this.chanRelRepo.findOne({ relations : ["chan", "user"],
 					        where : { chan : { id : chan.id }, ban_expire: undefined } })
 				if (rel) {
-					rel.mute_expire = null;
+					rel.mute_expire = undefined;
 					rel.isAdmin = true;
 					newOwner = rel.user;
 					await this.chanRelRepo.save(rel);
@@ -419,12 +419,12 @@ export class ChanService {
 	async isMute(id: number, userId: number) : Promise<boolean> {
 		let rel = await this.getRelOf(id, userId);
 
-		if (rel === undefined || rel.mute_expire === null)
+		if (rel === undefined || rel.mute_expire === undefined)
 			return false;
 
 		if (rel.mute_expire <= new Date())
 		{
-			rel.mute_expire = null;
+			rel.mute_expire = undefined;
 			await this.chanRelRepo.save(rel);
 			return (false)
 		}
@@ -468,7 +468,7 @@ export class ChanService {
 		const rel = await this.getRelOf(id, unmuteId);
 		if (rel === undefined || rel === null)
 			return "User not in chan !";
-		rel.mute_expire = null;
+		rel.mute_expire = undefined;
 
 		await this.chanRelRepo.save(rel);
 		return (true);

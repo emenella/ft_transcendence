@@ -72,8 +72,8 @@ export class RelationTable
 	isInvite: boolean;
 
 	@Column({ nullable: true })
-	mute_expire: Date | null;
+	mute_expire?: Date;
 
 	@Column({ nullable: true })
-	ban_expire: Date | null;
+	ban_expire?: Date;
 }
