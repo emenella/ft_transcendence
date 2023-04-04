@@ -1,7 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
 import { Chan } from '../../Chat/Chan/Chan.entity';
 import { RelationTable } from '../../Chat/Chan/Chan.entity';
 import { Message } from '../../Chat/Message/Message.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { MatchHistory } from './History.entity';
 import { Connection } from './Connection.entity';
 import { Avatar } from './Avatar.entity';
@@ -35,12 +35,27 @@ export class User {
     @Column('boolean', {default: false})
     isProfileComplete: boolean;
 
+    // float in 
     @Column({default: 1000})
     elo: number;
 
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner)
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner, {cascade: true})
     winMatch: MatchHistory[];
 
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser)
+    @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser, {cascade: true})
     looseMatch: MatchHistory[];
+
+    // default []
+	@ManyToMany(() => User)
+    @JoinTable()
+    friends: User[];
+
+    // default []
+	@ManyToMany(() => User)
+    @JoinTable()
+    friend_invites: User[];
+
+    @ManyToMany(() => User)
+    @JoinTable()
+    blacklist: User[];
 }

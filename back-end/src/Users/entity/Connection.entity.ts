@@ -13,6 +13,9 @@ export class Connection {
     @Column({nullable: true, type: 'varchar'})
     otp: string | undefined;
 
+    @Column({nullable: true, type: 'varchar'})
+    iv: string | undefined;
+
     @Column({nullable: true, type: 'int'})
     id42: number | undefined;
 }

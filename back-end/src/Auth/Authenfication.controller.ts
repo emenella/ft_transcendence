@@ -4,6 +4,8 @@ import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
 import { Public } from './decorators/public.decoration';
 import { ConnectionService } from '../Users/service/Connection.service';
+import { User } from '../Users/entity/User.entity';
+import { serverOption } from './Authenfication.constants';
 
 @Controller('auth')
 export class AuthenticationController {
@@ -20,10 +22,17 @@ export class AuthenticationController {
     @UseGuards(FortyTwoGuard)
     @Get('callback')
     async postAuth(@Req() req: Request, @Res() res: Response) {
-        let token = await this.authenticationService.login(req.body.user);
-        res.redirect('http://localhost/auth?token=' + token.access_token);
+        let token = await this.authenticationService.login(req.user);
+        let payload = await this.authenticationService.verifyJWT(token.access_token);
+        if (!payload.otp) {
+            return res.redirect(serverOption.protocole + "://" + serverOption.hostname + ":" + serverOption.port + "/2fa?token=" + token.access_token);
+            
+        }
+        else {
+            return res.redirect(serverOption.protocole + "://" + serverOption.hostname + ":" + serverOption.port + "/auth?token=" + token.access_token);
+        }
     }
-
+    
     // Sign up without 42
     @Public()
     @Post('admin')
@@ -33,12 +42,12 @@ export class AuthenticationController {
     
     @Get('2fa/qrcode')
     async getQrCode(@Req() req: Request) {
-        return await this.authenticationService.generateQR(req.body.user);
+        return await this.authenticationService.generateQR(req.user as User);
     }
 
     @Post('2fa/save')
     async saveSecret(@Req() req: Request) {
-        return await this.authenticationService.saveSecret(req.body.user, req.body.code);
+        return await this.authenticationService.saveSecret(req.user as User, req.body.code);
     }
 
     @Public()
@@ -57,7 +66,7 @@ export class AuthenticationController {
 
     @Delete('2fa/delete')
     async deleteSecret(@Req() req: Request) {
-        return await this.authenticationService.deleteSecret(req.body.user);
+        return await this.authenticationService.deleteSecret(req.user as User);
     }
 
 }

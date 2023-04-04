@@ -45,7 +45,6 @@ export class GameService {
     };
 
     constructor() {
-        this.createGame();
     }
 
     public getGame(id: string): Game | undefined {
