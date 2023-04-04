@@ -13,7 +13,7 @@ import { Socket } from "socket.io";
 @Injectable()
 export class MatchmakingService {
     private sockets: Map<number, Socket> = new Map();
-    private queue: Array<User> = new Array();
+    private queue: Array<number> = new Array();
     private setup: general = {
         id: null,
         ScoreWin: 5,
@@ -33,26 +33,26 @@ export class MatchmakingService {
     constructor(private readonly gameService: GameService, private readonly userService: UserService,
         private readonly historyService: HistoryService) { }
 
-    async joinQueue(user: User, client: Socket): Promise<boolean> {
-        console.log("join queue " + user.id);
-        if (this.queue.includes(user) || await this.isInGame(user))
+    async joinQueue(user: User): Promise<boolean> {
+        console.log("join queue " + user.id + " " + this.queue.includes(user.id));
+        if (this.queue.includes(user.id) || await this.isInGame(user))
             return false;
-        this.queue.push(user);
-        this.sockets.set(user.id, client);
+        this.queue.push(user.id);
         await this.foundMatch().catch(err => console.log(err));
         return true;
     }
 
     async leaveQueue(user: User): Promise<boolean> {
-        console.log("leave queue " + user.id);
-        if (!this.queue.includes(user))
+        console.log("leave queue " + user.id + " " + this.queue.includes(user.id));
+        if (this.queue.includes(user.id))
             return false;
-        this.queue.splice(this.queue.indexOf(user), 1);
+        this.queue.splice(this.queue.indexOf(user.id), 1);
+        console.log(this.queue);
         await this.foundMatch().catch(err => console.log(err));
         return true;
     }
 
-    public getQueue(): Array<User> {
+    public getQueue(): Array<number> {
         return this.queue;
     }
 
@@ -152,7 +152,13 @@ export class MatchmakingService {
     }
 
     private async foundMatch(): Promise<boolean> {
-        const bestMatch = checkMatch(this.queue);
+        const users: User[] = [];
+        for (const id of this.queue) {
+            const user = await this.userService.getUserById(id);
+            if (user)
+                users.push(user);
+        }
+        const bestMatch = checkMatch(users);
         console.log("best match " + bestMatch);
         if (bestMatch) {
             const game: Game = await this.createGame(bestMatch.user0, bestMatch.user1);
@@ -209,6 +215,14 @@ export class MatchmakingService {
         history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];
         history.date = new Date();
         await this.historyService.addHistory(history);
+    }
+
+    public addSocket(user: User, socket: Socket): void {
+        this.sockets.set(user.id, socket);
+    }
+
+    public removeSocket(user: User): void {
+        this.sockets.delete(user.id);
     }
 
 }
