@@ -20,6 +20,7 @@ export class User {
     @Column('boolean', {default: false})
     isProfileComplete: boolean;
 
+    // float in 
     @Column({default: 1000})
     elo: number;
 

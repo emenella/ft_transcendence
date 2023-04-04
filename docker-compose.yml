@@ -18,6 +18,7 @@ services:
   nginx-proxy:
     container_name: nginx-proxy 
     image: nginx:stable
+    env_file: .env
     depends_on:
       - server
     ports:
@@ -44,7 +45,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "81:81"
+      - "4200:4200"
     # volumes:
     #   - ./back-end:/usr/backend
     networks:
@@ -52,19 +53,22 @@ services:
     restart: on-failure
     init: true
     
-  # app:
-  #   container_name: app
-  #   image: transcendence-app
-  #   build:
-  #     context: ./front-end
-  #   depends_on:
-  #     - server
-  #   volumes:
-  #    - ./front-end:/usr/front-end
-  #   networks:
-  #     - front-end
-  #   restart: on-failure
-  #   init: true
+  app:
+    container_name: app
+    image: transcendence-app
+    env_file: .env
+    build:
+      context: ./front-end
+    depends_on:
+      - server
+    ports:
+      - "3000"
+    volumes:
+     - ./front-end:/usr/front-end
+    networks:
+      - front-end
+    restart: on-failure
+    init: true
 
 volumes:
   database:
