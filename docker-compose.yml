@@ -56,7 +56,10 @@ services:
   app:
     container_name: app
     image: transcendence-app
-    env_file: .env
+    environment:
+      - REACT_APP_API_PROTOCOL=${PROTOCOL}
+      - REACT_APP_API_HOST=${HOSTNAME}
+      - REACT_APP_API_PORT=${PORT}
     build:
       context: ./front-end
     depends_on:
