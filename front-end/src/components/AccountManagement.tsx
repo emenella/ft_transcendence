@@ -25,10 +25,10 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		if (this.state.username !== '')
 		{
 			const req = await setUsername(this.state.username);
-			// if (req?.status === 201)
-			// 	toast.success('Pseudo enregistré.');
-			// else
-			// 	toast.error('Erreur. Veuillez réessayer.')
+			if (req?.status === 201)
+				toast.success('Pseudo enregistré.');
+			else
+				toast.error('Erreur. Veuillez réessayer.')
 		}
 		if (this.state.image) {
 			console.log(this.state.image);

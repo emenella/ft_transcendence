@@ -28,31 +28,21 @@ function ChatSidebar() {
 }
 
 function UserSidebar() {
-	// const [friends, setFriends] = React.useState<any>();
-	// React.useEffect(() => {
-	// 	const getFriendsList = async () => {
-	// 		const tmp = await getFriends();
-	// 		setFriends(tmp);
-	// 	};
-	// 	getFriendsList();
-	// }, []);
+	const [friends, setFriends] = React.useState<any>();
+	React.useEffect(() => {
+		const getFriendsList = async () => {
+			setFriends(await getFriends());
+		};
+		getFriendsList();
+	}, []);
 
-	// const listFriends = friends.map((friend: any) => {
-	// 	const [avatar, setAvatar] = React.useState<any>();
-	// 	React.useEffect(() => {
-	// 		const getFriendsAvatar = async () => {
-	// 			const tmp = await getAvatar(friend.id);
-	// 			setAvatar(tmp);
-	// 		};
-	// 		getFriendsAvatar();
-	// 	}, []);
-
-	// 	<tr>
-	// 		<td><img src={avatar.path} /></td>
-	// 		<td>{friend.username}</td>
-	// 	</tr>
-	// }
-	// );
+	const listFriends = friends?.map((friend: any) => {
+		<tr>
+			{/* <td><img src={friend.avatar.path} /></td> */}
+			<td>{friend.username}</td>
+		</tr>
+	}
+	);
 
 	return (
 		<div className='userSidebar'>
@@ -62,7 +52,7 @@ function UserSidebar() {
 						<th scope='row'>Amis</th>
 					</tr>
 				</thead>
-				{/* <tbody>{listFriends}</tbody> */}
+				<tbody>{listFriends}</tbody>
 			</table>
 		</div>
 	);

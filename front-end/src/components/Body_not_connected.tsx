@@ -10,7 +10,7 @@ function BodyNotConnected() {
 				développeurs.
 			</h2>
 			<img src={logo} alt="Logo du site" />
-			<h4>Venez vous mesurer aux meilleurs joueurs de tout Lyon !</h4>
+			<h4>Venez vous mesurer aux meilleurs joueurs de tout 42Lyon !</h4>
 			<p>
 				Pour ça rien de plus simple : créez-vous un compte ou connectez-vous,
 				puis lancez votre partie.
