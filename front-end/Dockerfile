@@ -4,7 +4,7 @@ WORKDIR /usr/front-end
 
 COPY package.json ./
 
-RUN [ "npm", "ci" ]
+RUN [ "npm", "install" ]
 
 COPY . .
 

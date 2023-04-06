@@ -19,5 +19,5 @@ export const passPhrase = {
 export const serverOption = {
     protocole: process.env.PROTOCOL,
     hostname: process.env.HOSTNAME,
-    port: process.env.PORT
+    port: process.env.PORT_SSL
 }
