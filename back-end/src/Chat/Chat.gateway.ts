@@ -10,16 +10,16 @@ import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
 
-@WebSocketGateway(8000, {cors: '*'})
+@WebSocketGateway(8000, {namespace: 'chat', cors: true})
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
+  @WebSocketServer() server : Server;
   constructor(
     private messageService: MessageService,
     private chanService: ChanService,
     private userService: UserService,
     private chatService: ChatService
   ) {}
-  @WebSocketServer() server : Server;
 
   private logger: Logger = new Logger('ChatGateway');
   private chans: string[] = [];
@@ -30,12 +30,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     publicChans.forEach((chan) => {
       this.chans.push(chan.title);
     })
-    this.logger.log('Initialized');
-    console.log('Chat init')
+    console.log('Chat initialized');
   }
 
   async handleConnection(client: Socket) {
-    this.logger.log(`Client connected: ${client.id}`);
+    console.log(`Client connected: ${client.id}`);
     console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
     console.log("CONNECTED CHAT YEAH")

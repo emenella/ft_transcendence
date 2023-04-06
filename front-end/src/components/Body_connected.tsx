@@ -4,6 +4,7 @@ import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
+import Chat from '../chat/Chat';
 
 // map sur retour de l'API pour afficher
 function ChatSidebar() {
@@ -52,7 +53,7 @@ function UserSidebar() {
 	);
 }
 
-function Chat() {
+function ChatFront() {
 	return (
 		<div className='chat'>
 			<table>
@@ -87,9 +88,10 @@ class BodyConnected extends React.Component {
 				<Route path="/profil" element={<Profil />} />
 			  </Routes>
 			</div>
-			<Chat />
+			<ChatFront />
 		  </div>
 		  <UserSidebar />
+		  <Chat />
 		</div>
 	  );
 	}

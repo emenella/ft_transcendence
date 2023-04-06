@@ -7,7 +7,6 @@ import HeaderNotConnected from './components/Header_not_connected';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 import { getToken, setToken } from './api/Api';
-import Chat from './chat/Chat'
 
 function App() {
   const [hasToken, setHasToken] = useState(!!getToken());
@@ -41,7 +40,6 @@ function App() {
       </div>
       {hasToken ? <BodyConnected /> : <BodyNotConnected />}
       <Footer />
-      <Chat />
     </div>
   );
 }
