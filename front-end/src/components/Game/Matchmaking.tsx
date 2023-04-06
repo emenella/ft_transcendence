@@ -4,14 +4,15 @@ import logo_matchmaking from '../../assets/logo_pong.jpg';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { getToken } from '../../api/Api';
-import { io } from 'socket.io-client';
+import { getToken, url } from '../../api/Api';
+import { io, Socket } from 'socket.io-client';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
   const pongGameRef = useRef<PongGame>(null);
+  const [getSocket, setSocket] = useState<Socket>();
 
-  const WebMatchmaking = "https://localhost/matchmaking";
+  const WebMatchmaking = url + '/matchmaking';
 
   const joinQueueHandler = () => {
     setIsSearching(true);
@@ -28,21 +29,19 @@ const Matchmaking = () => {
   };
 
   useEffect(() => {
-    const getUserAndSetGame = async () => {
-      searchGame();
-    };
-
-    getUserAndSetGame();
-  }, []);
-
-  useEffect(() => {
-    const socket = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
+    setSocket(io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } }))
+    console.log("useEffect socket")
     // ... setup socket listeners
     return () => {
       // ... cleanup socket listeners
-      socket.disconnect();
+      getSocket?.disconnect();
+
     };
   }, []);
+
+  useEffect(() => {
+    searchGame();
+  }, [getSocket]);
 
   return (
     <div className="matchmaking">
@@ -54,6 +53,7 @@ const Matchmaking = () => {
             width={800}
             height={600}
             token={getToken() as string}
+            socketMatchmaking={getSocket as Socket}
           />
         </div>
         <SearchButton

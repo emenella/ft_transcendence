@@ -24,15 +24,8 @@ export async function firstConnexion() {
 
 export async function login(id: number): Promise<string> {
 	let json = { user: { id: id } };
-	let user = await fetch("https://localhost/api/auth/admin", {
-		method: "POST",
-		mode: "cors",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(json),
-	});
-	const token = await user.json().then(s => s.access_token) as string
+	let user = await axios.post('/api/auth/admin', json, { headers: { 'Content-Type': 'application/json' }});
+	const token = await user.data.access_token;
 	return token;
 }
 

@@ -4,6 +4,8 @@ const protocol = process.env.REACT_APP_API_PROTOCOL
 const host = process.env.REACT_APP_API_HOST
 const port = process.env.REACT_APP_API_PORT
 
+export const url = `${protocol}://${host}:${port}`;
+
 export const client = axios.create({
 	baseURL: `${protocol}://${host}:${port}`,
 });
