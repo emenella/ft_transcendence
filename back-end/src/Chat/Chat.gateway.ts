@@ -11,7 +11,7 @@ import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
 
 @WebSocketGateway(8000, {cors: '*'})
-export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private messageService: MessageService,
@@ -21,7 +21,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   ) {}
   @WebSocketServer() server : Server;
 
-  private logger: Logger = new Logger('AppGateway');
+  private logger: Logger = new Logger('ChatGateway');
   private chans: string[] = [];
 
   async afterInit() {
@@ -31,11 +31,14 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       this.chans.push(chan.title);
     })
     this.logger.log('Initialized');
+    console.log('Chat init')
   }
 
   async handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);
+    console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
+    console.log("CONNECTED CHAT YEAH")
 
     if (user !== undefined) {
       const chanToJoin : ChanListDTO[] = await this.chanService.chanListOfUser(user.id);
