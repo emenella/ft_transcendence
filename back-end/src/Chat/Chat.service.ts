@@ -10,7 +10,7 @@ import { ChanService } from "./Chan/Chan.service";
 @Injectable()
 export class ChatService {
 
-    private chatUsers : ChatUser[];
+    private chatUsers : ChatUser[] = [];
 
     constructor(
         private userService: UserService,
@@ -19,44 +19,56 @@ export class ChatService {
     ) {}
 
     async connectUserFromSocket(socket: Socket): Promise<ChatUser | undefined> {
-        const connection: any = await this.authService.verifyJWT(socket.handshake.auth.token);
+        if (socket.handshake.headers.authorization) {
+            const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
 
-		if (connection === null || connection === undefined)
-			return (undefined);
-
-		const user : User = await this.userService.getUserFromConnectionId(connection.id);
-
-        if (user === null || user === undefined)
-		{
-			socket.disconnect();
-			return (undefined);
-		}
-
-		let idx = this.chatUsers.push({
-			socket: socket,
-			username: await this.getUsernameFromID(user.id),
-			id: user.id
-		})
-
-		return this.chatUsers[idx - 1];
+            if (connection === null || connection === undefined)
+                return (undefined);
+    
+            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+    
+            if (user === null || user === undefined)
+            {
+                socket.disconnect();
+                return (undefined);
+            }
+            
+            let idx = this.chatUsers.push({
+                socket: socket,
+                username: await this.getUsernameFromID(user.id),
+                id: user.id
+            })
+        
+            return this.chatUsers[idx - 1];
+        }
+        else {
+            socket.disconnect();
+            return (undefined);
+        }
 	}
 
     async getUserFromSocket(socket: Socket): Promise<ChatUser | undefined> {
-        const connection: any = await this.authService.verifyJWT(socket.handshake.auth.token);
+        if (socket.handshake.headers.authorization) {
+            const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
 
-		if (connection === null || connection === undefined)
-			return (undefined);
-
-		const user : User = await this.userService.getUserFromConnectionId(connection.id);
-
-        if (user === null || user === undefined)
-		{
-			socket.disconnect();
-			return (undefined);
-		}
-
-		let ret = this.chatUsers.find((u) => { return u.id === user.id})
-		return (ret);
+            if (connection === null || connection === undefined)
+                return (undefined);
+    
+            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+    
+            if (user === null || user === undefined)
+            {
+                socket.disconnect();
+                return (undefined);
+            }
+            
+            let ret = this.chatUsers.find((u) => { return u.id === user.id})
+		    return (ret);
+        }
+        else {
+            socket.disconnect();
+            return (undefined);
+        }
     }
 
 	async getUsernameFromID(userId : number) : Promise<string> {
@@ -82,20 +94,27 @@ export class ChatService {
 	}
 
     async disconnectClient(socket: Socket): Promise<undefined> {
-		const connection: any = await this.authService.verifyJWT(socket.handshake.auth.token);
+        if (socket.handshake.headers.authorization) {
+            const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
 
-		if (connection === null || connection === undefined)
-			return (undefined);
-
-		const user : User = await this.userService.getUserFromConnectionId(connection.id);
-
-        if (user === null || user === undefined)
-		{
-			socket.disconnect();
-			return (undefined);
-		}
-
-    	this.removeUser(user.id);
+            if (connection === null || connection === undefined)
+                return (undefined);
+    
+            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+    
+            if (user === null || user === undefined)
+            {
+                socket.disconnect();
+                return (undefined);
+            }
+            
+            this.removeUser(user.id);
+            return;
+        }
+        else {
+            socket.disconnect();
+            return (undefined);
+        }
 	}
 
     async handleCommand(server: Server, socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {

@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer, ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessageService } from './Message/Message.service';
 import { Message } from './Message/Message.entity';
@@ -10,15 +10,15 @@ import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
 
-@WebSocketGateway(8000, {namespace: 'chat', cors: true})
-export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway(81, {namespace: 'chat', cors: true})
+export class ChatGateway {
 
   @WebSocketServer() server : Server;
   constructor(
-    private messageService: MessageService,
-    private chanService: ChanService,
-    private userService: UserService,
-    private chatService: ChatService
+    private readonly messageService: MessageService,
+    private readonly chanService: ChanService,
+    private readonly userService: UserService,
+    private readonly chatService: ChatService
   ) {}
 
   private logger: Logger = new Logger('ChatGateway');
@@ -33,7 +33,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     console.log('Chat initialized');
   }
 
-  async handleConnection(client: Socket) {
+  async handleConnection(@ConnectedSocket() client: Socket) {
     console.log(`Client connected: ${client.id}`);
     console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
@@ -59,7 +59,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
   }
 
-  async handleDisconnect(client: Socket) {
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -74,7 +74,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('msgToServer')
-  async handleMessage(client: Socket, data: {author: string, chan: string, msg: string}): Promise<void> {
+  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {author: string, chan: string, msg: string}): Promise<void> {
     this.logger.log(data);
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
@@ -105,7 +105,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
           return;
         }
 
-        if (chan.owner.id === user.id) {
+        if (chan.ownerId === user.id) {
           data.author = '[owner] ' + user.username; 
         }
         else if (await this.chanService.isAdmin(chan.id, user.id) === true) {
@@ -124,7 +124,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('joinChan')
-  async handleJoinChan(client: Socket, data: {chan: string, password: string | null}) {  
+  async handleJoinChan(@ConnectedSocket() client: Socket, @MessageBody() data: {chan: string, password: string | null}) {  
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -153,7 +153,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('leaveChan')
-  async handleLeaveChan(client: Socket, chan: string) {
+  async handleLeaveChan(@ConnectedSocket() client: Socket, @MessageBody() chan: string) {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -180,7 +180,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('createChan')
-  async handleCreateChan(client: Socket, data: {title: string, isPrivate: boolean, password: string | undefined}) {
+  async handleCreateChan(@ConnectedSocket() client: Socket, @MessageBody() data: {title: string, isPrivate: boolean, password: string | undefined}) {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -207,7 +207,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('check')
-  async checking(client: Socket, data: string[]) {
+  async checking(@ConnectedSocket() client: Socket, @MessageBody() data: string[]) {
     this.logger.log('check');
     this.logger.log((await this.chatService.getUserFromSocket(client))?.username);
     this.logger.log(data);

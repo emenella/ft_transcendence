@@ -127,7 +127,7 @@ export class ChanService {
 		let chan: Chan = new Chan();
 
 		chan.title			= title;
-		chan.owner.id		= owner.id;
+		chan.owner			= owner
 		chan.createdAt  	= new Date();
 		chan.isPrivate		= isPrivate;
 		chan.isProtected	= isProtected;
@@ -550,7 +550,7 @@ export class ChanService {
 					if (r.user.id !== userId)
 					{
 						chan.title = r.user.username;
-						chan.owner.id = r.user.id;
+						chan.owner = r.user;
 					}
 				});
 			}
@@ -559,7 +559,7 @@ export class ChanService {
 				ret.push({
 					id:				chan.id,
 					title:			chan.title,
-					owner:			chan.owner.id,
+					owner:			chan.ownerId,
 					has_password:	chan.password_key !== null,
 					isDm:			chan.isDm,
 				});
@@ -583,7 +583,7 @@ export class ChanService {
 			ret.push({
 				id: chan.id,
 				title: chan.title,
-				owner: chan.owner.id,
+				owner: chan.ownerId,
 				has_password: chan.password_key !== null,
 				isDm: false,
 			})

@@ -88,10 +88,14 @@ class BodyConnected extends React.Component {
 				<Route path="/profil" element={<Profil />} />
 			  </Routes>
 			</div>
+			<div>
+			  <Routes>
+				<Route path="/" element={<Chat />} />
+			  </Routes>
+			</div>
 			<ChatFront />
 		  </div>
 		  <UserSidebar />
-		  <Chat />
 		</div>
 	  );
 	}

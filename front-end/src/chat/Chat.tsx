@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { getToken, url } from '../api/Api'
 import io, { Socket } from 'socket.io-client'
 import Error from './Error'
 import MessageInput from './MessageInput'
@@ -16,6 +17,8 @@ function Chat() {
   const [messages, setMessages] = useState<string[]>([]);
   const [errorToShow, setErrorToShow] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
+  const WebChat = url + '/chat'
   
   const send = (value: string) => {
     setErrorToShow(false);
@@ -26,7 +29,8 @@ function Chat() {
     console.log("create chan pressed");
     if (chans.get(title) !== undefined)
       return;
-    socket?.emit("createChan", {title: title, isPrivate: isPrivate, password: password});
+    let data = {title: title, isPrivate: isPrivate, password: password};
+    socket?.emit("createChan", data);
   }
 
   const joinChan = (value: string, password: string | null) => {
@@ -52,9 +56,10 @@ function Chat() {
   }
 
   useEffect(() => {
-    const newSocket = io("http://localhost:8000");
+    const newSocket = io(WebChat, { extraHeaders: { Authorization: getToken() as string } });
     setSocket(newSocket);
-  }, [setSocket])
+    console.log("useEffect Chat socket");
+  }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
     setErrorToShow(true);

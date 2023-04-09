@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect , useState } from "react";
 
 export default function ToggleChanInput(props : {toggleChan: (value : string) => void, leaveChan: (chan : string) => void, chans : Map<string, string[]>}) {
     const [value, setValue] = useState("");
@@ -8,9 +8,11 @@ export default function ToggleChanInput(props : {toggleChan: (value : string) =>
         chanJoined.push(k)
     });
 
-    if (chanJoined.length > 0) {
-        setValue(chanJoined[0]);
-    }
+    useEffect(() => {
+        if (chanJoined.length > 0) {
+            setValue(chanJoined[0]);
+        }
+    }, [])
 
     return (
         <>
