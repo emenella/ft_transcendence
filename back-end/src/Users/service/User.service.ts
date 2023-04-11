@@ -105,22 +105,22 @@ export class UserService {
             return user.friends;
         }
         
-        async inviteFriend(user: User, friend: User): Promise<void> {
-            if (user.friends.some(f => f.id === friend.id))
-            throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
-            else if (friend.friend_invites.some(f => f.id === user.id))
-            throw new HttpException(`User with ID ${friend.id} already has pending friend invite from User with ID ${user.id}.`, 400);
-            else if (user.friend_invites.some(f => f.id === friend.id)) {
-                this.acceptFriend(user, friend);
-            }
-            else {
-                friend.friend_invites.push(user);
-                friend.friend_invites.sort((a, b) => (a.username > b.username ? -1 : 1));
-                await this.userRepository.save(user);
-                await this.userRepository.save(friend);
-            }
-        }
-        
+		async inviteFriend(user: User, friend: User): Promise<void> {
+			if (user.friends.some(f => f.id === friend.id))
+				throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);
+			else if (friend.friend_invites.some(f => f.id === user.id))
+				throw new HttpException(`User with ID ${friend.id} already has pending friend invite from User with ID ${user.id}.`, 400);
+			else if (user.friend_invites.some(f => f.id === friend.id)) {
+				this.acceptFriend(user, friend);
+			}
+			else {
+				friend.friend_invites.push(user);
+				friend.friend_invites.sort((a, b) => (a.username > b.username ? -1 : 1));
+				await this.userRepository.save(user);
+				await this.userRepository.save(friend);
+			}
+		}
+
         async acceptFriend(user: User, friend: User): Promise<void> {
             if (user.friends.some(f => f.id === friend.id))
             throw new HttpException(`User with ID ${friend.id} is already a friend of User with ID ${user.id}.`, 400);

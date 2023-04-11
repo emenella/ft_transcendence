@@ -2,12 +2,15 @@
     display: flex;
     justify-content: space-between;
     align-items: stretch;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .chatSidebar {
     width: 10%;
     border-style: solid;
-    border-color: black;
+    border-color: #009688;
+    background-color:#DAF0EE;
     margin-left: 1px;
     margin-right: 5px;
 }
@@ -31,7 +34,8 @@
 .userSidebar {
     width: 10%;
     border-style: solid;
-    border-color: black;
+    border-color: #009688;
+    background-color:#DAF0EE;
     margin-left: 5px;
     margin-right: 1px;
 }
@@ -52,6 +56,7 @@
 
 .chat {
     border-style: solid;
-    border-color: black;
+    border-color: #009688;
+    background-color:#DAF0EE;
     margin-top: 5px;
 }

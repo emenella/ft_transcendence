@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Matchmaking.css';
-import logo_matchmaking from '../../assets/logo_pong.jpg';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';

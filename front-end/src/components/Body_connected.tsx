@@ -4,8 +4,8 @@ import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
+import { getMe, getFriends } from '../api/User';
 
-// map sur retour de l'API pour afficher
 function ChatSidebar() {
 	return (
 		<div className='chatSidebar'>
@@ -27,26 +27,42 @@ function ChatSidebar() {
 	);
 }
 
-// map sur retour de l'API pour afficher
 function UserSidebar() {
+	// const [friends, setFriends] = React.useState<any>();
+	// React.useEffect(() => {
+	// 	const getFriendsList = async () => {
+	// 		const tmp = await getFriends();
+	// 		setFriends(tmp);
+	// 	};
+	// 	getFriendsList();
+	// }, []);
+
+	// const listFriends = friends.map((friend: any) => {
+	// 	const [avatar, setAvatar] = React.useState<any>();
+	// 	React.useEffect(() => {
+	// 		const getFriendsAvatar = async () => {
+	// 			const tmp = await getAvatar(friend.id);
+	// 			setAvatar(tmp);
+	// 		};
+	// 		getFriendsAvatar();
+	// 	}, []);
+
+	// 	<tr>
+	// 		<td><img src={avatar.path} /></td>
+	// 		<td>{friend.username}</td>
+	// 	</tr>
+	// }
+	// );
+
 	return (
 		<div className='userSidebar'>
-			<form action="?" method="post">
-				<label>Ajouter un ami : </label><input type="text" />
-			</form>
-			<br />
 			<table>
 				<thead>
 					<tr>
 						<th scope='row'>Amis</th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>pdp</td>
-						<td>pseudo</td>
-					</tr>
-				</tbody>
+				{/* <tbody>{listFriends}</tbody> */}
 			</table>
 		</div>
 	);
@@ -69,30 +85,32 @@ function Chat() {
 	);
 }
 
-class BodyConnected extends React.Component {
-	
-	constructor(props: any) {
-		super(props);
-	}
-  
-	render() {
-	  return (
+function BodyConnected() {
+	const [user, setUser] = React.useState<any>();
+	React.useEffect(() => {
+		const getUser = async () => {
+			const tmp = await getMe();
+			setUser(tmp);
+		};
+		getUser();
+	}, []);
+
+	return (
 		<div className="connected">
-		  <ChatSidebar />
-		  <div className="connectedCenter">
-			<div>
-			  <Routes>
-				<Route path="/" element={<Matchmaking />} />
-				<Route path="/accountmanagement" element={<AccountManagement />} />
-				<Route path="/profil" element={<Profil />} />
-			  </Routes>
+			<ChatSidebar />
+			<div className="connectedCenter">
+				<div>
+					<Routes>
+						<Route path="/" element={<Matchmaking />} />
+						<Route path="/accountmanagement" element={<AccountManagement />} />
+						<Route path="/profil" element={<Profil user={user} />} />
+					</Routes>
+				</div>
+				<Chat />
 			</div>
-			<Chat />
-		  </div>
-		  <UserSidebar />
+			<UserSidebar />
 		</div>
-	  );
-	}
-  }
+	);
+}
 
 export default BodyConnected;

@@ -7,9 +7,9 @@ export default function SetUsername() {
     const navigate = useNavigate();
     const token = getToken();
 
-    if(!token) {
+    if (!token) {
         navigate("/error");
     }
 
-    return ( <UsernameForm navigate={navigate} /> );
+    return (<UsernameForm navigate={navigate} />);
 }
