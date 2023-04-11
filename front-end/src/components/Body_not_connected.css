@@ -4,3 +4,16 @@
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.flexbox {
+    display: flex;
+    flex-wrap: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+}
+
+.flexbox>img {
+    clip-path: ellipse(33% 50%);
+    width: 10%;
+    height: auto;
+}
