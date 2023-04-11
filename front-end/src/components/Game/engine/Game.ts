@@ -41,7 +41,7 @@ export class Game {
     }
 
     public searchGame() {
-        this.socketGame.emit("game:search");
+        this.socketGame = this.socketGame.emit("game:search");
     }
 
     public getSearchGame() {
@@ -82,8 +82,8 @@ export class Game {
     }
 
     public joinQueue() {
+        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue);
         this.socketMatchmaking.emit("matchmaking:join");
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
         console.log("join");
     }
 
