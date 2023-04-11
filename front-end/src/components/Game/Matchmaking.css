@@ -1,0 +1,17 @@
+.matchmaking {
+    text-align: center;
+}
+
+.matchmaking_mode>img {
+    clip-path: ellipse(33% 50%);
+    width: 10%;
+    height: auto;
+}
+
+.matchmaking_mode {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 150%;
+}

@@ -22,6 +22,7 @@ export class MatchmakingGateway{
         {
             client.disconnect()
         }
+        this.matchmakingService.addSocket(user, client);
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket)
@@ -30,6 +31,7 @@ export class MatchmakingGateway{
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
+            this.matchmakingService.removeSocket(user);
         }
         client.disconnect();
     }
@@ -40,7 +42,7 @@ export class MatchmakingGateway{
         const user = await this.authentificate(client);
         if (user)
         {
-            this.matchmakingService.joinQueue(user, client);
+            this.matchmakingService.joinQueue(user);
             this.server.emit('matchmaking:join', user.id);
         }
     }
