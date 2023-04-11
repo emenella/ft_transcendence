@@ -76,13 +76,13 @@ function Chat() {
 
   const banListener = (chan : string) => {
     chans.delete(chan);
-    // if (activeChan === chan && chans.size > 0) {
-    //   for (let [key, msg] of chans.entries()) {
-    //     activeChan = key;
-    //     setMessages(chans.get(activeChan) as string[]);
-    //     return;
-    //   }
-    // }
+    if (activeChan === chan && chans.size > 0) {
+      for (let [key, msg] of chans.entries()) {
+        activeChan = key;
+        setMessages(chans.get(activeChan) as string[]);
+        return;
+      }
+    }
     if (chans.size === 0) {
       activeChan = '';
       setMessages(['']);
@@ -116,13 +116,13 @@ function Chat() {
 
   const leftChanListener = (chan : string) => {
     chans.delete(chan);
-    // if (activeChan === chan && chans.size > 0) {
-    //   for (let [key, msg] of chans.entries()) {
-    //     activeChan = key;
-    //     setMessages(chans.get(activeChan) as string[]);
-    //     return;
-    //   }
-    // }
+    if (activeChan === chan && chans.size > 0) {
+      for (let [key, msg] of chans.entries()) {
+        activeChan = key;
+        setMessages(chans.get(activeChan) as string[]);
+        return;
+      }
+    }
     if (chans.size === 0) {
       activeChan = '';
       setMessages(['']);

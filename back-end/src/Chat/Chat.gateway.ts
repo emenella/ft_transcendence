@@ -154,6 +154,7 @@ export class ChatGateway {
 
   @SubscribeMessage('leaveChan')
   async handleLeaveChan(@ConnectedSocket() client: Socket, @MessageBody() chan: string) {
+    console.log("chan to leave : "+ chan);
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -173,7 +174,7 @@ export class ChatGateway {
           this.server.to(chanToLeave.id.toString()).emit('msgToClient', {author: user.username, chan: chanToLeave.title, msg: ' leaved the channel !'});
         }
 
-        client.leave(chan);
+        client.leave(chanToLeave.id.toString());
         client.emit('leftChan', chan);
       }
     }

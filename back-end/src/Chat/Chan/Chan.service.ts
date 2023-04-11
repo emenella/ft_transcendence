@@ -6,6 +6,8 @@ import { ChanPasswordService } from "./Chan.password.service";
 import { User } from "../../Users/entity/User.entity";
 import { ChanListDTO, UserListDto, ELevelInChan } from '../Dto/chanDto';
 import { UserService } from "../../Users/service/User.service";
+import { Message } from "../Message/Message.entity";
+import { MessageService } from "../Message/Message.service";
 
 @Injectable()
 export class ChanService {
@@ -17,7 +19,8 @@ export class ChanService {
 	    private chanRelRepo: Repository<RelationTable>,
         
 	    private readonly passwordService: ChanPasswordService,
-	    private readonly userService: UserService
+	    private readonly userService: UserService,
+	    private readonly messageService: MessageService
     ) {}
 
     async getChanByTitle(title: string) : Promise<Chan | undefined> {
@@ -241,6 +244,14 @@ export class ChanService {
 				.delete()
 				.execute();
 
+			const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
+			const messagesIds : number[] = [];
+			messages.forEach((message) => {
+				messagesIds.push(message.id);
+			})
+			await messagesIds.forEach(async (id) => {
+				await this.messageService.deleteMessage(id);
+			})
 			await this.chanRepo.remove(chan);
 		}
 		else if (userId === chan.owner.id) {
