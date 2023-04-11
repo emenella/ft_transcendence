@@ -11,6 +11,7 @@ interface PongGameProps {
     width: number;
     height: number;
     token: string;
+    socketMatchmaking: Socket;
 }
 
 interface PongGameState {
