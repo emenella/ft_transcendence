@@ -1,4 +1,5 @@
-version: '3.9'
+
+ZZversion: '3.9'
 name: pong
 
 services:
