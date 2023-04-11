@@ -232,6 +232,8 @@ export class ChanService {
 			        where : { chan: { id : chan.id }, user : { id : userId} } })
 		if (ret === undefined || ret === null)
 		    return ("your are not in chan");
+		console.log("ret = ");
+		console.log(ret);
 
 		await this.chanRelRepo.remove(ret);
 		const rels = await this.chanRelRepo.find({ relations : ["chan"],
@@ -240,7 +242,7 @@ export class ChanService {
 		if (rels.length === 0) {
 			await this.chanRelRepo.createQueryBuilder()
 				.relation("chan")
-				.of({id: chanId})
+				.of({id: chan.id})
 				.delete()
 				.execute();
 
