@@ -5,6 +5,7 @@ import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
 import { getMe, getFriends } from '../api/User';
+import Chat from '../chat/Chat';
 
 function ChatSidebar() {
 	return (
@@ -68,7 +69,7 @@ function UserSidebar() {
 	);
 }
 
-function Chat() {
+function ChatFront() {
 	return (
 		<div className='chat'>
 			<table>
@@ -97,19 +98,24 @@ function BodyConnected() {
 
 	return (
 		<div className="connected">
-			<ChatSidebar />
-			<div className="connectedCenter">
-				<div>
-					<Routes>
-						<Route path="/" element={<Matchmaking />} />
-						<Route path="/accountmanagement" element={<AccountManagement />} />
-						<Route path="/profil" element={<Profil user={user} />} />
-					</Routes>
-				</div>
-				<Chat />
-			</div>
-			<UserSidebar />
+		<ChatSidebar />
+		<div className="connectedCenter">
+		  <div>
+			<Routes>
+			  <Route path="/" element={<Matchmaking />} />
+			  <Route path="/accountmanagement" element={<AccountManagement />} />
+			  <Route path="/profil" element={<Profil />} />
+			</Routes>
+		  </div>
+		  <div>
+			<Routes>
+			  <Route path="/" element={<Chat />} />
+			</Routes>
+		  </div>
+		  <ChatFront />
 		</div>
+		<UserSidebar />
+	  </div>
 	);
 }
 
