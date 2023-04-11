@@ -46,7 +46,6 @@ const Matchmaking = () => {
     <div className="matchmaking">
       <div className="main">
         <div className="logo">
-          <img src={logo_matchmaking} alt="Logo du site" />
           <PongGame
             ref={pongGameRef}
             width={800}
