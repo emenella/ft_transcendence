@@ -6,6 +6,7 @@ import Profil from './Profil';
 import AccountManagement from './AccountManagement';
 import { getMe, getFriends } from '../api/User';
 import Chat from '../chat/Chat';
+import { User } from '../utils/backend_interface';
 
 function ChatSidebar() {
 	return (
@@ -39,7 +40,7 @@ function UserSidebar() {
 
 	const listFriends = friends?.map((friend: any) => {
 		<tr>
-			{/* <td><img src={friend.avatar.path} /></td> */}
+			<td><img src={friend.avatar.path} /></td>
 			<td>{friend.username}</td>
 		</tr>
 	}

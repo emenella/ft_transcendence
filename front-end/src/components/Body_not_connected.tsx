@@ -1,6 +1,10 @@
 import React from 'react';
 import './Body_not_connected.css';
 import logo from '../assets/white_logo.png';
+import emenella from '../assets/emenella.jpg';
+import ebellon from '../assets/ebellon.jpg';
+import pthomas from '../assets/pthomas.jpg';
+import mberne from '../assets/mberne.jpg';
 
 function BodyNotConnected() {
 	return (
@@ -26,23 +30,31 @@ function BodyNotConnected() {
             <div className='flexbox'>
                 <div>
                     <h4>Erwan Menella</h4>
-                    <img src={emenella} alt="Photo d'Erwan" />
-                    <p>Description ?</p>
+                    <img src={emenella} alt="Photo d'Erwan" className='profilPhotoErwan' />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
+                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
                 </div>
                 <div>
                     <h4>Emil Bellon</h4>
-                    <img src={ebellon} alt="Photo d'Emil" />
-                    <p>Description ?</p>
+                    <img src={ebellon} alt="Photo d'Emil" className='profilPhoto' />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
+                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
                 </div>
                 <div>
                     <h4>Pierre Thomas</h4>
-                    <img src={pthomas} alt="Photo de Pierre" />
-                    <p>Description ?</p>
+                    <img src={pthomas} alt="Photo de Pierre" className='profilPhoto' />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
+                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
                 </div>
                 <div>
                     <h4>Manon Berne</h4>
-                    <img src={mberne} alt="Photo de Manon" />
-                    <p>Description ?</p>
+                    <img src={mberne} alt="Photo de Manon" className='profilPhoto' />
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
+                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
                 </div>
             </div>
 		</div>

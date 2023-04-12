@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import './Profil.css';
 import { getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
+import { User, Avatar, MatchHistory } from '../utils/backend_interface';
 
 function Match(props : { username: string, match: any}) {
 	if (props.match.winner.username === props.username) {
@@ -44,8 +45,10 @@ function Profil(props: { id: number }) {
 		getUserMatchs();
 	}, [props.id]);
 
-	// const loses = user.matchs - user.wins;
-	// const winrate = (user.wins / user.matchs) * 100;
+	// const wins = user!.winMatch.length;
+	// const loses = user!.looseMatch.length;
+	// const games = matchs!.length;
+	// const winrate = (wins! / games!) * 100;
 
 	const linkStyle = {
 		color: "black",
@@ -58,16 +61,16 @@ function Profil(props: { id: number }) {
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					{/* <img src={user?.avatar.path} alt="Logo du joueur" /> */}
+					<img src={user?.avatar.path} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
 				<div className='player-info'>
 					<div className='statistics'>
 						<h3>Statistiques du joueur</h3>
-						{/* <p>Nombre de parties : {user.matchs}</p>
-						<p>Nombre de parties gagnées : {user.wins}</p>
-						<p>Nombre de parties perdues : {loses}</p>
-						<p>Win rate : {winrate}%</p> */}
+						{/* <p>Nombre de parties : {games}</p> */}
+						{/* <p>Nombre de parties gagnées : {wins}</p> */}
+						{/* <p>Nombre de parties perdues : {loses}</p> */}
+						{/* <p>Win rate : {winrate}%</p> */}
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>

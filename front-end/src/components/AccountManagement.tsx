@@ -21,7 +21,8 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		this.setId = this.setId.bind(this);
 	}
 
-	async handleSubmit() {
+	async handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
 		if (this.state.username !== '')
 		{
 			const req = await setUsername(this.state.username);
@@ -31,10 +32,13 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 				toast.error('Erreur. Veuillez réessayer.')
 		}
 		if (this.state.image) {
-			console.log(this.state.image);
 			const formData = new FormData();
 			formData.append("file", this.state.image);
-			await uploadAvatar(formData);
+			const req = await uploadAvatar(formData);
+			if (req?.status === 201)
+				toast.success('Image enregistrée.');
+			else
+				toast.error('Erreur. Veuillez réessayer.')
 		}
 	}
 
