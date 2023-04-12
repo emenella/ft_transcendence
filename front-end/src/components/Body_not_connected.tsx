@@ -21,6 +21,30 @@ function BodyNotConnected() {
 				directionnelles de votre clavier.
 			</p>
 			<h4>Amusez-vous bien !</h4>
+
+			<h2>Vos dévoués développeurs.</h2>
+            <div className='flexbox'>
+                <div>
+                    <h4>Erwan Menella</h4>
+                    <img src={emenella} alt="Photo d'Erwan" />
+                    <p>Description ?</p>
+                </div>
+                <div>
+                    <h4>Emil Bellon</h4>
+                    <img src={ebellon} alt="Photo d'Emil" />
+                    <p>Description ?</p>
+                </div>
+                <div>
+                    <h4>Pierre Thomas</h4>
+                    <img src={pthomas} alt="Photo de Pierre" />
+                    <p>Description ?</p>
+                </div>
+                <div>
+                    <h4>Manon Berne</h4>
+                    <img src={mberne} alt="Photo de Manon" />
+                    <p>Description ?</p>
+                </div>
+            </div>
 		</div>
 	);
 }
