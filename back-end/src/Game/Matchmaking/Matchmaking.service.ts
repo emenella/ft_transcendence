@@ -177,7 +177,7 @@ export class MatchmakingService {
     }
 
     public async handleEndGame(id: string): Promise<void> {
-        const game = await this.gameService.getGame(id);
+        const game = this.gameService.getGame(id);
         if (!game)
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();

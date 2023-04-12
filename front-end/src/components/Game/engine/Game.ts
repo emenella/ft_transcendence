@@ -79,10 +79,11 @@ export class Game {
         for (let i = 0; i < this.gameFind.length; i++) {
             console.log(this.gameFind[i]);
         }
+        this.joinGame(this.gameFind[0]);
     }
 
     public joinQueue() {
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue);
+        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
         this.socketMatchmaking.emit("matchmaking:join");
         console.log("join");
     }

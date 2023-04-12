@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef, useEffect } from 'react';
 import { Game } from './engine/Game';
 import { Socket, io } from 'socket.io-client';
 import { getMe } from '../../api/User';
@@ -12,33 +12,34 @@ interface PongGameProps {
     height: number;
     token: string;
     socketMatchmaking: Socket;
+    isQueue: boolean;
 }
 
 interface PongGameState {
-    game: Game | null;
     me: User | null;
     canvasRef: React.RefObject<HTMLCanvasElement>;
+    isQueue: boolean;
 }
 
 class PongGame extends Component<PongGameProps, PongGameState> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     socketGame: Socket;
+    game: Game | null = null;
 
     constructor(props: PongGameProps) {
         super(props);
         this.canvasRef = createRef();
-        console.log(props.token);
         this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
         this.state = {
-            game: null,
             me: null,
-            canvasRef: this.canvasRef
+            canvasRef: this.canvasRef,
+            isQueue: props.isQueue,
         };
     }
 
     componentDidMount() {
+        console.log('componentDidMount Pong');
         this.fetchUser();
-        this.setGame();
     }
 
     async fetchUser() {
@@ -48,41 +49,47 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     }
 
     componentDidUpdate(prevProps: PongGameProps, prevState: PongGameState) {
+        console.log('componentDidUpdate Pong');
+        this.setGame();
         this.searchGame();
+        console.log(this.props.isQueue);
+        if (this.props.isQueue)
+        {
+            this.joinQueue();
+        }
     }
 
     setGame() {
         const { me } = this.state;
-        const ctx = this.canvasRef.current!.getContext('2d');
+        const ctx = this.canvasRef.current?.getContext('2d');
+        console.log( me, ctx);
         if (me && ctx) {
+            console.log('Game created');
             const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
-            this.setState({ game: newGame });
+            this.game = newGame;
         }
     }
 
     joinQueue = () => {
-        const { game } = this.state;
-        if (!game) {
+        if (!this.game) {
             return;
         }
-        game.joinQueue();
+        this.game.joinQueue();
     };
 
     leaveQueue = () => {
-        const { game } = this.state;
-        if (!game) {
+        if (!this.game) {
             return;
         }
-        game.leaveQueue();
+        this.game.leaveQueue();
     };
 
     searchGame = () => {
-        const { game } = this.state;
-        if (!game) {
+        if (this.game === null) {
             console.log('no state game');
             return;
         }
-        game.searchGame();
+        this.game.searchGame();
     };
 
     render() {
