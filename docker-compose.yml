@@ -47,7 +47,7 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      - ./back-end:/usr/backend
+      - ./back-end:/usr/back-end
     networks:
       - back-end
     restart: on-failure
