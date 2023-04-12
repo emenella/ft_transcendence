@@ -35,12 +35,13 @@ export class ConnectionService {
         return this.connectionRepository.save(connection);
     }
 
-    async updateConnection(id: number, secret: string | undefined): Promise<Connection> {
+    async updateConnection(id: number, secret: string | undefined, iv: string | undefined): Promise<Connection> {
         let connection = await this.getConnectionByUserId(id);
         if (!connection) {
             throw new HttpException(`Connection with ID ${id} not found.`, 404);
         }
         connection.otp = secret;
+        connection.iv = iv;
         return await this.connectionRepository.save(connection);
     }
 
