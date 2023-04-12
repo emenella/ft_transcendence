@@ -9,7 +9,7 @@ COMPOSE			= docker-compose --project-directory=. -p $(NAME)
 
 #~~~~ VOLUMES ~~~~#
 
-VOLUMES_PATH	= ./volumes
+VOLUMES_PATH	= $(PWD)/volumes
 
 #========================================#
 #=============== TARGETS ================#

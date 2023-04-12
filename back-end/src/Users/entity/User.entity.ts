@@ -1,3 +1,6 @@
+import { Chan } from '../../Chat/Chan/Chan.entity';
+import { RelationTable } from '../../Chat/Chan/Chan.entity';
+import { Message } from '../../Chat/Message/Message.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { MatchHistory } from './History.entity';
 import { Connection } from './Connection.entity';
@@ -14,6 +17,18 @@ export class User {
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
 
+    // TODO chatroom
+    @OneToMany(() => Chan, (target: Chan) => target.owner)
+    ownedChans: Chan[];
+
+    @OneToMany(() => RelationTable, (rel: RelationTable) => rel.user)
+    relations: RelationTable[];
+
+    @OneToMany(() => Message, (target: Message) => target.author)
+    messages: Message[];
+    
+    // TODO friends
+    // TODO match history
     @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
     avatar: Avatar;
 

@@ -1,51 +1,71 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { getToken } from '../../api/Api';
+import { getToken, url } from '../../api/Api';
+import { io, Socket } from 'socket.io-client';
 
-interface MatchmakingState {
-	isSearching: boolean;
-	pongGame: React.RefObject<PongGame>;
-}
+const Matchmaking = () => {
+  const [isSearching, setIsSearching] = useState(false);
+  const [pongGame, setGame] = useState(useRef<PongGame>(null));
+  const [getSocket, setSocket] = useState<Socket>();
 
-class Matchmaking extends React.Component<any, MatchmakingState> {
-	constructor(props: any) {
-		super(props);
-		// console.log(getToken() as string);
-		this.state = { isSearching: false, pongGame: React.createRef() };
-	}
+  const WebMatchmaking = url + '/matchmaking';
 
-	joinQueueHandler = () => {
-		this.setState({ isSearching: true });
-		this.state.pongGame.current?.joinQueue();
-	}
+  const joinQueueHandler = () => {
+    setIsSearching(true);
+    pongGame.current?.joinQueue();
+  };
 
-	leaveQueueHandler = () => {
-		this.setState({ isSearching: false });
-		this.state.pongGame.current?.leaveQueue();
-	}
+  const leaveQueueHandler = () => {
+    setIsSearching(false);
+    pongGame.current?.leaveQueue();
+  };
 
-	searchGame = () => {
-		this.state.pongGame.current?.searchGame();
-	}
+  const searchGame = () => {
+    pongGame.current?.searchGame();
+  };
 
-	async componentDidMount() {
-		await this.state.pongGame.current?.getUser();
-		await this.state.pongGame.current?.setGame();
-		this.searchGame();
-	}
+  useEffect(() => {
+    setSocket(io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } }))
+    pongGame.current?.setGame();
+    setGame(pongGame);
+    console.log("useEffect socket")
+    // ... setup socket listeners
+    return () => {
+      // ... cleanup socket listeners
+      getSocket?.disconnect();
 
-	render() {
-		return (
-			<div className='matchmaking'>
-				{/* <PongGame ref={this.state.pongGame} width={800} height={600} token={getToken() as string} />
-				<SearchButton onClick={this.joinQueueHandler} isSearching={this.state.isSearching} ></SearchButton>
-				{this.state.isSearching ? <LeaveButton onClick={this.leaveQueueHandler} ></LeaveButton> : null} */}
-			</div>
-		);
-	}
-}
+    };
+  }, []);
+
+  useEffect(() => {
+    searchGame();
+  }, [pongGame]);
+
+  return (
+    <div className="matchmaking">
+      <div className="main">
+        <div className="logo">
+          <PongGame
+            ref={pongGame}
+            width={800}
+            height={600}
+            token={getToken() as string}
+            socketMatchmaking={getSocket as Socket}
+          />
+        </div>
+        <SearchButton
+          onClick={joinQueueHandler}
+          isSearching={isSearching}
+        ></SearchButton>
+        {isSearching ? (
+          <LeaveButton onClick={leaveQueueHandler}></LeaveButton>
+        ) : null}
+      </div>
+    </div>
+  );
+};
 
 export default Matchmaking;

@@ -41,7 +41,7 @@ export class Game {
     }
 
     public searchGame() {
-        this.socketGame.emit("game:search");
+        this.socketGame = this.socketGame.emit("game:search");
     }
 
     public getSearchGame() {
@@ -76,14 +76,14 @@ export class Game {
 
     private handleSearchGame(ids: string[]) {
         this.gameFind = ids;
-        if (ids.length > 0) {
-            this.joinGame(ids[0]);
+        for (let i = 0; i < this.gameFind.length; i++) {
+            console.log(this.gameFind[i]);
         }
     }
 
     public joinQueue() {
+        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue);
         this.socketMatchmaking.emit("matchmaking:join");
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
         console.log("join");
     }
 
