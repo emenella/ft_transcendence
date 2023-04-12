@@ -8,7 +8,7 @@ import { io, Socket } from 'socket.io-client';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const pongGame = useRef<PongGame>(null);
+  const [pongGame, setGame] = useState(useRef<PongGame>(null));
   const [getSocket, setSocket] = useState<Socket>();
 
   const WebMatchmaking = url + '/matchmaking';
@@ -28,7 +28,9 @@ const Matchmaking = () => {
   };
 
   useEffect(() => {
+    setSocket(io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } }))
     pongGame.current?.setGame();
+    setGame(pongGame);
     console.log("useEffect socket")
     // ... setup socket listeners
     return () => {
@@ -36,7 +38,7 @@ const Matchmaking = () => {
       getSocket?.disconnect();
 
     };
-  });
+  }, []);
 
   useEffect(() => {
     searchGame();

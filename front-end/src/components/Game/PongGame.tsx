@@ -54,8 +54,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     setGame() {
         const { me } = this.state;
         const ctx = this.canvasRef.current!.getContext('2d');
-        console.log(this.socketGame, this.props.socketMatchmaking, me, ctx);
-        if (me && ctx && !this.props.socketMatchmaking) {
+        if (me && ctx) {
             const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
             this.setState({ game: newGame });
         }
