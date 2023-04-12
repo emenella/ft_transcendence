@@ -87,24 +87,24 @@ function BodyConnected() {
 
 	return (
 		<div className="connected">
-		<ChatSidebar />
-		<div className="connectedCenter">
-		  <div>
-			<Routes>
-			  <Route path="/" element={<Matchmaking />} />
-			  <Route path="/accountmanagement" element={<AccountManagement />} />
-			  <Route path="/profil" element={<Profil />} />
-			</Routes>
-		  </div>
-		  <div>
-			<Routes>
-			  <Route path="/" element={<Chat />} />
-			</Routes>
-		  </div>
-		  <ChatFront />
+			<ChatSidebar />
+			<div className="connectedCenter">
+				<div>
+					<Routes>
+						<Route path="/" element={<Matchmaking />} />
+						<Route path="/accountmanagement" element={<AccountManagement />} />
+						<Route path="/profil" element={<Profil id={user?.id} />} />
+					</Routes>
+				</div>
+				<div>
+					<Routes>
+						<Route path="/" element={<Chat />} />
+					</Routes>
+				</div>
+				<ChatFront />
+			</div>
+			<UserSidebar />
 		</div>
-		<UserSidebar />
-	  </div>
 	);
 }
 
