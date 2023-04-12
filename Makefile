@@ -9,7 +9,7 @@ COMPOSE			= docker-compose --project-directory=. -p $(NAME)
 
 #~~~~ VOLUMES ~~~~#
 
-VOLUMES_PATH	= $(PWD)/volumes
+VOLUMES_PATH	= ./volumes
 
 #========================================#
 #=============== TARGETS ================#
@@ -122,4 +122,4 @@ eugene :
 			@ echo "                7____,,..--'      /          |"
 			@ echo "                                  \`---.__,--.'"
 								  
-.PHONY:		all bonus re up down build create ps exec start restart stop clean fclean eugene
+.PHONY:		all bonus re up down build create ps exec logs start restart stop clean fclean vclean volumes certificate eugene

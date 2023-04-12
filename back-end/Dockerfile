@@ -1,8 +1,8 @@
-FROM node:14
+FROM node:19
 
 WORKDIR /usr/backend
 
-COPY package.json ./
+COPY package.json .
 
 RUN [ "npm", "install"]
 
