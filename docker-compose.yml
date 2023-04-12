@@ -18,9 +18,9 @@ services:
   nginx-proxy:
     container_name: nginx-proxy 
     image: nginx:stable
-    env_file: .env
     depends_on:
       - server
+    env_file: .env
     ports:
       - "${PORT_HTTP}:80"
       - "${PORT_SSL}:443"
@@ -46,8 +46,8 @@ services:
       - postgres
     ports:
       - "4200:4200"
-    # volumes:
-    #   - ./back-end:/usr/backend
+    volumes:
+      - ./back-end:/usr/backend
     networks:
       - back-end
     restart: on-failure
@@ -56,18 +56,18 @@ services:
   app:
     container_name: app
     image: transcendence-app
-    environment:
-      - REACT_APP_API_PROTOCOL=${PROTOCOL}
-      - REACT_APP_API_HOST=${HOSTNAME}
-      - REACT_APP_API_PORT=${PORT_SSL}
     build:
       context: ./front-end
     depends_on:
       - server
+    environment:
+      - REACT_APP_API_PROTOCOL=${PROTOCOL}
+      - REACT_APP_API_HOST=${HOSTNAME}
+      - REACT_APP_API_PORT=${PORT_SSL}
     ports:
-      - "3000"
+      - "3000:3000"
     volumes:
-     - ./front-end/src:/usr/front-end/src
+     - ./front-end:/usr/front-end
     networks:
       - front-end
     restart: on-failure
