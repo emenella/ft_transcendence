@@ -1,0 +1,62 @@
+.connected {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.chatSidebar {
+    width: 10%;
+    border-style: solid;
+    border-color: #009688;
+    background-color:#DAF0EE;
+    margin-left: 1px;
+    margin-right: 5px;
+}
+
+.chatSidebar>table {
+    table-layout: fixed;
+    text-align: left;
+    width: 100%;
+}
+
+.chatSidebar>table>thead th:nth-child(1) {
+    width: 90%;
+}
+
+.connectedCenter {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.userSidebar {
+    width: 10%;
+    border-style: solid;
+    border-color: #009688;
+    background-color:#DAF0EE;
+    margin-left: 5px;
+    margin-right: 1px;
+}
+
+.userSidebar>form {
+    text-align: center;
+}
+
+.userSidebar>table {
+    text-align: left;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.userSidebar>table>thead th:nth-child(1) {
+    width: 25%;
+}
+
+.chat {
+    border-style: solid;
+    border-color: #009688;
+    background-color:#DAF0EE;
+    margin-top: 5px;
+}
