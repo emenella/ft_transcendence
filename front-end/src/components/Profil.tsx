@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import './Profil.css';
 import { getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
-import { User, Avatar, MatchHistory } from '../utils/backend_interface';
+import { User, Avatar, Match } from '../utils/backend_interface';
 
-function Match(props : { username: string, match: any}) {
+function PrintMatch(props : { username: string, match: any}) {
 	if (props.match.winner.username === props.username) {
 		return (
 			<div className="winner">
@@ -82,7 +82,7 @@ function Profil(props: { id: number }) {
 								</tr>
 							</thead>
 							<tbody>
-								{matchs?.map((match: any) => { return(<Match username={user.username} match={match} />); })}
+								{matchs?.map((match: any) => { return(<PrintMatch username={user.username} match={match} />); })}
 							</tbody>
 						</table>
 					</div>

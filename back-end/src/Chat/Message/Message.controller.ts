@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Param } from "@nestjs/common";
 import { Message } from "./Message.entity";
 import { Chan } from "../Chan/Chan.entity";
-import { User } from "../../Users/entity/User.entity";
+import { User } from "../../User/entity/User.entity";
 import { MessageService } from "./Message.service";
 
 @Controller("Message")

@@ -1,4 +1,4 @@
-import { User } from '../../../Users/entity/User.entity';
+import { User } from '../../../User/entity/User.entity';
 
 enum Result {
     WIN = 1,
