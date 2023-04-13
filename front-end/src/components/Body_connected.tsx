@@ -45,10 +45,7 @@ function UserSidebar() {
 	}, []);
 
 	const listFriends = friends?.map((friend: User) => {
-		const [avatar, setAvatar] = React.useState<Avatar>();
-		React.useEffect(() => {
-			setAvatar(friend?.avatar);
-		}, [friend]);
+		const avatar : Avatar = friend?.avatar;
 
 		return(
 			<tr>
@@ -77,10 +74,7 @@ function UserSidebar() {
 	}, []);
 
 	const listFriendsInvite = friendsInvites?.map((friend: User) => {
-		const [avatar, setAvatar] = React.useState<Avatar>();
-		React.useEffect(() => {
-			setAvatar(friend?.avatar);
-		}, [friend]);
+		const avatar : Avatar = friend?.avatar;
 
 		return(
 			<div>
