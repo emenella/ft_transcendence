@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Matchmaking.css';
-import logo_matchmaking from '../../assets/logo_pong.jpg';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
@@ -9,27 +8,29 @@ import { io, Socket } from 'socket.io-client';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const pongGameRef = useRef<PongGame>(null);
+  const [pongGame, setGame] = useState(useRef<PongGame>(null));
   const [getSocket, setSocket] = useState<Socket>();
 
   const WebMatchmaking = url + '/matchmaking';
 
   const joinQueueHandler = () => {
     setIsSearching(true);
-    pongGameRef.current?.joinQueue();
+    pongGame.current?.joinQueue();
   };
 
   const leaveQueueHandler = () => {
     setIsSearching(false);
-    pongGameRef.current?.leaveQueue();
+    pongGame.current?.leaveQueue();
   };
 
   const searchGame = () => {
-    pongGameRef.current?.searchGame();
+    pongGame.current?.searchGame();
   };
 
   useEffect(() => {
     setSocket(io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } }))
+    pongGame.current?.setGame();
+    setGame(pongGame);
     console.log("useEffect socket")
     // ... setup socket listeners
     return () => {
@@ -41,15 +42,14 @@ const Matchmaking = () => {
 
   useEffect(() => {
     searchGame();
-  }, [getSocket]);
+  }, [pongGame]);
 
   return (
     <div className="matchmaking">
       <div className="main">
         <div className="logo">
-          <img src={logo_matchmaking} alt="Logo du site" />
           <PongGame
-            ref={pongGameRef}
+            ref={pongGame}
             width={800}
             height={600}
             token={getToken() as string}

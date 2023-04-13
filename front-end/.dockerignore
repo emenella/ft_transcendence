@@ -1,3 +1,9 @@
+# Files not needed for runtime
 Dockerfile
-dist
-node_modules
+.gitignore
+package-lock.json
+README.md
+
+# Compiled output
+/dist
+/node_modules

@@ -1,13 +1,13 @@
 import React from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { setToken } from "../api/Api";
 import Connexion from "../components/form/ConnexionForm";
 
 export default function DoubleFA() {
     const [searchParams] = useSearchParams();
-	const access_token = searchParams.get('token');
+    const access_token = searchParams.get('token');
     const navigate = useNavigate();
-    if(!access_token) {
+
+    if (!access_token) {
         return (
             <div>
                 <h1>Erreur</h1>
@@ -15,7 +15,8 @@ export default function DoubleFA() {
             </div>
         );
     }
+    
     return (
-        <Connexion acces_code={access_token} navigate={navigate} />
+        <Connexion access_code={access_token} navigate={navigate} />
     );
 };

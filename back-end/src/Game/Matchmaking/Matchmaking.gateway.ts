@@ -42,7 +42,8 @@ export class MatchmakingGateway{
         const user = await this.authentificate(client);
         if (user)
         {
-            this.matchmakingService.joinQueue(user);
+            let ret = await this.matchmakingService.joinQueue(user);
+            console.log(ret);
             this.server.emit('matchmaking:join', user.id);
         }
     }

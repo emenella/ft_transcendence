@@ -11,7 +11,7 @@ interface PongGameProps {
     width: number;
     height: number;
     token: string;
-    socketMatchmaking: Socket
+    socketMatchmaking: Socket;
 }
 
 interface PongGameState {
@@ -27,6 +27,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     constructor(props: PongGameProps) {
         super(props);
         this.canvasRef = createRef();
+        console.log(props.token);
         this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
         this.state = {
             game: null,
@@ -37,6 +38,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
 
     componentDidMount() {
         this.fetchUser();
+        this.setGame();
     }
 
     async fetchUser() {
@@ -46,9 +48,13 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     }
 
     componentDidUpdate(prevProps: PongGameProps, prevState: PongGameState) {
+        this.searchGame();
+    }
+
+    setGame() {
         const { me } = this.state;
         const ctx = this.canvasRef.current!.getContext('2d');
-        if (me && ctx && !prevState.me) {
+        if (me && ctx) {
             const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
             this.setState({ game: newGame });
         }

@@ -1,6 +1,17 @@
-
 .profil {
     text-align: center;
+}
+
+.player-profil {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-profil>img {
+    border-radius: 50%;
+    width: 150px;
+    height: auto;
 }
 
 .player-info {
@@ -22,6 +33,6 @@
     background-color: green;
 }
 
-.loose {
+.lose {
     background-color: red;
 }

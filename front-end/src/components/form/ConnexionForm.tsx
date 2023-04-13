@@ -1,15 +1,13 @@
-import React, { ChangeEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { ChangeEvent } from "react";
+import toast, { Toaster } from "react-hot-toast";
+// import { useNavigate } from "react-router-dom";
+import "./Form.css";
 import { submitCode2FA } from "../../api/Auth";
+import { ConnexionProps } from "../../utils/interface";
 
-interface ConnexionProps {
-	acces_code: string;
-	navigate: any;
-}
-
-class Connexion extends React.Component<ConnexionProps, {secret: string}> {
+class Connexion extends React.Component<ConnexionProps, { secret: string }> {
 	state = {
-		secret : '',
+		secret: '',
 	}
 
 	constructor(props: any) {
@@ -19,33 +17,37 @@ class Connexion extends React.Component<ConnexionProps, {secret: string}> {
 	}
 
 	async handleClick() {
-        const token = await submitCode2FA(this.state.secret, this.props.acces_code);
-		if (token)
-		{
+		const token = await submitCode2FA(this.state.secret, this.props.access_code);
+		if (token) {
 			localStorage.setItem("token", token);
 			this.props.navigate("/");
 		}
+		else {
+			toast.error('Erreur : veuillez réessayez.');
+		}
 	}
 
-	setSecret(e: ChangeEvent<HTMLInputElement>) : void {
-		this.setState({ secret : e.target.value });
+	setSecret(e: ChangeEvent<HTMLInputElement>): void {
+		this.setState({ secret: e.target.value });
 	}
 
 	render() {
 		return (
-			<div>
-				<label>Secret : <input type="text" onChange={this.setSecret} /> </label>
-				<button onClick={this.handleClick}>Envoyer</button>
+			<div className="parent">
+				<Toaster />
+				<div className="form">
+					<label>Veuillez entrer votre code secret : <input type="text" onChange={this.setSecret} /> </label>
+					<button onClick={this.handleClick}>Envoyer</button>
+				</div>
 			</div>
 		);
 	}
 }
 
-function ConnexionWrap(props: any) {
-	const navigate = useNavigate();
+// function ConnexionWrap(props: any) {
+// 	const navigate = useNavigate();
 
-	return (<Connexion acces_code={props.acces_code} navigate={navigate} />);
-}
-
+// 	return (<Connexion acces_code={props.acces_code} navigate={navigate} />);
+// }
 
 export default Connexion;

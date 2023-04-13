@@ -35,7 +35,7 @@ export class MatchmakingService {
 
     async joinQueue(user: User): Promise<boolean> {
         console.log("join queue " + user.id + " " + this.queue.includes(user.id));
-        if (this.queue.includes(user.id) || await this.isInGame(user))
+        if (this.queue.includes(user.id) || await this.isInGame(user.id))
             return false;
         this.queue.push(user.id);
         await this.foundMatch().catch(err => console.log(err));
@@ -93,8 +93,8 @@ export class MatchmakingService {
         return game;
     }
 
-    async getGameFromUser(user: User): Promise<Game[]> {
-        const ids = this.gameService.findGamesIdWithPlayer(user.id);
+    async getGameFromUser(user: number): Promise<Game[]> {
+        const ids = this.gameService.findGamesIdWithPlayer(user);
         const games: Game[] = [];
         for (const id of ids) {
             const game = await this.gameService.getGame(id);
@@ -104,7 +104,7 @@ export class MatchmakingService {
         return games;
     }
 
-    async isInGame(user: User): Promise<boolean> {
+    async isInGame(user: number): Promise<boolean> {
         const games = await this.getGameFromUser(user);
         if (games.length > 0)
             return true;

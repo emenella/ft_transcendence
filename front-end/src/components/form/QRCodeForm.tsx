@@ -1,19 +1,10 @@
 import React from "react";
+import toast, { Toaster } from "react-hot-toast";
+import "./Form.css";
 import { saveQRCode } from "../../api/Auth";
-import { useNavigate } from "react-router-dom";
-
-
-interface QRCodeFormProps {
-	accessToken: string;
-	navigate: any;
-}
-
-interface QRCodeFormState {
-	secret: string;
-}
+import { QRCodeFormProps, QRCodeFormState } from "../../utils/interface";
 
 class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
-	
 	constructor(props: any) {
 		super(props);
 		this.state = {
@@ -29,6 +20,9 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 			localStorage.setItem("token", token);
 			this.props.navigate("/set-username");
 		}
+		else {
+			toast.error('Erreur : veuillez réessayez.');
+		}
 	}
 
 	setSecret(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -37,12 +31,15 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 
 	render() {
 		return (
-			<div>
-				<label>
-					Secret :{" "}
-					<input type="text" onChange={this.setSecret} />
-				</label>
-				<button onClick={this.handleClick}>Envoyer</button>
+			<div className="parent">
+				<Toaster />
+				<p>Veuillez scanner ce QRCode avec votre application Google Authenticator.</p>
+				<img src={this.props.qrcode} />
+				<br />
+				<div className="form">
+					<label>Veuillez entrer votre code secret correspondant : <input type="text" onChange={this.setSecret} /> </label>
+					<button onClick={this.handleClick}>Envoyer</button>
+				</div>
 			</div>
 		);
 	}

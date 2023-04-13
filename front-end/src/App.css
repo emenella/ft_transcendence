@@ -2,7 +2,11 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
-    align-items: flex-start;
+    align-items: center;
+    background-color: #009688;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
 }
 
 .flex-container>div {
