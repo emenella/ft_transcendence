@@ -9,7 +9,7 @@ export class HistoryService {
     constructor( @InjectRepository(Match)
         private readonly historyRepository: Repository<Match>) {}
 
-    async addHistory(history: Match): Promise<Match> {
+    async addMatch(history: Match): Promise<Match> {
         return this.historyRepository.save(history);
     }
 

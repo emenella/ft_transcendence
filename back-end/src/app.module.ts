@@ -11,7 +11,7 @@ import { MatchmakingModule } from './Game/Matchmaking/Matchmaking.module';
 import { ChatModule } from './Chat/Chat.module';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forRoot(typeOrmConfig), AuthenticationModule, GameModule, ServeStaticModule.forRoot({ rootPath: __dirname + '/..' + '/uploads', serveRoot: '/uploads' }), MatchmakingModule, ChatModule],
+  imports: [UserModule, TypeOrmModule.forRoot(typeOrmConfig), AuthenticationModule, GameModule, ServeStaticModule.forRoot({ rootPath: __dirname + '/..' + '/avatars', serveRoot: '/avatars' }), MatchmakingModule, ChatModule],
   providers: [{
     provide: APP_GUARD,
     useClass: JwtAuthGuard,
