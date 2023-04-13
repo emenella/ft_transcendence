@@ -4,9 +4,9 @@ import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
-import { getMe, getFriends } from '../api/User';
+import { getMe } from '../api/User';
 import Chat from '../chat/Chat';
-import { User } from '../utils/backend_interface';
+import { User, Avatar } from '../utils/backend_interface';
 
 function ChatSidebar() {
 	return (
@@ -30,19 +30,55 @@ function ChatSidebar() {
 }
 
 function UserSidebar() {
-	const [friends, setFriends] = React.useState<any>();
+	const [user, setUser] = React.useState<User>();
 	React.useEffect(() => {
-		const getFriendsList = async () => {
-			setFriends(await getFriends());
+		const getUser = async () => {
+			setUser(await getMe());
 		};
-		getFriendsList();
+		getUser();
 	}, []);
 
-	const listFriends = friends?.map((friend: any) => {
-		<tr>
-			<td><img src={friend.avatar.path} /></td>
-			<td>{friend.username}</td>
-		</tr>
+	const [friends, setFriends] = React.useState<User[]>();
+	React.useEffect(() => {
+		setFriends(user?.friends);
+	}, []);
+
+	const listFriends = friends?.map((friend: User) => {
+		const [avatar, setAvatar] = React.useState<Avatar>();
+		React.useEffect(() => {
+			setAvatar(friend?.avatar);
+		}, [friend]);
+
+		return(
+			<tr>
+				<td><img src={avatar?.path} /></td>
+				<td>{friend.username}</td>
+			</tr>
+		)
+	}
+	);
+
+	const [friendsInvites, setFriendsInvite] = React.useState<User[]>();
+	React.useEffect(() => {
+		setFriendsInvite(user?.friend_invites);
+	}, []);
+
+	const listFriendsInvite = friendsInvites?.map((friend: User) => {
+		const [avatar, setAvatar] = React.useState<Avatar>();
+		React.useEffect(() => {
+			setAvatar(friend?.avatar);
+		}, [friend]);
+
+		return(
+			<div>
+				<tr>Demande d'ami de :</tr>
+				<tr>
+					<td><img src={avatar?.path} /></td>
+					<td>{friend.username}</td>
+				</tr>
+				<tr>Accepter ou refuser</tr>
+			</div>
+		)
 	}
 	);
 
@@ -54,7 +90,7 @@ function UserSidebar() {
 						<th scope='row'>Amis</th>
 					</tr>
 				</thead>
-				<tbody>{listFriends}</tbody>
+				<tbody>{listFriends}{listFriendsInvite}</tbody>
 			</table>
 		</div>
 	);
@@ -93,7 +129,7 @@ function BodyConnected() {
 				<div>
 					<Routes>
 						<Route path="/" element={<Matchmaking />} />
-						<Route path="/accountmanagement" element={<AccountManagement />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={user} />} />
 						<Route path="/profil" element={<Profil id={user?.id} />} />
 					</Routes>
 				</div>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Profil.css';
 import { getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
-import { User, MatchHistory } from '../utils/backend_interface';
+import { User, MatchHistory, Avatar } from '../utils/backend_interface';
 
 function Match(props : { username: string | undefined, match: MatchHistory}) {
 	if (props.match.winner.username === props.username) {
@@ -45,6 +45,11 @@ function Profil(props: { id: number }) {
 		getUserMatchs();
 	}, [props.id]);
 
+	const [avatar, setAvatar] = React.useState<Avatar>();
+	React.useEffect(() => {
+		setAvatar(user?.avatar);
+	}, [user]);
+
 	const wins = user?.winMatch.length;
 	const loses = user?.looseMatch.length;
 	const games = matchs?.length;
@@ -61,7 +66,7 @@ function Profil(props: { id: number }) {
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={user?.avatar.path} alt="Logo du joueur" />
+					<img src={avatar?.path} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
 				<div className='player-info'>
@@ -71,6 +76,7 @@ function Profil(props: { id: number }) {
 						<p>Nombre de parties gagnées : {wins}</p>
 						<p>Nombre de parties perdues : {loses}</p>
 						<p>Win rate : {winrate}%</p>
+						<p>Elo : {user?.elo}</p>
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>
@@ -82,7 +88,7 @@ function Profil(props: { id: number }) {
 								</tr>
 							</thead>
 							<tbody>
-								{matchs?.map((match: any) => { return(<Match username={user?.username} match={match} />); })}
+								{matchs?.map((match: MatchHistory) => { return(<Match username={user?.username} match={match} />); })}
 							</tbody>
 						</table>
 					</div>

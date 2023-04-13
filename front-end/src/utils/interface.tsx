@@ -1,3 +1,5 @@
+import { User } from "./backend_interface";
+
 export interface Token {
 	hasToken : boolean;
 }
@@ -36,7 +38,6 @@ export interface UsernameFormState {
 export interface AccountManagementState {
 	username : string;
 	image: File | undefined;
-	id : number;
 }
 
 export interface emojiProps {

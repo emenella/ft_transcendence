@@ -2,7 +2,7 @@ import { client as axios, authHeader } from './Api'
 
 export async function getMe() {
     try {
-        const res = await axios.get('/api/users/me', { headers: authHeader() });
+        const res = await axios.get('api/users/me', { headers: authHeader() });
         return res.data;
     }
     catch (e) {
@@ -28,15 +28,6 @@ export async function uploadAvatar(formData: FormData) {
     }
 }
 
-export async function deleteAccount(id: number) {
-    try {
-        await axios.delete('/api/users/' + id, { headers: authHeader() });
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-
 export async function delete2FA() {
     try {
         await axios.delete('api/auth/2fa/delete', { headers: authHeader() });
@@ -46,19 +37,9 @@ export async function delete2FA() {
     }
 }
 
-export async function getFriends() {
-    try {
-        const res = await axios.get('api/users/friends', { headers: authHeader() });
-        return res.data;
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-
 export async function getUserById(id: number) {
     try {
-        const res = await axios.get('/api/users/id/?id=' + id, { headers: authHeader() });
+        const res = await axios.get('api/users/id/?id=' + id, { headers: authHeader() });
         return res.data;
     }
     catch (e) {
@@ -70,6 +51,24 @@ export async function getMatchs(id: number) {
     try {
         const res = await axios.get('api/users/match_history/?id=' + id, { headers: authHeader() });
         return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function addFriend(id : number) {
+    try {
+        return await axios.post('api/users/friends/add?friendId=' + id, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function deleteFriend(id : number) {
+    try {
+        return await axios.delete('api/users/friends/remove?friendId=' + id, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);

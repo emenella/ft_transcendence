@@ -13,6 +13,7 @@ export interface User {
     id: number;
     username: string;
     avatar: Avatar;
+    is2FAActivated: boolean;
     elo: number;
     winMatch: MatchHistory[];
     looseMatch: MatchHistory[];
