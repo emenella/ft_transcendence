@@ -27,7 +27,6 @@ const Matchmaking = () => {
             width={800}
             height={600}
             token={getToken() as string}
-            socketMatchmaking={io(WebMatchmaking, { extraHeaders: { Authorization: getToken() } })}
             isQueue={isSearching}
           />
         </div>

@@ -12,7 +12,6 @@ const root = createRoot(
 );
 
 root.render(
-	<React.StrictMode>
 		<BrowserRouter>
 			<Routes>
 				<Route path="*" element={<App />} />
@@ -22,5 +21,4 @@ root.render(
 				<Route path="/error" element={<Error />} />
 			</Routes>
 		</BrowserRouter>
-	</React.StrictMode>
 );

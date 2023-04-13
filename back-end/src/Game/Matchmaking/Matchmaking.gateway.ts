@@ -34,6 +34,7 @@ export class MatchmakingGateway{
             this.matchmakingService.removeSocket(user);
         }
         client.disconnect();
+        this.matchmakingService.removeSocket(user);
     }
 
     @SubscribeMessage('matchmaking:join')
@@ -42,9 +43,7 @@ export class MatchmakingGateway{
         const user = await this.authentificate(client);
         if (user)
         {
-            let ret = await this.matchmakingService.joinQueue(user);
-            console.log(ret);
-            this.server.emit('matchmaking:join', user.id);
+            await this.matchmakingService.joinQueue(user);
         }
     }
 
@@ -55,7 +54,6 @@ export class MatchmakingGateway{
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
-            this.server.emit('matchmaking:leave', user.id);
         }
     }
 

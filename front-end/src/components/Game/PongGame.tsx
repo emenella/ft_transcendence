@@ -11,7 +11,6 @@ interface PongGameProps {
     width: number;
     height: number;
     token: string;
-    socketMatchmaking: Socket;
     isQueue: boolean;
 }
 
@@ -21,15 +20,20 @@ interface PongGameState {
     isQueue: boolean;
 }
 
+
+const WebMatchmaking = url + '/matchmaking';
+
 class PongGame extends Component<PongGameProps, PongGameState> {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     socketGame: Socket;
+    socketMatchmaking: Socket;
     game: Game | null = null;
 
     constructor(props: PongGameProps) {
         super(props);
         this.canvasRef = createRef();
         this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
+        this.socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: props.token } });
         this.state = {
             me: null,
             canvasRef: this.canvasRef,
@@ -52,26 +56,29 @@ class PongGame extends Component<PongGameProps, PongGameState> {
         console.log('componentDidUpdate Pong');
         this.setGame();
         this.searchGame();
-        console.log(this.props.isQueue);
         if (this.props.isQueue)
         {
             this.joinQueue();
+        }
+        else
+        {
+            this.leaveQueue();
         }
     }
 
     setGame() {
         const { me } = this.state;
         const ctx = this.canvasRef.current?.getContext('2d');
-        console.log( me, ctx);
-        if (me && ctx) {
-            console.log('Game created');
-            const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
+        if (!this.game && me && ctx) {
+            console.log('Game created' + this.socketGame, this.socketMatchmaking, me, ctx);
+            const newGame = new Game(this.socketGame, this.socketMatchmaking, me, ctx);
             this.game = newGame;
         }
     }
 
     joinQueue = () => {
         if (!this.game) {
+            console.log('no state game');
             return;
         }
         this.game.joinQueue();
@@ -79,6 +86,7 @@ class PongGame extends Component<PongGameProps, PongGameState> {
 
     leaveQueue = () => {
         if (!this.game) {
+            console.log('no state game');
             return;
         }
         this.game.leaveQueue();

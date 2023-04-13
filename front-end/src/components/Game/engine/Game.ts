@@ -26,9 +26,9 @@ export class Game {
     private gameSettings: GameSettings;
 
 
-    constructor(socket: Socket, socketGame: Socket, user: User, ctx: CanvasRenderingContext2D) {
+    constructor(socket: Socket, socketMatch: Socket, user: User, ctx: CanvasRenderingContext2D) {
         this.socketGame = socket;
-        this.socketMatchmaking = socketGame;
+        this.socketMatchmaking = socketMatch;
         this.ctx = ctx;
         this.pong = null;
         this.gameSettings = defaultGameSettings;
@@ -38,6 +38,8 @@ export class Game {
         this.gameFind = [];
         this.socketGame.on("game:search", this.handleSearchGame.bind(this));
         this.socketGame.on("game:join", this.handleJoinGame.bind(this));
+        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
+        console.log(this.socketMatchmaking);
     }
 
     public searchGame() {
@@ -49,6 +51,7 @@ export class Game {
     }
 
     public joinGame(gameId: string) {
+        console.log(gameId);
         this.socketGame.emit("game:join", gameId);
     }
 
@@ -76,25 +79,22 @@ export class Game {
 
     private handleSearchGame(ids: string[]) {
         this.gameFind = ids;
-        for (let i = 0; i < this.gameFind.length; i++) {
-            console.log(this.gameFind[i]);
-        }
-        this.joinGame(this.gameFind[0]);
+        if (ids.length > 0)
+            this.joinGame(ids[0]);
     }
 
     public joinQueue() {
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
-        this.socketMatchmaking.emit("matchmaking:join");
         console.log("join");
+        this.socketMatchmaking.emit("matchmaking:join");
     }
 
     public leaveQueue() {
+        console.log("leave");
         this.socketMatchmaking.emit("matchmaking:leave");
-        this.socketMatchmaking.off("matchmaking:foundMatch");
     }
 
     private handleQueue(id: string) {
-        console.log(id);
+        console.log("found match");
         this.joinGame(id);
     }
 }
