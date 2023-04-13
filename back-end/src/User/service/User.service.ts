@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
 import { Avatar } from "../entity/Avatar.entity";
-import { MatchHistory } from '../entity/History.entity';
+import { Match } from '../entity/Match.entity';
 
 @Injectable()
 export class UserService {
@@ -24,7 +24,7 @@ export class UserService {
             return user;
         }
         
-        async getUserByLogin(username: string): Promise<User> {
+        async getUserByUsername(username: string): Promise<User> {
             const user = await this.userRepository.findOne({ where: { username: username }, relations: ["avatar", "winMatch", "looseMatch", "friends", "blacklist"] });
             if (!user)
             throw new HttpException(`User with username ${username} not found.`, 404);
@@ -95,8 +95,8 @@ export class UserService {
             return file.path;
         }
 		
-		async getMatchHistory(user: User): Promise<MatchHistory[]> {
-			const matchHistory: MatchHistory[] = user.winMatch.concat(user.looseMatch);
+		async getMatchHistory(user: User): Promise<Match[]> {
+			const matchHistory: Match[] = user.winMatch.concat(user.looseMatch);
 			matchHistory.sort((a, b) => (a.date > b.date ? -1 : 1));
 			return matchHistory;
 		}

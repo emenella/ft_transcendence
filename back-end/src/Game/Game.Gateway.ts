@@ -2,8 +2,8 @@ import {WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, Connec
 import {Server, Socket} from 'socket.io';
 import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
-import { UserService } from '../Users/service/User.service';
-import { User } from '../Users/entity/User.entity';
+import { UserService } from '../User/service/User.service';
+import { User } from '../User/entity/User.entity';
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {

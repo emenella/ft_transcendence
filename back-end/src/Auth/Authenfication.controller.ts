@@ -3,8 +3,8 @@ import { Request, Response } from 'express';
 import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
 import { Public } from './decorators/public.decoration';
-import { ConnectionService } from '../Users/service/Connection.service';
-import { User } from '../Users/entity/User.entity';
+import { ConnectionService } from '../User/service/Connection.service';
+import { User } from '../User/entity/User.entity';
 import { serverOption } from './Authenfication.constants';
 
 @Controller('auth')

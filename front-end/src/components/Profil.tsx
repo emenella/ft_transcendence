@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import './Profil.css';
 import { getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
-import { User, MatchHistory, Avatar } from '../utils/backend_interface';
+import { User, Avatar, Match } from '../utils/backend_interface';
 
-function Match(props : { username: string | undefined, match: MatchHistory}) {
+function PrintMatch(props : { username: string | undefined, match: Match }) {
 	if (props.match.winner.username === props.username) {
 		return (
 			<div className="winner">
@@ -37,7 +37,7 @@ function Profil(props: { id: number }) {
 		getUser();
 	}, [props.id]);
 
-	const [matchs, setMatchs] = React.useState<MatchHistory[]>();
+	const [matchs, setMatchs] = React.useState<Match[]>();
 	React.useEffect(() => {
 		const getUserMatchs = async () => {
 			setMatchs(await getMatchs(props.id));
@@ -88,7 +88,7 @@ function Profil(props: { id: number }) {
 								</tr>
 							</thead>
 							<tbody>
-								{matchs?.map((match: MatchHistory) => { return(<Match username={user?.username} match={match} />); })}
+								{matchs?.map((match: Match) => { return(<PrintMatch username={user?.username} match={match} />); })}
 							</tbody>
 						</table>
 					</div>

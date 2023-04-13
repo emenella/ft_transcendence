@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Socket, Server } from 'socket.io'
-import { User } from "../Users/entity/User.entity";
-import { UserService } from "../Users/service/User.service";
+import { User } from "../User/entity/User.entity";
+import { UserService } from "../User/service/User.service";
 import { ChatUser } from "./Dto/chatDto";
 import { AuthenticationService } from "../Auth/Authenfication.service";
 import { Chan } from "./Chan/Chan.entity";

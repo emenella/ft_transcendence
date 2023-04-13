@@ -21,7 +21,7 @@ export async function setUsername(username: string) {
 
 export async function uploadAvatar(formData: FormData) {
     try {
-        return await axios.post('api/users/upload/avatar', formData, { headers: authHeader('multipart/form-data') });
+        return await axios.post('api/users/avatar/upload', formData, { headers: authHeader('multipart/form-data') });
     }
     catch (e) {
         console.log(e);

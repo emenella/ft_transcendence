@@ -7,7 +7,7 @@ import {
     JoinColumn,
     RelationId,
 } from 'typeorm';
-import { User } from '../../Users/entity/User.entity';
+import { User } from '../../User/entity/User.entity';
 import { Chan } from '../Chan/Chan.entity';
 
 @Entity()
