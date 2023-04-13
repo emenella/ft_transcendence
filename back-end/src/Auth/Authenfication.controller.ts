@@ -5,12 +5,15 @@ import { FortyTwoGuard } from './guard/42.guard';
 import { Public } from './decorators/public.decoration';
 import { ConnectionService } from '../User/service/Connection.service';
 import { User } from '../User/entity/User.entity';
+import { UserService } from "../User/service/User.service";
 import { serverOption } from './Authenfication.constants';
 
 @Controller('auth')
 export class AuthenticationController {
 
-    constructor(private readonly authenticationService: AuthenticationService, private readonly connectionService: ConnectionService) {}
+    constructor(private readonly authenticationService: AuthenticationService,
+				private readonly connectionService: ConnectionService,
+				private readonly userService: UserService) {}
     
     @Public()
     @Get('')
@@ -47,6 +50,7 @@ export class AuthenticationController {
 
     @Post('2fa/save')
     async saveSecret(@Req() req: Request) {
+		this.userService.change2FA(req.user as User);
         return await this.authenticationService.saveSecret(req.user as User, req.body.code);
     }
 
@@ -66,6 +70,7 @@ export class AuthenticationController {
 
     @Delete('2fa/delete')
     async deleteSecret(@Req() req: Request) {
+		this.userService.change2FA(req.user as User);
         return await this.authenticationService.deleteSecret(req.user as User);
     }
 

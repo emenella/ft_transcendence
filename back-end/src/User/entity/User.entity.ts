@@ -21,8 +21,11 @@ export class User {
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
 
-    @Column('boolean', {default: false})
+    @Column({type: 'boolean', default: false})
     isProfileComplete: boolean;
+
+	@Column({type: 'boolean', default: true}) // À changer en false
+    is2FAActivated: boolean;
 
     //~~ GAME AND STATS
     @OneToMany(() => Match, matchHistory => matchHistory.winner, {cascade: true})
