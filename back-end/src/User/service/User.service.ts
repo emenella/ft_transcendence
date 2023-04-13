@@ -97,7 +97,6 @@ export class UserService {
 		{
 			user.avatar.path = file.path;
 		}
-		console.log("OH PIERRO" + user.avatar.path);
 		await this.userRepository.save(user);
 		return file.path;
 	}

@@ -24,7 +24,7 @@ export class User {
     @Column({type: 'boolean', default: false})
     isProfileComplete: boolean;
 
-	@Column({type: 'boolean', default: true}) // À changer en false
+	@Column({type: 'boolean', default: false}) // À changer en false
     is2FAActivated: boolean;
 
     //~~ GAME AND STATS
