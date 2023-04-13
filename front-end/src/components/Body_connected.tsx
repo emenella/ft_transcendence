@@ -8,6 +8,7 @@ import { getMe } from '../api/User';
 import Chat from '../chat/Chat';
 import { User, Avatar } from '../utils/backend_interface';
 import Emoji from './Emoji';
+import { accept, deny } from '../utils/friends_system';
 
 function ChatSidebar() {
 	return (
@@ -83,7 +84,11 @@ function UserSidebar() {
 					<td><img src={avatar?.path} /></td>
 					<td>{friend.username}</td>
 				</tr>
-				<tr>Accepter ou refuser</tr>
+				<tr>
+					<button onClick={() => accept(friend.username)}>Accepter <Emoji label="check_mark" symbol="✔️" /></button>
+					ou
+					<button onClick={() => deny(friend.username)}>Refuser <Emoji label="cross_mark" symbol="❌" /></button>
+				</tr>
 			</div>
 		)
 	}

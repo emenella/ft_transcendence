@@ -46,6 +46,7 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		if (this.state.username !== '')
 		{
 			const req = await setUsername(this.state.username);
+			console.log(req);
 			if (req?.status === 201)
 				toast.success('Pseudo enregistré.');
 			else

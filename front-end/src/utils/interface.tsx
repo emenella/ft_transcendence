@@ -1,5 +1,3 @@
-import { User } from "./backend_interface";
-
 export interface Token {
 	hasToken : boolean;
 }
