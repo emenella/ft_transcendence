@@ -7,6 +7,7 @@ import AccountManagement from './AccountManagement';
 import { getMe } from '../api/User';
 import Chat from '../chat/Chat';
 import { User, Avatar } from '../utils/backend_interface';
+import Emoji from './Emoji';
 
 function ChatSidebar() {
 	return (
@@ -52,7 +53,19 @@ function UserSidebar() {
 		return(
 			<tr>
 				<td><img src={avatar?.path} /></td>
-				<td>{friend.username}</td>
+				<td>
+					<div className='friendStatus'>
+						<p>{friend.username}</p>
+						{friend.isPlaying
+							? <p>En partie <Emoji label="video_game" symbol="🎮" /></p>
+							: (
+								friend.isConnected
+								? <p>En ligne <Emoji label="green_circle" symbol="🟢" /></p>
+								: <p>Hors ligne <Emoji label="white_circle" symbol="⚪" /></p>
+							)
+						}
+					</div>
+				</td>
 			</tr>
 		)
 	}
