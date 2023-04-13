@@ -1,3 +1,5 @@
+import { User } from "./backend_interface";
+
 export interface Token {
 	hasToken : boolean;
 }
@@ -31,6 +33,10 @@ export interface UsernameFormProps {
 
 export interface UsernameFormState {
 	username: string;
+}
+
+export interface AccountManagementProps {
+	user : User;
 }
 
 export interface AccountManagementState {

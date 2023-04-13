@@ -126,7 +126,7 @@ function ChatFront() {
 }
 
 function BodyConnected() {
-	const [user, setUser] = React.useState<any>();
+	const [user, setUser] = React.useState<User>();
 	React.useEffect(() => {
 		const getUser = async () => {
 			setUser(await getMe());
@@ -141,8 +141,8 @@ function BodyConnected() {
 				<div>
 					<Routes>
 						<Route path="/" element={<Matchmaking />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={user} />} />
-						<Route path="/profil" element={<Profil id={user?.id} />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
+						<Route path="/profil" element={<Profil id={user?.id!} />} />
 					</Routes>
 				</div>
 				<div>

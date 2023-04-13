@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import './AccountManagement.css'
 import { setUsername, uploadAvatar, delete2FA } from '../api/User';
-import { AccountManagementState } from '../utils/interface';
+import { AccountManagementProps, AccountManagementState } from '../utils/interface';
 import Emoji from './Emoji';
 
 function Deactivation2FA() {
@@ -28,7 +28,7 @@ function Activation2FA() {
 	)
 };
 
-class AccountManagement extends React.Component<any, AccountManagementState> {
+class AccountManagement extends React.Component<AccountManagementProps, AccountManagementState> {
 	state: AccountManagementState = {
 		username: '',
 		image: undefined,
@@ -46,7 +46,6 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		if (this.state.username !== '')
 		{
 			const req = await setUsername(this.state.username);
-			console.log(req);
 			if (req?.status === 201)
 				toast.success('Pseudo enregistré.');
 			else
@@ -91,7 +90,7 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 					</form>
 					<br /><br />
 					<div>
-						{this.props.is2FAActivated
+						{this.props.user?.is2FAActivated
 							? <Deactivation2FA />
 							: <Activation2FA />
 						}
