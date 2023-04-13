@@ -37,11 +37,10 @@ export class ChatGateway {
     console.log(`Client connected: ${client.id}`);
     console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
-    console.log("CONNECTED CHAT YEAH")
-
+    
     if (user !== undefined) {
       const chanToJoin : ChanListDTO[] = await this.chanService.chanListOfUser(user.id);
-
+      
       chanToJoin.forEach(async (chan) => {
         const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
         let sendList : string[] = [];
@@ -49,13 +48,14 @@ export class ChatGateway {
         messages.forEach((message) => {
           sendList.push(" --- " + message.author + ": " + message.content);
         })
-
+        
         let data : {chan: string, messages: string[]} = {chan : chan.title, messages : sendList};
-
+        
         client.join(chan.id.toString());
         client.emit('joinedChan', data);
       })
       client.emit('listOfChan', this.chans);
+      console.log("CONNECTED CHAT YEAH")
     }
   }
 

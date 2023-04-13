@@ -240,11 +240,11 @@ export class ChanService {
 			        where : { chan : { id : chan.id}, ban_expire: undefined }})
 
 		if (rels.length === 0) {
-			await this.chanRelRepo.createQueryBuilder()
-				.relation("chan")
-				.of({id: chan.id})
-				.delete()
-				.execute();
+			// await this.chanRelRepo.createQueryBuilder()
+			// 	.relation("chan")
+			// 	.of({id: chan.id})
+			// 	.delete()
+			// 	.execute();
 
 			const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
 			const messagesIds : number[] = [];
