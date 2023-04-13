@@ -8,7 +8,7 @@ import {
     RelationId,
     OneToMany
 } from 'typeorm';
-import { User } from '../../Users/entity/User.entity';
+import { User } from '../../User/entity/User.entity';
 import { Message } from '../Message/Message.entity';
 
 

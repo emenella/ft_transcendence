@@ -40,10 +40,6 @@
     margin-right: 1px;
 }
 
-.userSidebar>form {
-    text-align: center;
-}
-
 .userSidebar>table {
     text-align: left;
     table-layout: fixed;

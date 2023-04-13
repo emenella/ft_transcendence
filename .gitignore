@@ -1,4 +1,10 @@
-node_modules
-volumes
-ssl_credentials
+# Sensitive data
+/ssl_credentials
+/volumes
 .env
+
+# Vscode
+.eslintrc.js
+
+# Other
+package-lock.json

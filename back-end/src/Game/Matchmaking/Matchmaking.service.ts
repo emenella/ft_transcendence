@@ -1,12 +1,12 @@
 import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
 import { GameService } from "../../Game/Game.service";
-import { UserService } from "../../Users/service/User.service";
+import { UserService } from "../../User/service/User.service";
 import { Game } from "../../Game/modele/Game.modele";
-import { User } from "../../Users/entity/User.entity";
+import { User } from "../../User/entity/User.entity";
 import { Setup, general, ball, player } from "../interface/Game.interface";
 import { updateElo, checkMatch, Result } from "./utils/elo.utils";
-import { MatchHistory } from "../../Users/entity/History.entity";
-import { HistoryService } from "../../Users/service/History.service";
+import { Match } from "../../User/entity/Match.entity";
+import { HistoryService } from "../../User/service/Match.service";
 import { Socket } from "socket.io";
 
 
@@ -210,7 +210,7 @@ export class MatchmakingService {
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();
         const ids: Array<number> = game.getPlayersId();
-        const history: MatchHistory = new MatchHistory();
+        const history: Match = new Match();
         history.winner = winner;
         history.looser = looser;
         history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];

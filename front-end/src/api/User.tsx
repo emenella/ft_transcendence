@@ -21,7 +21,7 @@ export async function setUsername(username: string) {
 
 export async function uploadAvatar(formData: FormData) {
     try {
-        await axios.post('api/users/upload/avatar', formData, { headers: authHeader('multipart/form-data') });
+        return await axios.post('api/users/avatar/upload', formData, { headers: authHeader('multipart/form-data') });
     }
     catch (e) {
         console.log(e);
@@ -68,7 +68,7 @@ export async function getUserById(id: number) {
 
 export async function getMatchs(id: number) {
     try {
-        const res = await axios.get('?', { headers: authHeader() });
+        const res = await axios.get('api/users/match_history/?id=' + id, { headers: authHeader() });
         return res.data;
     }
     catch (e) {

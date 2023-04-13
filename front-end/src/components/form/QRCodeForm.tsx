@@ -1,4 +1,5 @@
 import React from "react";
+import toast, { Toaster } from "react-hot-toast";
 import "./Form.css";
 import { saveQRCode } from "../../api/Auth";
 import { QRCodeFormProps, QRCodeFormState } from "../../utils/interface";
@@ -19,6 +20,9 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 			localStorage.setItem("token", token);
 			this.props.navigate("/set-username");
 		}
+		else {
+			toast.error('Erreur : veuillez réessayez.');
+		}
 	}
 
 	setSecret(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -28,6 +32,7 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 	render() {
 		return (
 			<div className="parent">
+				<Toaster />
 				<p>Veuillez scanner ce QRCode avec votre application Google Authenticator.</p>
 				<img src={this.props.qrcode} />
 				<br />

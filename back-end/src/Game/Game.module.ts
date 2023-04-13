@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { GameGateway } from "./Game.Gateway";
 import { GameService } from "./Game.service";
 import { AuthenticationModule } from "../Auth/Authenfication.module";
-import { UserModule } from "../Users/Users.module";
+import { UserModule } from "../User/User.module";
 
 
 @Module({

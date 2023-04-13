@@ -1,9 +1,9 @@
 import {WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket} from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
 import { AuthenticationService } from '../../Auth/Authenfication.service';
-import { UserService } from '../../Users/service/User.service';
+import { UserService } from '../../User/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
-import { User } from '../../Users/entity/User.entity';
+import { User } from '../../User/entity/User.entity';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{

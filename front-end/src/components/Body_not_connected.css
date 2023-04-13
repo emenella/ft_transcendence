@@ -4,3 +4,24 @@
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.flexbox {
+    display: flex;
+    /* flex-wrap: wrap; */
+}
+
+.flexbox>div {
+    margin: 5px;
+    /* min-width: 500px;
+    max-width: 100px; */
+}
+
+.profilPhoto {
+    border-radius: 50%;
+    width: 200px;
+}
+
+.profilPhotoErwan {
+    clip-path: ellipse(33% 50%);
+    width: 300px;
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import './App.css';
 import logo from './assets/black_logo.png';
 import Footer from './components/Footer';
@@ -23,6 +24,7 @@ function App() {
 
 	return (
 		<div>
+			<Toaster />
 			<div className='flex-container'>
 				<div>
 					<img src={logo} alt='Logo du site' />

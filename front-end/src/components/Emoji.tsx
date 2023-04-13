@@ -1,9 +1,5 @@
 import React from 'react';
-
-interface emojiProps {
-    label: string;
-    symbol: any;
-}
+import { emojiProps } from '../utils/interface';
 
 function Emoji(props: emojiProps) {
     return (
