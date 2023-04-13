@@ -70,7 +70,7 @@ export class ChanService {
 		if (ret === undefined || ret === null)
 			return false;
 		if (ret.ban_expire !== null || ret.isInvite === true)
-			false
+			return false;
 
 		return true;
 	}
@@ -222,22 +222,22 @@ export class ChanService {
 
 	async leaveChanById(chanId: number, userId: number) : Promise<undefined | string | number> {
 		const chan = await this.getChanById(chanId);
-
+		
 		if (chan === undefined || chan === null)
-			 return "No such chan !";
+		return "No such chan !";
 		if (chan.isDm === true)
 			return ("You can't leave dm chan !");
-
-		const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
-			        where : { chan: { id : chan.id }, user : { id : userId} } })
-		if (ret === undefined || ret === null)
+			
+			const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
+			where : { chan: { id : chan.id }, user : { id : userId} } })
+			if (ret === undefined || ret === null)
 		    return ("your are not in chan");
-		console.log("ret = ");
-		console.log(ret);
-
-		await this.chanRelRepo.remove(ret);
+			console.log("ret = ");
+			console.log(ret);
+			
+			await this.chanRelRepo.remove(ret);
 		const rels = await this.chanRelRepo.find({ relations : ["chan"],
-			        where : { chan : { id : chan.id}, ban_expire: undefined }})
+			        where : { chan : { id : chan.id}, ban_expire: undefined }});
 
 		if (rels.length === 0) {
 			// await this.chanRelRepo.createQueryBuilder()
@@ -245,7 +245,7 @@ export class ChanService {
 			// 	.of({id: chan.id})
 			// 	.delete()
 			// 	.execute();
-
+			
 			const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
 			const messagesIds : number[] = [];
 			messages.forEach((message) => {
@@ -256,16 +256,15 @@ export class ChanService {
 			})
 			await this.chanRepo.remove(chan);
 		}
-		else if (userId === chan.owner.id) {
+		else if (userId === chan.ownerId) {
 			let newOwner : User;
 			const rel = await this.chanRelRepo.findOne({ relations : ["chan", "user"],
 				        where : { chan : { id : chan.id }, isAdmin: true } })
 			if (rel) {
 				newOwner = rel.user;
 				chan.owner = newOwner;
-            	chan.owner.id = newOwner.id;
 				this.chanRepo.save(chan);
-				return (chan.owner.id);
+				return (chan.ownerId);
 			}
 			else {
 				const rel = await this.chanRelRepo.findOne({ relations : ["chan", "user"],
@@ -276,9 +275,8 @@ export class ChanService {
 					newOwner = rel.user;
 					await this.chanRelRepo.save(rel);
 					chan.owner = newOwner;
-            		chan.owner.id = newOwner.id;
 					this.chanRepo.save(chan);
-					return (chan.owner.id);
+					return (chan.ownerId);
 				}
 			}
 		}
@@ -309,9 +307,9 @@ export class ChanService {
 			return ("Chan doesn't exist !")
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId && await this.isAdmin(chan.id, senderId) === false)
+		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
-		if (await this.isAdmin(chan.id, banId) === true && chan.owner.id !== senderId)
+		if (await this.isAdmin(chan.id, banId) === true && chan.ownerId !== senderId)
 			return "You can't ban chan operator !";
 
 		const rel = await this.getRelOf(chanId, banId);
@@ -332,9 +330,9 @@ export class ChanService {
 			return ("Chan doesn't exist !")
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId && await this.isAdmin(chan.id, senderId) === false)
+		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
-		if (await this.isAdmin(chan.id, unbanId) === true && chan.owner.id !== senderId)
+		if (await this.isAdmin(chan.id, unbanId) === true && chan.ownerId !== senderId)
 			return "You can't unban chan operator !";
 
 		const rel = await this.getRelOf(chanId, unbanId);
@@ -372,9 +370,9 @@ export class ChanService {
                 return ("User doesn't exist !")
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId && await this.isAdmin(chan.id, senderId) === false)
+		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
-		if (await this.isAdmin(chan.id, inviteId) === true && chan.owner.id !== senderId)
+		if (await this.isAdmin(chan.id, inviteId) === true && chan.ownerId !== senderId)
 			return "You can't invite chan operator !";
 
 		const rel = await this.getRelOf(chanId, inviteId);
@@ -419,7 +417,7 @@ export class ChanService {
 			return ("You can't do that in dm chan !");
 		if (password !== null && (password.length > 16))
 			return ("Password must be less than 16 characters long");
-		if (chan.owner.id !== userId)
+		if (chan.ownerId !== userId)
 			return "Only the chan owner can change the password !";
 		if (password === null)
 			chan.password_key = null;
@@ -452,9 +450,9 @@ export class ChanService {
 			return ("Chan doesn't exist !")
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId && await this.isAdmin(chan.id, senderId) === false)
+		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
-		if (await this.isAdmin(chan.id, muteId) === true && chan.owner.id !== senderId)
+		if (await this.isAdmin(chan.id, muteId) === true && chan.ownerId !== senderId)
 			return "You can't mute chan operator !";
 
 		const rel = await this.getRelOf(chanId, muteId);
@@ -473,15 +471,15 @@ export class ChanService {
 			return ("Chan doesn't exist !")
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId && await this.isAdmin(chan.id, senderId) === false)
+		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
-		if (await this.isAdmin(chan.id, unmuteId) === true && chan.owner.id !== senderId)
+		if (await this.isAdmin(chan.id, unmuteId) === true && chan.ownerId !== senderId)
 			return "You can't unmute chan operator !";
 
 		const rel = await this.getRelOf(id, unmuteId);
 		if (rel === undefined || rel === null)
 			return "User not in chan !";
-		rel.mute_expire = undefined;
+		rel.mute_expire = new Date();
 
 		await this.chanRelRepo.save(rel);
 		return (true);
@@ -494,10 +492,10 @@ export class ChanService {
 			return "Unknown chan";
 		if (chan.isDm === true)
 			return ("You can't do that in dm chan !");
-		if (chan.owner.id !== senderId)
+		if (chan.ownerId !== senderId)
 			return "Only the chan owner can promote/demote !";
 
-		if (chan.owner.id === userToSetId)
+		if (chan.ownerId === userToSetId)
 			return "Owner can't be demote !"
 		const ret = await this.getRelOf(id, userToSetId);
 
@@ -530,7 +528,7 @@ export class ChanService {
 			    ret.push({
 			    	id :	        r.user.id,
 			    	username:		r.user.username,
-			    	level:			await this.getUserLevel(chan.id, chan.owner.id, r.user.id),
+			    	level:			await this.getUserLevel(chan.id, chan.ownerId, r.user.id),
 			    	isMuted:		await this.isMute(chan.id, r.user.id),
 			    	isBan:			r.ban_expire !== null,
 			    	is_connected:	false

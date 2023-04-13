@@ -143,6 +143,7 @@ export class ChatService {
                     return true;
                 }
 
+                console.log(invitedUser);
                 invitedUser.socket.emit('invited', ret.title);
                 return true;
             } 
@@ -238,7 +239,7 @@ export class ChatService {
                     return true;
                 }
                 server.to(chan.id.toString()).emit('msgToClient', {author: user.username, chan: chan.title, msg: mutedUser.username + ' has been muted !'});
-                socket.emit('error', 'You have been mute in ' + chan.title + ' channel for ' + duration + ' min.\nBe carefull not to be banned !');
+                mutedUser.socket.emit('error', 'You have been mute in ' + chan.title + ' channel for ' + duration + ' min.\nBe carefull not to be banned !');
                 return true;
             }
             case "/unmute" : {
@@ -263,11 +264,11 @@ export class ChatService {
                     return true;
                 }
                 server.to(chan.id.toString()).emit('msgToClient', {author: user.username, chan: chan.title, msg: mutedUser.username + ' has been unmuted !'});
-                socket.emit('error', 'You have been unmute in ' + chan.title + ' channel !');
+                mutedUser.socket.emit('error', 'You have been unmute in ' + chan.title + ' channel !');
                 return true;
             }
             case "/promote" : {
-                if (user.id !== chan.owner.id) {
+                if (user.id !== chan.ownerId) {
                     socket.emit('error', 'Only owner can send promote command !');
                     return true;
                 }
@@ -291,7 +292,7 @@ export class ChatService {
                 return true;
             }
             case "/demote" : {
-                if (user.id !== chan.owner.id) {
+                if (user.id !== chan.ownerId) {
                     socket.emit('error', 'Only owner can send demote command !');
                     return true;
                 }
@@ -315,7 +316,7 @@ export class ChatService {
                 return true;
             }
             case "/password" : {
-                if (user.id !== chan.owner.id) {
+                if (user.id !== chan.ownerId) {
                     socket.emit('error', 'Only owner can change the password !');
                     return true;
                 }

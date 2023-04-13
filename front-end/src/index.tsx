@@ -12,15 +12,13 @@ const root = createRoot(
 );
 
 root.render(
-	<React.StrictMode>
-		<BrowserRouter>
-			<Routes>
-				<Route path="*" element={<App />} />
-				<Route path="/auth" element={<Auth />} />
-				<Route path="/2fa" element={<DoubleFA />} />
-				<Route path="/set-username" element={<SetUsername />} />
-				<Route path="/error" element={<Error />} />
-			</Routes>
-		</BrowserRouter>
-	</React.StrictMode>
+	<BrowserRouter>
+		<Routes>
+			<Route path="*" element={<App />} />
+			<Route path="/auth" element={<Auth />} />
+			<Route path="/2fa" element={<DoubleFA />} />
+			<Route path="/set-username" element={<SetUsername />} />
+			<Route path="/error" element={<Error />} />
+		</Routes>
+	</BrowserRouter>
 );

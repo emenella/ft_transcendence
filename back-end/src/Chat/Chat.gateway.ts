@@ -46,7 +46,7 @@ export class ChatGateway {
         let sendList : string[] = [];
         
         messages.forEach((message) => {
-          sendList.push(" --- " + message.author + ": " + message.content);
+          sendList.push(" --- " + message.authorId as string + ": " + message.content);
         })
         
         let data : {chan: string, messages: string[]} = {chan : chan.title, messages : sendList};
@@ -164,6 +164,8 @@ export class ChatGateway {
         const ret : string | number | undefined = await this.chanService.leaveChanById(chanToLeave.id, user.id);
         
         if (typeof ret === 'string') {
+          console.log("ret =");
+          console.log(ret);
           client.emit('error', ret);
           return;
         }
