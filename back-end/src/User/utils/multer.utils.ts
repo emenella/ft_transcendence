@@ -9,7 +9,7 @@ export const factory = async (): Promise<MulterModuleOptions> => {
                 if (!req.user)
                     cb(new Error('User not found!'), "");
                 const user: User = req.user as User;
-                const filename = `avatar-${user.username}`;
+                const filename = `avatar-${user.id}`;
                 const extension = file.mimetype.split('/')[1];
                 cb(null, `${filename}.${extension}`);
             },
