@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
@@ -8,7 +8,7 @@ import { getMe } from '../api/User';
 import Chat from '../chat/Chat';
 import { User, Avatar } from '../utils/backend_interface';
 import Emoji from './Emoji';
-import { accept, deny } from '../utils/friends_system';
+import { invite, accept, deny } from '../utils/friends_system';
 
 function ChatSidebar() {
 	return (
@@ -85,7 +85,6 @@ function UserSidebar() {
 
 		return(
 			<div>
-				<tr>Demande d'ami de :</tr>
 				<tr>
 					<td><img src={avatar?.path} /></td>
 					<td>{friend.username}</td>
@@ -100,17 +99,44 @@ function UserSidebar() {
 	}
 	);
 
+	const [friendToAdd, setFriendToAdd] = React.useState<string>();
+	function setFriend(e: ChangeEvent<HTMLInputElement>) {
+		setFriendToAdd(e.target.value);
+	}
+	function addFriend() {
+		if (friendToAdd)
+			invite(friendToAdd);
+	}
+
 	return (
 		<div className='userSidebar'>
 			<table>
 				<thead>
-					<tr>
-						<th scope='row'>Amis</th>
-					</tr>
+					<tr><th scope='row'>Amis</th></tr>
+				</thead>
+				{ listFriends
+					? <tbody>{listFriends}</tbody>
+					: <tbody><tr><td>Aucun ami pour le moment</td></tr></tbody>
+				}
+			</table>
+			<table>
+				<thead>
+					<tr><th scope='row'>Invitations</th></tr>
+				</thead>
+				{ listFriendsInvite
+					? <tbody>{listFriendsInvite}</tbody>
+					: <tbody><tr><td>Aucune demande d'ami pour le moment</td></tr></tbody>
+				}
+			</table>
+			<table>
+				<thead>
+					<tr><th scope='row'>Ajouter un ami</th></tr>
 				</thead>
 				<tbody>
-					{listFriends}
-					{listFriendsInvite}
+					<tr>
+						<td><input type='text' onChange={setFriend} />
+						<button onClick={addFriend}> <Emoji label="heavy_plus_sign" symbol="➕" /> </button></td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

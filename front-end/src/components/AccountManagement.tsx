@@ -82,7 +82,7 @@ class AccountManagement extends React.Component<AccountManagementProps, AccountM
 				<div className='account-management'>
 					<h2>Gestion du compte</h2>
 					<form onSubmit={this.handleSubmit}>
-						<label>Changer de pseudo : </label> <input type="text" onChange={this.setUsername} ></input>
+						<label>Changer de pseudo : </label> <input type="text" onChange={this.setUsername} />
 						<br /><br />
 						<label>Changer de photo de profil : </label> <input type="file" accept='.PNG,.JPG' onChange={this.setImage} />
 						<br /><br />
