@@ -5,7 +5,7 @@ import { User } from "../entity/User.entity";
 import { Avatar } from "../entity/Avatar.entity";
 import { Match } from '../entity/Match.entity';
 
-export enum UserStatus {
+export const enum UserStatus {
 	Disconnected,
 	Connected,
 	InGame,
@@ -195,4 +195,4 @@ export class UserService {
 			await this.userRepository.save(user);
 		}
 	}
-    }
+}
