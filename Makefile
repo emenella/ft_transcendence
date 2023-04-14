@@ -75,6 +75,7 @@ fclean:
 			docker-compose --project-directory=. $(BONUS_FLAG) down --rmi all --volumes
 # Removes locally stored volumes
 vclean:
+			docker volume rm pong_database
 			rm -rf $(VOLUMES_PATH)
 
 #~~~~ Misc ~~~~#
