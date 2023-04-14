@@ -30,31 +30,27 @@ function BodyNotConnected() {
             <div className='flexbox'>
                 <div>
                     <h4>Erwan Menella</h4>
-                    <img src={emenella} alt="Photo d'Erwan" className='profilPhotoErwan' />
+                    <img src={emenella} alt="Photo d'Erwan" className='profilPhoto' />
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
-                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
                 </div>
                 <div>
                     <h4>Emil Bellon</h4>
                     <img src={ebellon} alt="Photo d'Emil" className='profilPhoto' />
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
-                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
                 </div>
                 <div>
                     <h4>Pierre Thomas</h4>
                     <img src={pthomas} alt="Photo de Pierre" className='profilPhoto' />
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
-                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
                 </div>
                 <div>
                     <h4>Manon Berne</h4>
                     <img src={mberne} alt="Photo de Manon" className='profilPhoto' />
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.
-                        Curabitur sed nunc sit amet dolor efficitur viverra nec sed lectus.</p>
+                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
                 </div>
             </div>
 		</div>
