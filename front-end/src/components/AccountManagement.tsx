@@ -9,7 +9,7 @@ import Emoji from './Emoji';
 function Deactivation2FA() {
 	return(
 		<div>
-			<button onClick={delete2FA}>Désactivation 2FA <Emoji label="cross_mark" symbol="❌" /></button>
+			<button onClick={() => { delete2FA(); window.location.reload(); }}>Désactivation 2FA <Emoji label="cross_mark" symbol="❌" /></button>
 		</div>
 	)
 };
@@ -88,7 +88,7 @@ class AccountManagement extends React.Component<AccountManagementProps, AccountM
 						<br /><br />
 						<button type="submit">Valider</button>
 					</form>
-					<br /><br />
+					<br />
 					<div>
 						{this.props.user?.is2FAActivated
 							? <Deactivation2FA />
