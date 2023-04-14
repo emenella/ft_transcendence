@@ -33,6 +33,4 @@ export class Spectator {
         this.socket.emit('game:join', gameSetup);
     }
 
-
-
 }

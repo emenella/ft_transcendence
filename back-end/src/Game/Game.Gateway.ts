@@ -17,7 +17,7 @@ export class GameGateway {
     }
 
     async handleConnection(@ConnectedSocket() client: Socket) {
-        const user = this.authentificate(client);
+        const user = await this.authentificate(client);
         if (!user) {
             client.disconnect();
         }
