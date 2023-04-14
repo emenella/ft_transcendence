@@ -1,9 +1,63 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Profil.css';
-import { getMatchs, getUserById } from '../api/User';
+import { getMe, getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
 import { User, Avatar, Match } from '../utils/backend_interface';
+import { invite, remove, blacklist, unblacklist } from '../utils/friends_blacklists_system';
+
+function PlayerInteraction(props : { user : User | undefined, me : User | undefined }) {
+	return (
+		<div className='player-interaction'>
+			{ props.me?.friends.some((friend: User) => friend.id === props.user?.id)
+				?	<div>
+						<label>Supprimer des amis </label>
+						<button onClick={() => { invite(props.user!.username); }}>
+							<Emoji label="handshake" symbol="🤝" />
+						</button>
+					</div>
+				:	<div>
+						<label>Ajouter en ami </label>
+						<button onClick={() => { remove(props.user!.username); }}>
+							<Emoji label="handshake" symbol="🤝" />
+						</button>
+					</div>
+			}
+			<div>
+				<label>Proposer une partie </label>
+				<button onClick={() => {  }}>
+					<Emoji label="crossed_swords" symbol="⚔️" />
+				</button>
+			</div>
+			<div>
+				<label>Regarder sa partie </label>
+				<button onClick={() => {  }}>
+					<Emoji label="tv" symbol="📺" />
+				</button>
+			</div>
+			{ props.me?.blacklist.some((friend: User) => friend.id === props.user?.id)
+				?	<div>
+						<label>Débloquer l'utilisateur </label>
+						<button onClick={() => { unblacklist(props.user!.username); }}>
+							<Emoji label="no_entry_sign" symbol="🚫" />
+						</button>
+					</div>
+				:	<div>
+						<label>Bloquer l'utilisateur </label>
+						<button onClick={() => { blacklist(props.user!.username); }}>
+							<Emoji label="no_entry_sign" symbol="🚫" />
+						</button>
+					</div>
+			}
+			<div>
+				<label>Discussion privée </label>
+				<button onClick={() => {  }}>
+					<Emoji label="speech_balloon" symbol="💬" />
+				</button>
+			</div>
+		</div>
+	);
+}
 
 function PrintMatch(props : { username: string | undefined, match: Match }) {
 	if (props.match.winner.username === props.username) {
@@ -50,6 +104,14 @@ function Profil(props: { id: number }) {
 		setAvatar(user?.avatar);
 	}, [user]);
 
+	const [me, setMe] = React.useState<User>();
+	React.useEffect(() => {
+		const getUser = async () => {
+			setMe(await getMe());
+		};
+		getUser();
+	}, []);
+
 	const wins = user?.winMatch.length;
 	const loses = user?.looseMatch.length;
 	const games = matchs?.length;
@@ -67,8 +129,12 @@ function Profil(props: { id: number }) {
 				<h2>Profil</h2>
 				<div className='player-profil'>
 					<img src={avatar?.path} alt="Logo du joueur" />
-					<p>{user?.username}</p>
+					<h3>{user?.username}</h3>
 				</div>
+				{ (user?.id === me?.id)
+					? <></>
+					:	<PlayerInteraction user={user} me={me} />
+				}
 				<div className='player-info'>
 					<div className='statistics'>
 						<h3>Statistiques du joueur</h3>

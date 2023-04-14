@@ -1,4 +1,4 @@
-import { inviteFriend, removeFriend, acceptFriend, denyFriend } from "../api/User";
+import { inviteFriend, removeFriend, acceptFriend, denyFriend, addFromBlacklist, removeFromBlacklist } from "../api/User";
 import { toast } from "react-hot-toast";
 
 export async function invite(username : string) {
@@ -31,4 +31,20 @@ export async function deny(username : string) {
         toast.success('Demande d\'ami refusée.');
     else
         toast.error('Erreur.')
+}
+
+export async function blacklist(username : string) {
+    const req = await addFromBlacklist(username);
+    if (req?.status === 201)
+        toast.success('Blocage réussi.');
+    else
+        toast.error('Erreur. Veuillez réessayer.')
+}
+
+export async function unblacklist(username : string) {
+    const req = await removeFromBlacklist(username);
+    if (req?.status === 201)
+        toast.success('Déblocage réussi.');
+    else
+        toast.error('Erreur. Veuillez réessayer.')
 }

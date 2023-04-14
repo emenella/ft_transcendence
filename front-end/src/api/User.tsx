@@ -47,6 +47,16 @@ export async function getUserById(id: number) {
     }
 }
 
+export async function getUserByUsername(username: string) {
+    try {
+        const res = await axios.get('api/users/username/?username=' + username, { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
 export async function getMatchs(id: number) {
     try {
         const res = await axios.get('api/users/match_history/?id=' + id, { headers: authHeader() });
@@ -93,7 +103,7 @@ export async function denyFriend(username : string) {
     }
 }
 
-export async function addToBlacklist(username : string) {
+export async function addFromBlacklist(username : string) {
     try {
         return await axios.delete('api/users/blacklist/add?username=' + username, { headers: authHeader() });
     }
