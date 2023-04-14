@@ -48,7 +48,12 @@ else
 endif
 # View output from containers
 logs:
-			$(COMPOSE) logs -t -f
+ifeq '$(SERVICE)' ''
+	$(COMPOSE) logs -t -f
+else
+	$(COMPOSE) logs -t -f $(SERVICE)
+endif
+			
 #~~~~ Essantial ~~~~#
 # Start services
 start:
