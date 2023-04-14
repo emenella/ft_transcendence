@@ -17,7 +17,7 @@ VOLUMES_PATH	= ./volumes
 
 #~~~~ Main ~~~~#
 # default `make` behavior set to `make up`
-all:		up
+all:		up logs
 
 re:			fclean all
 # Create and start containers
@@ -48,7 +48,7 @@ else
 endif
 # View output from containers
 logs:
-			$(COMPOSE) logs
+			$(COMPOSE) logs -t -f
 #~~~~ Essantial ~~~~#
 # Start services
 start:
