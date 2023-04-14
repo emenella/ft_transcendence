@@ -12,6 +12,7 @@ interface PongGameProps {
     height: number;
     token: string;
     isQueue: boolean;
+    spec: string | null;
 }
 
 interface PongGameState {
@@ -55,7 +56,8 @@ class PongGame extends Component<PongGameProps, PongGameState> {
     componentDidUpdate(prevProps: PongGameProps, prevState: PongGameState) {
         console.log('componentDidUpdate Pong');
         this.setGame();
-        this.searchGame();
+        if (this.props.spec === null)
+            this.searchGame();
         if (this.props.isQueue)
         {
             this.joinQueue();
@@ -63,6 +65,11 @@ class PongGame extends Component<PongGameProps, PongGameState> {
         else
         {
             this.leaveQueue();
+        }
+
+        if (this.props.spec)
+        {
+            this.game?.spectateGame(this.props.spec);
         }
     }
 

@@ -28,6 +28,7 @@ const Matchmaking = () => {
             height={600}
             token={getToken() as string}
             isQueue={isSearching}
+            spec={null}
           />
         </div>
         <SearchButton

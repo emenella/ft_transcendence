@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from "./App";
 import Auth from "./routes/Auth";
 import DoubleFA from "./routes/2FA";
+import Spectate from "./routes/Spec";
 import SetUsername from "./routes/SetUsername";
 import Error from "./components/Error";
 
@@ -18,6 +19,7 @@ root.render(
 				<Route path="/auth" element={<Auth />} />
 				<Route path="/2fa" element={<DoubleFA />} />
 				<Route path="/set-username" element={<SetUsername />} />
+				<Route path="/spec/:spec" element={<Spectate />} />
 				<Route path="/error" element={<Error />} />
 			</Routes>
 		</BrowserRouter>
