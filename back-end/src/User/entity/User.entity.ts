@@ -5,6 +5,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany
 import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
 import { Avatar } from './Avatar.entity';
+import { UserStatus } from '../service/User.service';
 
 @Entity()
 export class User {
@@ -24,8 +25,11 @@ export class User {
     @Column({type: 'boolean', default: false})
     isProfileComplete: boolean;
 
-	@Column({type: 'boolean', default: false}) // À changer en false
+	@Column({type: 'boolean', default: false})
     is2FAActivated: boolean;
+
+	@Column({default: UserStatus.Disconnected})
+    status: number;
 
     //~~ GAME AND STATS
     @OneToMany(() => Match, matchHistory => matchHistory.winner, {cascade: true})
