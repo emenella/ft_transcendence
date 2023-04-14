@@ -31,6 +31,19 @@ function ChatSidebar() {
 	);
 }
 
+function renderSwitch(num: number) {
+	switch (num) {
+		case 0:
+			return ( <p>Hors ligne <Emoji label="white_circle" symbol="⚪" /></p> );
+		case 1:
+			return ( <p>En ligne <Emoji label="green_circle" symbol="🟢" /></p> );
+		case 2:
+			return ( <p>En partie <Emoji label="video_game" symbol="🎮" /></p> );
+		// case 3:
+		// 	return ( <p>Inactif <Emoji label="yellow_circle" symbol="🟡" /></p> );
+	}
+};
+
 function UserSidebar() {
 	const [user, setUser] = React.useState<User>();
 	React.useEffect(() => {
@@ -54,14 +67,7 @@ function UserSidebar() {
 				<td>
 					<div className='friendStatus'>
 						<p>{friend.username}</p>
-						{friend.isPlaying
-							? <p>En partie <Emoji label="video_game" symbol="🎮" /></p>
-							: (
-								friend.isConnected
-								? <p>En ligne <Emoji label="green_circle" symbol="🟢" /></p>
-								: <p>Hors ligne <Emoji label="white_circle" symbol="⚪" /></p>
-							)
-						}
+						{renderSwitch(friend.status)}
 					</div>
 				</td>
 			</tr>
@@ -102,7 +108,10 @@ function UserSidebar() {
 						<th scope='row'>Amis</th>
 					</tr>
 				</thead>
-				<tbody>{listFriends}{listFriendsInvite}</tbody>
+				<tbody>
+					{listFriends}
+					{listFriendsInvite}
+				</tbody>
 			</table>
 		</div>
 	);

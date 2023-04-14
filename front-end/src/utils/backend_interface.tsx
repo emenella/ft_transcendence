@@ -20,6 +20,5 @@ export interface User {
     friends: User[];
     friend_invites: User[];
     blacklist: User[];
-    isConnected : boolean;
-    isPlaying : boolean;
+    status: number;
 }
