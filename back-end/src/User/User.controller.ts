@@ -10,10 +10,9 @@ import { Match } from './entity/Match.entity';
 export class UserController {
     constructor(private readonly userService: UserService) {}
     
-	//~~ GET INFO
     @Get("/me")
     async getMe(@Req() req : Request): Promise<User> {
-        return req.user as User;
+		return req.user as User;
     }
     
     @Get("/id")
@@ -31,6 +30,7 @@ export class UserController {
 		return this.userService.getAllUsers();
 	}
 	
+	//~~ GET INFO
     @Get("/match_history")
     async getMatchHistory(@Query('id') id: number): Promise<Match[]> {
 		const player: User = await this.getUserById(id);
@@ -41,7 +41,6 @@ export class UserController {
     @Post("/me")
     async updateUser(@Req() req : Request, @Body("username") username: string): Promise<User> {
         const user: User = await this.getMe(req);
-        console.log(username);
         return this.userService.updateUsername(user.id, username);
     }
 
@@ -49,7 +48,6 @@ export class UserController {
     @UseInterceptors(FileInterceptor('file'))
     async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<string> {
         const user: User = await this.getMe(req);
-        console.log(file);
         return await this.userService.uploadAvatar(user.id, file);
     }
 

@@ -50,6 +50,11 @@
     width: 25%;
 }
 
+.friendStatus {
+    display: flex;
+    flex-direction: column;
+}
+
 .chat {
     border-style: solid;
     border-color: #009688;

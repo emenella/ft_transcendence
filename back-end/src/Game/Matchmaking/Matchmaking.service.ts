@@ -215,7 +215,7 @@ export class MatchmakingService {
         history.looser = looser;
         history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];
         history.date = new Date();
-        await this.historyService.addHistory(history);
+        await this.historyService.addMatch(history);
     }
 
     public addSocket(user: User, socket: Socket): void {
