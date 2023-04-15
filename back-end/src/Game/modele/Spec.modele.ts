@@ -33,4 +33,8 @@ export class Spectator {
         this.socket.emit('game:join', gameSetup);
     }
 
+    public getSocketId() {
+        return this.socket.id;
+    }
+
 }

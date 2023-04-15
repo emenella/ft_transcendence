@@ -148,7 +148,9 @@ export class ft_pong {
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = "white";
         this.ctx.font = "30px Arial";
-        this.ctx.fillText("Finish, click on X", this.width / 2 - 150, this.height / 2 - 150);
+        this.ctx.fillText("Game over", this.width / 2 - 150, this.height / 2 - 150);
+        this.showScore();
+        this.stop();
     }
 
     public startGame(): void
@@ -181,7 +183,7 @@ export class ft_pong {
         this.isFinish = true;
     }
 
-    public stop(): void
+    public stop = (): void =>
     {
         this.socket.off("game:info", this.handleGameUpdate);
         this.socket.off("game:finish", this.handleGameFinish);

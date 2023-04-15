@@ -40,6 +40,7 @@ export class Game {
         this.isSpec = false;
         this.socketGame.on("game:search", this.handleSearchGame.bind(this));
         this.socketGame.on("game:join", this.handleJoinGame.bind(this));
+        this.socketGame.on("game:finish", this.handleFinishGame.bind(this));
         this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
         console.log(this.socketMatchmaking);
     }
@@ -97,5 +98,14 @@ export class Game {
     private handleQueue(id: string) {
         console.log("found match");
         this.joinGame(id);
+    }
+
+    private handleFinishGame() {
+        setTimeout(() => {
+            if (this.pong) {
+                this.pong.stop();
+                this.pong = null;
+            }
+        }, 1000);
     }
 }

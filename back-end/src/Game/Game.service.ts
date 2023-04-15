@@ -57,6 +57,7 @@ export class GameService {
     }
 
     public deleteGame(id: string): void {
+        this.handlerGameFinish(id);
         this.games.delete(id);
     }
 
@@ -176,7 +177,21 @@ export class GameService {
         let game = this.games.get(gameId);
         if (game)
         {
+            this.users.delete(game.getSetup().player0.id as number);
+            this.users.delete(game.getSetup().player1.id as number);
             this.games.delete(gameId);
         }
+    }
+
+    public isPlayer(client: Socket): {gameId: string, isPlayer:boolean} | undefined {
+        for (const game of this.users.values()) {
+            const ids = game.getSocketId();
+            for (const id of ids) {
+                if (id == client.id) {
+                    return {gameId: game.getSetup().general.id as string, isPlayer: game.isPlayer(client)};
+                }
+            }
+        }
+        return undefined;
     }
 }
