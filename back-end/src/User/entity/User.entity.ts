@@ -2,22 +2,43 @@ import { Chan } from '../../Chat/Chan/Chan.entity';
 import { RelationTable } from '../../Chat/Chan/Chan.entity';
 import { Message } from '../../Chat/Message/Message.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { MatchHistory } from './History.entity';
+import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
 import { Avatar } from './Avatar.entity';
 
 @Entity()
 export class User {
+	//~~ INFO
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({unique: true, nullable: true})
     username: string;
 
+    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
+    avatar: Avatar;
+
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
 
-    // TODO chatroom
+    @Column({type: 'boolean', default: false})
+    isProfileComplete: boolean;
+
+	@Column({type: 'boolean', default: false}) // À changer en false
+    is2FAActivated: boolean;
+
+    //~~ GAME AND STATS
+    @OneToMany(() => Match, matchHistory => matchHistory.winner, {cascade: true})
+    winMatch: Match[];
+	
+    @OneToMany(() => Match, matchHistory => matchHistory.looser, {cascade: true})
+    looseMatch: Match[];
+
+	// float in 
+	@Column({default: 1000})
+	elo: number;
+	
+    //~~ CHAT
     @OneToMany(() => Chan, (target: Chan) => target.owner)
     ownedChans: Chan[];
 
@@ -26,31 +47,12 @@ export class User {
 
     @OneToMany(() => Message, (target: Message) => target.author)
     messages: Message[];
-    
-    // TODO friends
-    // TODO match history
-    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
-    avatar: Avatar;
-
-    @Column('boolean', {default: false})
-    isProfileComplete: boolean;
-
-    // float in 
-    @Column({default: 1000})
-    elo: number;
-
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.winner, {cascade: true})
-    winMatch: MatchHistory[];
-
-    @OneToMany(() => MatchHistory, matchHistory => matchHistory.looser, {cascade: true})
-    looseMatch: MatchHistory[];
-
-    // default []
+	
+    //~~ FRIENDS AND BLACKLIST
 	@ManyToMany(() => User)
     @JoinTable()
     friends: User[];
 
-    // default []
 	@ManyToMany(() => User)
     @JoinTable()
     friend_invites: User[];

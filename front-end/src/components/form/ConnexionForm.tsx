@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
 import "./Form.css";
 import { submitCode2FA } from "../../api/Auth";
 import { ConnexionProps } from "../../utils/interface";
@@ -43,11 +42,5 @@ class Connexion extends React.Component<ConnexionProps, { secret: string }> {
 		);
 	}
 }
-
-// function ConnexionWrap(props: any) {
-// 	const navigate = useNavigate();
-
-// 	return (<Connexion acces_code={props.acces_code} navigate={navigate} />);
-// }
 
 export default Connexion;

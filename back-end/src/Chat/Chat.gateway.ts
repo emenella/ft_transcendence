@@ -5,7 +5,7 @@ import { MessageService } from './Message/Message.service';
 import { Message } from './Message/Message.entity';
 import { ChanService } from './Chan/Chan.service';
 import { Chan } from './Chan/Chan.entity';
-import { UserService } from '../Users/service/User.service';
+import { UserService } from '../User/service/User.service';
 import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';

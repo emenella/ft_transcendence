@@ -3,6 +3,8 @@ import toast, { Toaster } from "react-hot-toast";
 import "./Form.css";
 import { saveQRCode } from "../../api/Auth";
 import { QRCodeFormProps, QRCodeFormState } from "../../utils/interface";
+import { getMe } from "../../api/User";
+import { User } from "../../utils/backend_interface";
 
 class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 	constructor(props: any) {
@@ -18,6 +20,9 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 		const token = await saveQRCode(this.state.secret, this.props.accessToken);
 		if (token) {
 			localStorage.setItem("token", token);
+			const user : User = await getMe();
+			if (user.username)
+				this.props.navigate("/");
 			this.props.navigate("/set-username");
 		}
 		else {

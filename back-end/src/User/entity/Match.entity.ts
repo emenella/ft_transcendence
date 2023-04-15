@@ -2,7 +2,7 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from "t
 import { User } from "./User.entity";
 
 @Entity()
-export class MatchHistory {
+export class Match {
     @PrimaryGeneratedColumn()
     id: number;
 

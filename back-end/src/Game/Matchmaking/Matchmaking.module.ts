@@ -3,7 +3,7 @@ import { MatchmakingGateway } from "./Matchmaking.gateway";
 import { MatchmakingService } from "./Matchmaking.service";
 import { AuthenticationModule } from "../../Auth/Authenfication.module";
 import { GameModule } from "../Game.module";
-import { UserModule } from "../../Users/Users.module";
+import { UserModule } from "../../User/User.module";
 
 @Module({
     imports: [AuthenticationModule, UserModule, GameModule],

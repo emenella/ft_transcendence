@@ -17,7 +17,7 @@ VOLUMES_PATH	= ./volumes
 
 #~~~~ Main ~~~~#
 # default `make` behavior set to `make up`
-all:		up
+all:		up logs
 
 re:			fclean all
 # Create and start containers
@@ -48,7 +48,12 @@ else
 endif
 # View output from containers
 logs:
-			$(COMPOSE) logs
+ifeq '$(SERVICE)' ''
+	$(COMPOSE) logs -t -f
+else
+	$(COMPOSE) logs -t -f $(SERVICE)
+endif
+			
 #~~~~ Essantial ~~~~#
 # Start services
 start:
@@ -70,6 +75,7 @@ fclean:
 			docker-compose --project-directory=. $(BONUS_FLAG) down --rmi all --volumes
 # Removes locally stored volumes
 vclean:
+			docker volume rm pong_database
 			rm -rf $(VOLUMES_PATH)
 
 #~~~~ Misc ~~~~#

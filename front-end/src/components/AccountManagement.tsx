@@ -1,16 +1,37 @@
 import React, { ChangeEvent } from 'react';
 import toast from 'react-hot-toast';
-import { Link, redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AccountManagement.css'
-import { getMe, setUsername, uploadAvatar, delete2FA, deleteAccount } from '../api/User';
-import { AccountManagementState } from '../utils/interface';
+import { setUsername, uploadAvatar, delete2FA } from '../api/User';
+import { AccountManagementProps, AccountManagementState } from '../utils/interface';
 import Emoji from './Emoji';
 
-class AccountManagement extends React.Component<any, AccountManagementState> {
+function Deactivation2FA() {
+	return(
+		<div>
+			<button onClick={delete2FA}>Désactivation 2FA <Emoji label="cross_mark" symbol="❌" /></button>
+		</div>
+	)
+};
+
+function Activation2FA() {
+	const navigate = useNavigate();
+
+	function move() {
+		navigate("/auth");
+	}
+
+	return(
+		<div>
+			<button onClick={move}>Activation 2FA <Emoji label="check_mark" symbol="✔️" /></button>
+		</div>
+	)
+};
+
+class AccountManagement extends React.Component<AccountManagementProps, AccountManagementState> {
 	state: AccountManagementState = {
 		username: '',
 		image: undefined,
-		id: 0
 	}
 
 	constructor(props: any) {
@@ -18,7 +39,6 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		this.setUsername = this.setUsername.bind(this);
 		this.setImage = this.setImage.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.setId = this.setId.bind(this);
 	}
 
 	async handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -50,16 +70,6 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 		this.setState({ image: e.target.files![0] });
 	}
 
-	async setId() {
-		const getUser = async (): Promise<number> => {
-			const tmp = await getMe();
-			const user = JSON.parse(tmp);
-			return user.id;
-		};
-		const id = await getUser();
-		this.setState({ id: id })
-	}
-
 	render() {
 		const linkStyle = {
             color: "black",
@@ -79,9 +89,12 @@ class AccountManagement extends React.Component<any, AccountManagementState> {
 						<button type="submit">Valider</button>
 					</form>
 					<br /><br />
-					<label>Désactivation 2FA : </label> <button onClick={delete2FA}><Emoji label="heavy_check_mark" symbol="✔️" /></button>
-					<br /><br />
-					<button onClick={() => { this.setId(); deleteAccount(this.state.id); redirect('/'); }}>Supprimer le compte</button>
+					<div>
+						{this.props.user?.is2FAActivated
+							? <Deactivation2FA />
+							: <Activation2FA />
+						}
+					</div>
 				</div>
 			</div>
 		);

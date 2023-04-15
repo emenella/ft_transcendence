@@ -1,12 +1,12 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { UserService } from '../Users/service/User.service';
+import { UserService } from '../User/service/User.service';
 import { JwtService } from '@nestjs/jwt';
 import { API } from './Authenfication.constants';
 import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
-import { ConnectionService } from '../Users/service/Connection.service';
-import { User } from '../Users/entity/User.entity';
-import { Connection } from '../Users/entity/Connection.entity';
+import { ConnectionService } from '../User/service/Connection.service';
+import { User } from '../User/entity/User.entity';
+import { Connection } from '../User/entity/Connection.entity';
 import * as crypto from 'crypto-js';
 import { passPhrase } from './Authenfication.constants';
 

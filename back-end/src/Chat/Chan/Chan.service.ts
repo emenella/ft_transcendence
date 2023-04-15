@@ -3,9 +3,9 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chan, RelationTable } from "./Chan.entity";
 import { ChanPasswordService } from "./Chan.password.service";
-import { User } from "../../Users/entity/User.entity";
+import { User } from "../../User/entity/User.entity";
 import { ChanListDTO, UserListDto, ELevelInChan } from '../Dto/chanDto';
-import { UserService } from "../../Users/service/User.service";
+import { UserService } from "../../User/service/User.service";
 import { Message } from "../Message/Message.entity";
 import { MessageService } from "../Message/Message.service";
 
