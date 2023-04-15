@@ -311,6 +311,10 @@ export class ChanService {
 			return "No Right !";
 		if (await this.isAdmin(chan.id, banId) === true && chan.ownerId !== senderId)
 			return "You can't ban chan operator !";
+		if (banId === senderId)
+			return "you can't ban yourself !"
+		if (banId === chan.ownerId)
+			return "You can't ban the owner !";
 
 		const rel = await this.getRelOf(chanId, banId);
 		if (rel === undefined || rel === null)
@@ -334,6 +338,8 @@ export class ChanService {
 			return "No Right !";
 		if (await this.isAdmin(chan.id, unbanId) === true && chan.ownerId !== senderId)
 			return "You can't unban chan operator !";
+		if (senderId === unbanId)
+			return "You can't unban yourself !";
 
 		const rel = await this.getRelOf(chanId, unbanId);
 		if (rel === undefined || rel === null)
@@ -452,8 +458,12 @@ export class ChanService {
 			return ("You can't do that in dm chan !");
 		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
+		if (senderId === muteId)
+			return "You can't mute yourself !"
 		if (await this.isAdmin(chan.id, muteId) === true && chan.ownerId !== senderId)
 			return "You can't mute chan operator !";
+		if (muteId === chan.ownerId)
+			return "You can't mute the owner !";
 
 		const rel = await this.getRelOf(chanId, muteId);
 		if (rel === undefined || rel === null)
@@ -473,12 +483,16 @@ export class ChanService {
 			return ("You can't do that in dm chan !");
 		if (chan.ownerId !== senderId && await this.isAdmin(chan.id, senderId) === false)
 			return "No Right !";
+		if (senderId === unmuteId)
+			return "You can't unmute yourself !"
 		if (await this.isAdmin(chan.id, unmuteId) === true && chan.ownerId !== senderId)
 			return "You can't unmute chan operator !";
 
 		const rel = await this.getRelOf(id, unmuteId);
 		if (rel === undefined || rel === null)
 			return "User not in chan !";
+		if (await this.isMute(id, unmuteId) === false)
+			return "User not muted !"
 		rel.mute_expire = new Date();
 
 		await this.chanRelRepo.save(rel);

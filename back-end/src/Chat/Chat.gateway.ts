@@ -34,8 +34,6 @@ export class ChatGateway {
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    console.log(`Client connected: ${client.id}`);
-    console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
     
     if (user !== undefined) {
@@ -46,7 +44,13 @@ export class ChatGateway {
         let sendList : string[] = [];
         
         messages.forEach((message) => {
-          sendList.push(" --- " + message.authorId as string + ": " + message.content);
+          let hour: number;
+          if (message.date.getUTCHours() >= 22)
+            hour = message.date.getUTCHours() - 22;
+          else
+            hour = message.date.getUTCHours() + 2;
+          sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + message.date.getMinutes()
+                        + " --- " + message.authorName + ": " + message.content);
         })
         
         let data : {chan: string, messages: string[]} = {chan : chan.title, messages : sendList};
@@ -55,7 +59,7 @@ export class ChatGateway {
         client.emit('joinedChan', data);
       })
       client.emit('listOfChan', this.chans);
-      console.log("CONNECTED CHAT YEAH")
+      this.logger.log(`Client connected: ${client.id}`);
     }
   }
 
@@ -69,13 +73,12 @@ export class ChatGateway {
         client.leave(chan.id.toString());
       })
       this.chatService.disconnectClient(client);
+      this.logger.log(`Client disconnected: ${client.id}`);
     }
-    this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('msgToServer')
   async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {author: string, chan: string, msg: string}): Promise<void> {
-    this.logger.log(data);
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
@@ -83,7 +86,7 @@ export class ChatGateway {
         const dmChan : Chan | undefined = await this.chanService.getDm(await this.userService.getUserById(user.id), await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number))
         if (dmChan !== undefined) {
           data.author = user.username;
-          this.messageService.createMessage(await this.userService.getUserById(user.id), dmChan, data.msg);
+          this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, dmChan, data.msg);
           this.server.to(dmChan.id.toString()).emit('msgToClient', data);
           return;
         }
@@ -94,7 +97,6 @@ export class ChatGateway {
       const chan: Chan | undefined = await this.chanService.getChanByTitle(data.chan);
 
       if (chan !== undefined) {
-        console.log(user.username + " message to : " + chan.title);
         if (await this.chanService.isInChan(chan, user.id) === false) {
           client.emit('error', 'Not in channel !');
           return;
@@ -115,7 +117,7 @@ export class ChatGateway {
         else {
           data.author = user.username;
         }
-        await this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
+        await this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, chan, data.msg);
         this.server.to(chan.id.toString()).emit('msgToClient', data);
         return;
       }
@@ -143,7 +145,7 @@ export class ChatGateway {
       let sendList : string[] = [];
       
       messages.forEach((message) => {
-        sendList.push(" --- " + message.author + ": " + message.content);
+        sendList.push(message.date + " --- " + message.authorName + ": " + message.content);
       })
       
       let joinData : {chan: string, messages: string[]} = {chan : data.chan, messages : sendList};
@@ -164,8 +166,6 @@ export class ChatGateway {
         const ret : string | number | undefined = await this.chanService.leaveChanById(chanToLeave.id, user.id);
         
         if (typeof ret === 'string') {
-          console.log("ret =");
-          console.log(ret);
           client.emit('error', ret);
           return;
         }
@@ -208,12 +208,5 @@ export class ChatGateway {
       client.emit('createdChan', ret.title);
     }
     
-  }
-
-  @SubscribeMessage('check')
-  async checking(@ConnectedSocket() client: Socket, @MessageBody() data: string[]) {
-    this.logger.log('check');
-    this.logger.log((await this.chatService.getUserFromSocket(client))?.username);
-    this.logger.log(data);
   }
 }
