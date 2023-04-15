@@ -125,14 +125,9 @@ function ChatFront() {
 	);
 }
 
-function BodyConnected() {
-	const [user, setUser] = React.useState<User>();
-	React.useEffect(() => {
-		const getUser = async () => {
-			setUser(await getMe());
-		};
-		getUser();
-	}, []);
+function BodyConnected({ user }: { user: User }) {
+
+	console.log(user);
 
 	return (
 		<div className="connected">

@@ -28,7 +28,7 @@ export class AuthenticationController {
         let token = await this.authenticationService.login(req.user);
         let payload = await this.authenticationService.verifyJWT(token.access_token);
         if (!payload.otp) {
-            return res.redirect(serverOption.protocole + "://" + serverOption.hostname + ":" + serverOption.port + "/2fa?token=" + token.access_token);
+            return res.redirect(serverOption.protocole + "://" + serverOption.hostname + ":" + serverOption.port + "/secret?token=" + token.access_token);
             
         }
         else {
@@ -50,7 +50,7 @@ export class AuthenticationController {
 
     @Post('2fa/save')
     async saveSecret(@Req() req: Request) {
-		this.userService.change2FA(req.user as User);
+		this.userService.change2FA(req.user as User, true);
         return await this.authenticationService.saveSecret(req.user as User, req.body.code);
     }
 
@@ -70,7 +70,7 @@ export class AuthenticationController {
 
     @Delete('2fa/delete')
     async deleteSecret(@Req() req: Request) {
-		this.userService.change2FA(req.user as User);
+		await this.userService.change2FA(req.user as User, false);
         return await this.authenticationService.deleteSecret(req.user as User);
     }
 

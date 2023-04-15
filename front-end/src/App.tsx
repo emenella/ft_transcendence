@@ -8,9 +8,14 @@ import HeaderNotConnected from './components/Header_not_connected';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 import { getToken, setToken } from './api/Api';
+import { getMe } from './api/User';
+import { User } from './utils/backend_interface';
 
 function App() {
 	const [hasToken, setHasToken] = useState(!!getToken());
+	const [user, setUser] = useState<User>();
+	const [loading, setLoading] = useState(true);
+  	const [error, setError] = useState<any>(null);
 
 	function handleLogout() {
 		localStorage.removeItem('token');
@@ -21,6 +26,35 @@ function App() {
 		setToken(token);
 		setHasToken(true);
 	}
+
+	async function fetchUser() {
+		try {
+			const user = await getMe();
+			setUser(user);
+			setLoading(false);
+		}
+		catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	}
+
+	React.useEffect(() => {
+		if (hasToken) {
+			fetchUser();
+		}
+		else {
+			setLoading(false);
+		}
+	}, [hasToken]);
+
+	if (loading) {
+		return <p>Chargement en cours...</p>;
+	  }
+	
+	if (error) {
+		return <p>Erreur : {error.message}</p>;
+	  }
 
 	return (
 		<div>
@@ -40,7 +74,7 @@ function App() {
 					)}
 				</div>
 			</div>
-			{hasToken ? <BodyConnected /> : <BodyNotConnected />}
+			{hasToken ? <BodyConnected user={user!} /> : <BodyNotConnected />}
 			<Footer />
 		</div>
 	);

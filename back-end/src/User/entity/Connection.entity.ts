@@ -11,11 +11,11 @@ export class Connection {
     user: User;
 
     @Column({nullable: true, type: 'varchar'})
-    otp: string | undefined;
+    otp: string | null;
 
     @Column({nullable: true, type: 'varchar'})
-    iv: string | undefined;
+    iv: string | null;
 
     @Column({nullable: true, type: 'int'})
-    id42: number | undefined;
+    id42: number | null;
 }
