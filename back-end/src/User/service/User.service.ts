@@ -5,6 +5,7 @@ import { User } from "../entity/User.entity";
 import { Avatar } from "../entity/Avatar.entity";
 import { Match } from '../entity/Match.entity';
 import { Connection } from "../entity/Connection.entity";
+import { HistoryService } from "./Match.service";
 
 export const enum UserStatus {
 	Disconnected,
@@ -19,7 +20,7 @@ const UsernameMaxLength: number = 16;
 
 @Injectable()
 export class UserService {
-	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) {}
+	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly historyService: HistoryService) {}
 
 	async createUser(user: User, connection: Connection): Promise<User> {
 		user.avatar = new Avatar();
@@ -106,8 +107,7 @@ export class UserService {
 	}
 
 	async getMatchHistory(user: User): Promise<Match[]> {
-		const matchHistory: Match[] = user.winMatch.concat(user.looseMatch);
-		matchHistory.sort((a, b) => (a.date > b.date ? -1 : 1));
+		const matchHistory: Match[] = await this.historyService.getAllMatchesByUser(user.id);
 		return matchHistory;
 	}
 

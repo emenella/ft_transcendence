@@ -137,7 +137,7 @@ function BodyConnected({ user }: { user: User }) {
 					<Routes>
 						<Route path="/" element={<Matchmaking user={user} />} />
 						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/profil" element={<Profil id={user?.id!} />} />
+						<Route path="/profil" element={<Profil user={user!} />} />
 					</Routes>
 				</div>
 				<div>

@@ -28,37 +28,30 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 	}
 }
 
-function Profil(props: { id: number }) {
-	const [user, setUser] = React.useState<User>();
+function Profil(props: { user: User }) {
+	const [matchs, setMatchs] = React.useState<Match[]>([]);
+	const [avatar, setAvatar] = React.useState<Avatar>();
+	
 	React.useEffect(() => {
-		const getUser = async () => {
-			setUser(await getUserById(props.id));
-		};
-		getUser();
-	}, [props.id]);
-
-	const [matchs, setMatchs] = React.useState<Match[]>();
-	React.useEffect(() => {
+		console.log(props.user);
 		const getUserMatchs = async () => {
-			setMatchs(await getMatchs(props.id));
+			setMatchs(await getMatchs(props.user.id));
+			setAvatar(props.user.avatar);
 		};
 		getUserMatchs();
-	}, [props.id]);
+	}, []);
 
-	const [avatar, setAvatar] = React.useState<Avatar>();
-	React.useEffect(() => {
-		setAvatar(user?.avatar);
-	}, [user]);
-
-	const wins = user?.winMatch.length;
-	const loses = user?.looseMatch.length;
-	const games = matchs?.length;
+	const wins = props.user.winMatch.length;
+	const loses = props.user.looseMatch.length;
+	const games = matchs.length;
 	const winrate = ((wins! / games!) * 100) || 0;
 
 	const linkStyle = {
 		color: "black",
 		textDecoration: "none"
 	}
+
+	console.log(matchs, avatar);
 
 	return (
 		<div>
@@ -67,7 +60,7 @@ function Profil(props: { id: number }) {
 				<h2>Profil</h2>
 				<div className='player-profil'>
 					<img src={avatar?.path} alt="Logo du joueur" />
-					<p>{user?.username}</p>
+					<p>{props.user.username}</p>
 				</div>
 				<div className='player-info'>
 					<div className='statistics'>
@@ -76,7 +69,7 @@ function Profil(props: { id: number }) {
 						<p>Nombre de parties gagnées : {wins}</p>
 						<p>Nombre de parties perdues : {loses}</p>
 						<p>Win rate : {winrate}%</p>
-						<p>Elo : {user?.elo}</p>
+						<p>Elo : {props.user.elo}</p>
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>
@@ -88,7 +81,7 @@ function Profil(props: { id: number }) {
 								</tr>
 							</thead>
 							<tbody>
-								{matchs?.map((match: Match) => { return(<PrintMatch username={user?.username} match={match} />); })}
+								{matchs?.map((match: Match) => { return(<PrintMatch username={props.user.username} match={match} />); })}
 							</tbody>
 						</table>
 					</div>
