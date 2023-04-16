@@ -1,6 +1,5 @@
 import React from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { getQRCode } from "../api/Auth";
 import { setToken } from "../api/Api";
 import { getMe } from "../api/User";
 
@@ -8,7 +7,7 @@ function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
 	const navigate = useNavigate();
-
+	
 	React.useEffect(() => {
 		if (access_token) {
 			setToken(access_token);
@@ -19,7 +18,7 @@ function Auth() {
 			});
 			navigate('/');
 		}
-	}, []);
+	}, [access_token, navigate]);
 
 	return ( <h1>Wait a moment...</h1>);
 }

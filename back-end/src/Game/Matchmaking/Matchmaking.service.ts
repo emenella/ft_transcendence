@@ -69,7 +69,7 @@ export class MatchmakingService {
             id: user.id,
             username: user.username,
             color: "red",
-            length: 100,
+            length: 150,
             width: 10,
             speedX: 0,
             speedY: 5

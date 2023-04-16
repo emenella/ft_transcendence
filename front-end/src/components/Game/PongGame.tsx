@@ -1,7 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
-import { Socket, io } from 'socket.io-client';
-import { getMe } from '../../api/User';
+import { io } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
 import { User } from './engine/interfaces/ft_pong.interface';
 
@@ -38,6 +37,38 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
     
     useEffect(() => {
         console.log('componentDidUpdate Pong');
+        const joinQueue = () => {
+            if (!game) {
+                console.log('no state game');
+                return;
+            }
+            game.joinQueue();
+        };
+        
+        const leaveQueue = () => {
+            if (!game) {
+                console.log('no state game');
+                return;
+            }
+            game.leaveQueue();
+        };
+        
+        const searchGame = () => {
+            if (game === null) {
+                console.log('no state game');
+                return;
+            }
+            game.searchGame();
+        };
+        function setGame() {
+            const ctx = canvasRef.current?.getContext('2d');
+            if (!game && user && ctx) {
+                console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
+                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
+                game = newGame;
+            }
+        }
+    
         setGame();
         if (spec === null) searchGame();
         if (isQueue) joinQueue();
@@ -48,44 +79,17 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
         }
     }, [isQueue, spec]);
     
-    function setGame() {
-        const ctx = canvasRef.current?.getContext('2d');
-        if (!game && user && ctx) {
-            console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
-            const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
-            game = newGame;
-        }
-    }
     
-    const joinQueue = () => {
-        if (!game) {
-            console.log('no state game');
-            return;
-        }
-        game.joinQueue();
-    };
-    
-    const leaveQueue = () => {
-        if (!game) {
-            console.log('no state game');
-            return;
-        }
-        game.leaveQueue();
-    };
-    
-    const searchGame = () => {
-        if (game === null) {
-            console.log('no state game');
-            return;
-        }
-        game.searchGame();
-    };
-    
+
     return (
-        <div>
-        <canvas ref={canvasRef} width={width} height={height} />
+        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+            <canvas
+                ref={canvasRef}
+                width={width}
+                height={height}
+                style={{ width: '100%', height: '100%' }}
+            />
         </div>
         );
-    };
-    
-    export default PongGame;
+};
+export default PongGame;

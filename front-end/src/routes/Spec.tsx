@@ -62,6 +62,10 @@ export default function Spectate() {
 		return <p>Chargement en cours...</p>;
 	}
 
+	if (error) {
+		return <p>Erreur : {error.message}</p>;
+	}
+
 	return (
 		<div>
 			<Toaster />
