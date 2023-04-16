@@ -1,8 +1,8 @@
 import React from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { getQRCode } from "../api/Auth";
 import { setToken } from "../api/Api";
-import { getMe } from "../api/User";
+import { getMe, changeUserStatus } from "../api/User";
+import { UserStatus } from "../utils/backend_interface";
 
 function Auth() {
 	const [searchParams] = useSearchParams();
@@ -17,11 +17,12 @@ function Auth() {
 					navigate('/set-username');
 				}
 			});
+			changeUserStatus(UserStatus.Connected);
 			navigate('/');
 		}
 	}, []);
 
-	return ( <h1>Wait a moment...</h1>);
+	return (<h1>Wait a moment...</h1>);
 }
 
 export default Auth;

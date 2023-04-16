@@ -8,8 +8,8 @@ import HeaderNotConnected from './components/Header_not_connected';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 import { getToken, setToken } from './api/Api';
-import { getMe } from './api/User';
-import { User } from './utils/backend_interface';
+import { getMe, changeUserStatus } from './api/User';
+import { User, UserStatus } from './utils/backend_interface';
 
 function App() {
 	const [hasToken, setHasToken] = useState(!!getToken());
@@ -19,6 +19,7 @@ function App() {
 
 	function handleLogout() {
 		localStorage.removeItem('token');
+		changeUserStatus(UserStatus.Disconnected);
 		setHasToken(false);
 	}
 

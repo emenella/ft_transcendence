@@ -25,7 +25,6 @@ export function Connection() {
 };
 
 export function Activate2FA() {
-	const [searchParams] = useSearchParams();
 	const access_token = getToken();
 	const [qrcode, setQRCode] = React.useState<string>();
 	const navigate = useNavigate();

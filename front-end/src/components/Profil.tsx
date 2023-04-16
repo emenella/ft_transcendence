@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './Profil.css';
 import { getMe, getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
@@ -12,13 +12,13 @@ function PlayerInteraction(props : { user : User | undefined, me : User | undefi
 			{ props.me?.friends.some((friend: User) => friend.id === props.user?.id)
 				?	<div>
 						<label>Supprimer des amis </label>
-						<button onClick={() => { invite(props.user!.username); }}>
+						<button onClick={() => { remove(props.user!.username); }}>
 							<Emoji label="handshake" symbol="🤝" />
 						</button>
 					</div>
 				:	<div>
 						<label>Ajouter en ami </label>
-						<button onClick={() => { remove(props.user!.username); }}>
+						<button onClick={() => { invite(props.user!.username); }}>
 							<Emoji label="handshake" symbol="🤝" />
 						</button>
 					</div>
@@ -82,22 +82,24 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 	}
 }
 
-function Profil(props: { id: number }) {
+function Profil() {
+	let id = parseInt(useParams<{ id: string }>().id!);
+
 	const [user, setUser] = React.useState<User>();
 	React.useEffect(() => {
 		const getUser = async () => {
-			setUser(await getUserById(props.id));
+			setUser(await getUserById(id));
 		};
 		getUser();
-	}, [props.id]);
+	}, [id]);
 
 	const [matchs, setMatchs] = React.useState<Match[]>();
 	React.useEffect(() => {
 		const getUserMatchs = async () => {
-			setMatchs(await getMatchs(props.id));
+			setMatchs(await getMatchs(id));
 		};
 		getUserMatchs();
-	}, [props.id]);
+	}, [id]);
 
 	const [avatar, setAvatar] = React.useState<Avatar>();
 	React.useEffect(() => {
@@ -128,7 +130,7 @@ function Profil(props: { id: number }) {
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={avatar?.path} alt="Logo du joueur" />
+					<img src={"../" + avatar?.path} alt="Logo du joueur" />
 					<h3>{user?.username}</h3>
 				</div>
 				{ (user?.id === me?.id)

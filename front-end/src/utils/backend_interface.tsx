@@ -22,3 +22,10 @@ export interface User {
     blacklist: User[];
     status: number;
 }
+
+export const enum UserStatus {
+    Disconnected,
+    Connected,
+    InGame,
+    Inactive
+}

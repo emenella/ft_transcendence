@@ -106,7 +106,7 @@ export async function denyFriend(username : string) {
 
 export async function addFromBlacklist(username : string) {
     try {
-        return await axios.delete('api/users/blacklist/add?username=' + username, { headers: authHeader() });
+        return await axios.post('api/users/blacklist/add?username=' + username, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -116,6 +116,15 @@ export async function addFromBlacklist(username : string) {
 export async function removeFromBlacklist(username : string) {
     try {
         return await axios.delete('api/users/blacklist/remove?username=' + username, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function changeUserStatus(status : number) {
+    try {
+        return await axios.post('api/users/status?status=' + status, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);

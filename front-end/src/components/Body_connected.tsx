@@ -5,7 +5,6 @@ import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
 import UserSidebar from './UserSidebar';
-import { getMe } from '../api/User';
 import Chat from '../chat/Chat';
 import { User } from '../utils/backend_interface';
 
@@ -48,9 +47,6 @@ function ChatFront() {
 }
 
 function BodyConnected({ user }: { user: User }) {
-
-	console.log(user);
-
 	return (
 		<div className="connected">
 			<ChatSidebar />
@@ -59,7 +55,7 @@ function BodyConnected({ user }: { user: User }) {
 					<Routes>
 						<Route path="/" element={<Matchmaking />} />
 						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/profil" element={<Profil id={user?.id!} />} />
+						<Route path="/profil/:id" element={<Profil />} />
 					</Routes>
 				</div>
 				<div>

@@ -12,14 +12,14 @@ const root = createRoot(
 );
 
 root.render(
-		<BrowserRouter>
-			<Routes>
-				<Route path="*" element={<App />} />
-				<Route path="/auth" element={<Auth />} />
-				<Route path="/2fa" element={<Activate2FA />} />
-				<Route path="/secret" element={<Connection />} />
-				<Route path="/set-username" element={<SetUsername />} />
-				<Route path="/error" element={<Error />} />
-			</Routes>
-		</BrowserRouter>
+	<BrowserRouter>
+		<Routes>
+			<Route path="*" element={<App />} />
+			<Route path="/auth" element={<Auth />} />
+			<Route path="/2fa" element={<Activate2FA />} />
+			<Route path="/secret" element={<Connection />} />
+			<Route path="/set-username" element={<SetUsername />} />
+			<Route path="/error" element={<Error />} />
+		</Routes>
+	</BrowserRouter>
 );
