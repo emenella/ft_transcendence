@@ -11,7 +11,8 @@ export async function invite(username : string) {
 
 export async function remove(username : string) {
     const req = await removeFriend(username);
-    if (req?.status === 201)
+	console.log(req?.status)
+    if (req?.status === 200)
         toast.success('Ami supprimé.');
     else
         toast.error('Erreur. Veuillez réessayer.')
@@ -27,7 +28,7 @@ export async function accept(username : string) {
 
 export async function deny(username : string) {
     const req = await denyFriend(username);
-    if (req?.status === 201)
+    if (req?.status === 200)
         toast.success('Demande d\'ami refusée.');
     else
         toast.error('Erreur.')
@@ -43,7 +44,7 @@ export async function blacklist(username : string) {
 
 export async function unblacklist(username : string) {
     const req = await removeFromBlacklist(username);
-    if (req?.status === 201)
+    if (req?.status === 200)
         toast.success('Déblocage réussi.');
     else
         toast.error('Erreur. Veuillez réessayer.')

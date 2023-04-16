@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import './UserSidebar.css'
 import { getMe } from '../api/User';
-import { User, Avatar } from '../utils/backend_interface';
+import { User } from '../utils/backend_interface';
 import { invite, accept, deny } from '../utils/friends_blacklists_system';
 import Emoji from './Emoji';
 
@@ -29,15 +29,15 @@ function UserSidebar() {
 
     const [friends, setFriends] = React.useState<User[]>();
     React.useEffect(() => {
-        setFriends(user?.friends);
-    }, []);
-
+		setFriends(user?.friends);
+    }, [user]);
+	
+	console.log(user);
+	console.log(friends);
     const listFriends = friends?.map((friend: User) => {
-        const avatar: Avatar = friend?.avatar;
-
         return (
             <tr>
-                <td><img src={avatar?.path} /></td>
+                <td><img src={"../" + friend?.avatarPath} /></td>
                 <td>
                     <div className='friendStatus'>
                         <p>{friend.username}</p>
@@ -52,15 +52,13 @@ function UserSidebar() {
     const [friendsInvites, setFriendsInvite] = React.useState<User[]>();
     React.useEffect(() => {
         setFriendsInvite(user?.friend_requests);
-    }, []);
+    }, [user]);
 
     const listFriendsInvite = friendsInvites?.map((friend: User) => {
-        const avatar: Avatar = friend?.avatar;
-
         return (
             <div>
                 <tr>
-                    <td><img src={avatar?.path} /></td>
+                    <td><img src={"../" + friend?.avatarPath} /></td>
                     <td>{friend.username}</td>
                 </tr>
                 <tr>

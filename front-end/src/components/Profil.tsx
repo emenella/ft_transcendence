@@ -3,13 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import './Profil.css';
 import { getMe, getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
-import { User, Avatar, Match } from '../utils/backend_interface';
+import { User, Match } from '../utils/backend_interface';
 import { invite, remove, blacklist, unblacklist } from '../utils/friends_blacklists_system';
 
 function PlayerInteraction(props : { user : User | undefined, me : User | undefined }) {
 	return (
 		<div className='player-interaction'>
-			{ props.me?.friends.some((friend: User) => friend.id === props.user?.id)
+			{ props.me?.friends.some((friend: User) => { return friend.id === props.user?.id })
 				?	<div>
 						<label>Supprimer des amis </label>
 						<button onClick={() => { remove(props.user!.username); }}>
@@ -35,7 +35,7 @@ function PlayerInteraction(props : { user : User | undefined, me : User | undefi
 					<Emoji label="tv" symbol="📺" />
 				</button>
 			</div>
-			{ props.me?.blacklist.some((friend: User) => friend.id === props.user?.id)
+			{ props.me?.blacklist.some((friend: User) => { return friend.id === props.user?.id })
 				?	<div>
 						<label>Débloquer l'utilisateur </label>
 						<button onClick={() => { unblacklist(props.user!.username); }}>
@@ -101,11 +101,6 @@ function Profil() {
 		getUserMatchs();
 	}, [id]);
 
-	const [avatar, setAvatar] = React.useState<Avatar>();
-	React.useEffect(() => {
-		setAvatar(user?.avatar);
-	}, [user]);
-
 	const [me, setMe] = React.useState<User>();
 	React.useEffect(() => {
 		const getUser = async () => {
@@ -115,7 +110,7 @@ function Profil() {
 	}, []);
 
 	const wins = user?.winMatch.length;
-	const loses = user?.looseMatch.length;
+	const loses = user?.loseMatch.length;
 	const games = matchs?.length;
 	const winrate = ((wins! / games!) * 100) || 0;
 
@@ -130,7 +125,7 @@ function Profil() {
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={"../" + avatar?.path} alt="Logo du joueur" />
+					<img src={"../" + user?.avatarPath} alt="Logo du joueur" />
 					<h3>{user?.username}</h3>
 				</div>
 				{ (user?.id === me?.id)

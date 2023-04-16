@@ -17,12 +17,12 @@ export class UserController {
 
 	@Get("/id")
 	async getUserById(@Query('id') id: number): Promise<User> {
-		return this.userService.getUserById(id);
+		return await this.userService.getUserById(id);
 	}
 
 	@Get("/username")
 	async getUserByUsername(@Query('username') username: string): Promise<User> {
-		return this.userService.getUserByUsername(username);
+		return await this.userService.getUserByUsername(username);
 	}
 
 	@Get("/all")
@@ -41,12 +41,12 @@ export class UserController {
 	@Post("/me")
 	async updateUsername(@Req() req : Request, @Body("username") username: string): Promise<User> {
 		const user: User = await this.getMe(req);
-		return this.userService.updateUsername(user.id, username);
+		return await this.userService.updateUsername(user.id, username);
 	}
 
 	@Post("/avatar/upload")
 	@UseInterceptors(FileInterceptor('file'))
-	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: any): Promise<string> {
+	async uploadAvatar(@UploadedFile() file: Express.Multer.File, @Req() req: Request): Promise<string> {
 		const user: User = await this.getMe(req);
 		return await this.userService.uploadAvatar(user.id, file);
 	}
@@ -59,28 +59,28 @@ export class UserController {
 
 	//~~FRIENDS
 	@Post("/friends/invite")
-	async inviteFriend(@Req() req: any, @Query('username') username: string): Promise<void> {
-		const user: User = await this.getMe(req);
-		const friend: User = await this.getUserByUsername(username);
-		this.userService.inviteFriend(user, friend);
+	async inviteFriend(@Req() req: Request, @Body('username') username: string): Promise<void> {
+		const sender: User = await this.getMe(req);
+		const receiver: User = await this.getUserByUsername(username);
+		await this.userService.inviteFriend(sender, receiver);
 	}
 
 	@Post("/friends/accept")
-	async acceptFriend(@Req() req: any, @Query('username') username: string): Promise<void> {
-		const user: User = await this.getMe(req);
-		const friend: User = await this.getUserByUsername(username);
-		this.userService.acceptFriend(user, friend);
+	async acceptFriend(@Req() req: Request, @Body('username') username: string): Promise<void> {
+		const sender: User = await this.getMe(req);
+		const receiver: User = await this.getUserByUsername(username);
+		await this.userService.acceptFriend(sender, receiver);
 	}
 
 	@Delete("/friends/deny")
-	async denyFriend(@Req() req: any, @Query('username') username: string): Promise<void> {
-		const user: User = await this.getMe(req);
-		const friend: User = await this.getUserByUsername(username);
-		this.userService.denyFriend(user, friend);
+	async denyFriend(@Req() req: Request, @Body('username') username: string): Promise<void> {
+		const receiver: User = await this.getMe(req);
+		const sender: User = await this.getUserByUsername(username);
+		await this.userService.denyFriend(receiver, sender);
 	}
 
 	@Delete("/friends/remove")
-	async removeFriend(@Req() req: Request, @Query('username') username: string): Promise<void> {
+	async removeFriend(@Req() req: Request, @Body('username') username: string): Promise<void> {
 		const user: User = await this.getMe(req);
 		const friend: User = await this.getUserByUsername(username);
 		await this.userService.removeFriend(user, friend);
@@ -88,16 +88,16 @@ export class UserController {
 
 	//~~ BLACKLIST
 	@Post("/blacklist/add")
-	async addBlacklist(@Req() req: Request, @Query('username') username: string): Promise<void> {
+	async addBlacklist(@Req() req: Request, @Body('username') username: string): Promise<void> {
 		const user: User = await this.getMe(req);
-		const userToBlacklist: User = await this.getUserByUsername(username);
-		await this.userService.addBlacklist(user, userToBlacklist);
+		const userToUnblock: User = await this.getUserByUsername(username);
+		await this.userService.addBlacklist(user, userToUnblock);
 	}
 
 	@Delete("/blacklist/remove")
-	async removeBlacklist(@Req() req: Request, @Query('username') username: string): Promise<void> {
+	async removeBlacklist(@Req() req: Request, @Body('username') username: string): Promise<void> {
 		const user: User = await this.getMe(req);
-		const userToBlacklist: User = await this.getUserByUsername(username);
-		await this.userService.removeBlacklist(user, userToBlacklist);
+		const blockedUser: User = await this.getUserByUsername(username);
+		await this.userService.removeBlacklist(user, blockedUser);
 	}
 }

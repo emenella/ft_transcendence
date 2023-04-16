@@ -1,7 +1,3 @@
-export interface Avatar {
-    path: string;
-}
-
 export interface Match {
     id: number;
     scores: number[];
@@ -12,11 +8,11 @@ export interface Match {
 export interface User {
     id: number;
     username: string;
-    avatar: Avatar;
+	avatarPath: string;
     is2FAActivated: boolean;
     elo: number;
     winMatch: Match[];
-    looseMatch: Match[];
+    loseMatch: Match[];
     friends: User[];
     friend_requests: User[];
     blacklist: User[];
