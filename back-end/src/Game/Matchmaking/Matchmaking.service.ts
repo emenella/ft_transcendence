@@ -204,7 +204,7 @@ export class MatchmakingService {
         this.gameService.deleteGame(id);
     }
 
-    private async createMatchHistory(id: string, winner: User, looser: User): Promise<void> {
+    private async createMatchHistory(id: string, winner: User, loser: User): Promise<void> {
         const game = await this.gameService.getGame(id);
         if (!game)
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
@@ -212,8 +212,8 @@ export class MatchmakingService {
         const ids: Array<number> = game.getPlayersId();
         const history: Match = new Match();
         history.winner = winner;
-        history.looser = looser;
-        history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];
+        history.loser = loser;
+        history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === loser.id ? score[0] : score[1]];
         history.date = new Date();
         await this.historyService.addMatch(history);
     }

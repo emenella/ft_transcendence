@@ -18,6 +18,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (!payload.otp) {
             throw new HttpException('OTP required', HttpStatus.UNAUTHORIZED);
         }
-        return await this.usersService.getUserFromConnectionId(payload.connectionId);
+        return await this.usersService.getUserByConnectionId(payload.connectionId);
     }
 }

@@ -5,12 +5,9 @@ import { Match } from '../entity/Match.entity';
 
 @Injectable()
 export class HistoryService {
+	constructor(@InjectRepository(Match) private readonly historyRepository: Repository<Match>) {}
 
-    constructor( @InjectRepository(Match)
-        private readonly historyRepository: Repository<Match>) {}
-
-    async addMatch(history: Match): Promise<Match> {
-        return this.historyRepository.save(history);
-    }
-
+	async addMatch(history: Match): Promise<Match> {
+		return this.historyRepository.save(history);
+	}
 }

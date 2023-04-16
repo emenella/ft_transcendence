@@ -32,22 +32,16 @@ export class AuthenticationService {
         return "https://api.intra.42.fr/oauth/authorize?client_id=" + API.UID + "&redirect_uri=" + API.URL + "&response_type=code";
     }
     
-    async login(user: any) {
+    async login(student: any) {
         let connection;
         try {
-            connection = await this.connectionService.getConnectionById42(user.id);
+            connection = await this.connectionService.getConnectionById42(student.id);
         }
         catch (e) {
-            const newUser = new User();
-            let foundUser = await this.userService.createUser(newUser);
-            
+            let user = new User();
             connection = new Connection();
-            connection.user = foundUser;
-            connection.id42 = user.id;
-            connection = await this.connectionService.createConnection(connection);
-            
-            foundUser.connection = connection;
-            foundUser = await this.userService.updateUser(foundUser.id, foundUser);
+            user = await this.userService.createUser(user, connection);
+            connection = await this.connectionService.createConnection(connection, user, student.id);
         }
         const payload: IToken = { connectionId: connection.id, otp: !connection.otp };
             return {
