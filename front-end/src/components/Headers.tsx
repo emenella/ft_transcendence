@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import SignUpButton from './button/SignUpButton';
 import { User } from '../utils/backend_interface';
 import { getMe } from '../api/User';
 
-function HeaderConnected(props : { logout: () => void }) {
+export function HeaderConnected(props : { logout: () => void }) {
     const linkStyle = {
         color: "white",
     }
@@ -27,4 +28,10 @@ function HeaderConnected(props : { logout: () => void }) {
     );
 }
 
-export default HeaderConnected;
+export function HeaderNotConnected() {
+    return (
+        <div>
+            <SignUpButton />
+        </div>
+    );
+}

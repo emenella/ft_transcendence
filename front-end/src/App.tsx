@@ -3,11 +3,10 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 import logo from './assets/black_logo.png';
 import Footer from './components/Footer';
-import HeaderConnected from './components/Header_connected';
-import HeaderNotConnected from './components/Header_not_connected';
+import {HeaderConnected, HeaderNotConnected } from './components/Headers';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
-import { getToken, setToken } from './api/Api';
+import { getToken } from './api/Api';
 import { getMe, changeUserStatus } from './api/User';
 import { User, UserStatus } from './utils/backend_interface';
 
@@ -21,11 +20,6 @@ function App() {
 		localStorage.removeItem('token');
 		changeUserStatus(UserStatus.Disconnected);
 		setHasToken(false);
-	}
-
-	function handleLogin(token: string) {
-		setToken(token);
-		setHasToken(true);
 	}
 
 	async function fetchUser() {
@@ -71,7 +65,7 @@ function App() {
 					{hasToken ? (
 						<HeaderConnected logout={handleLogout} />
 					) : (
-						<HeaderNotConnected login={handleLogin} />
+						<HeaderNotConnected />
 					)}
 				</div>
 			</div>
