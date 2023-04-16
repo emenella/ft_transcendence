@@ -1,27 +1,27 @@
 import React from "react";
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { getQRCode } from "../api/Auth";
-import QRCodeForm from "../components/form/QRCodeForm";
+import { setToken } from "../api/Api";
+import { getMe } from "../api/User";
 
 function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
-	const [qrcode, setQRCode] = React.useState<string>();
 	const navigate = useNavigate();
 
 	React.useEffect(() => {
-		const getQRCodeSrc = async () => {
-			const tmp = await getQRCode(access_token);
-			setQRCode(tmp);
-		};
-		getQRCodeSrc();
+		if (access_token) {
+			setToken(access_token);
+			getMe().then((user) => {
+				if (user.username == null) {
+					navigate('/set-username');
+				}
+			});
+			navigate('/');
+		}
 	}, []);
 
-	if (!access_token) {
-		navigate("/error");
-	}
-
-	return ( <QRCodeForm qrcode={qrcode as string} accessToken={access_token as string} navigate={navigate} /> );
+	return ( <h1>Wait a moment...</h1>);
 }
 
 export default Auth;

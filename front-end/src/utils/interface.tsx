@@ -42,6 +42,7 @@ export interface AccountManagementProps {
 export interface AccountManagementState {
 	username : string;
 	image: File | undefined;
+	activated2FA: boolean;
 }
 
 export interface emojiProps {
