@@ -6,7 +6,7 @@ export interface Match {
     id: number;
     scores: number[];
     winner: User;
-    looser: User;
+    loser: User;
 }
 
 export interface User {
@@ -18,7 +18,7 @@ export interface User {
     winMatch: Match[];
     looseMatch: Match[];
     friends: User[];
-    friend_invites: User[];
+    friend_requests: User[];
     blacklist: User[];
     status: number;
 }
