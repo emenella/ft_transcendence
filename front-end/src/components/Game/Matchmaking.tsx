@@ -5,8 +5,9 @@ import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
 import { getToken, url } from '../../api/Api';
 import { io, Socket } from 'socket.io-client';
+import { User } from '../../utils/backend_interface';
 
-const Matchmaking = () => {
+const Matchmaking = ({user} : {user: User} ) => {
   const [isSearching, setIsSearching] = useState(false);
 
   const WebMatchmaking = url + '/matchmaking';
@@ -29,6 +30,7 @@ const Matchmaking = () => {
             token={getToken() as string}
             isQueue={isSearching}
             spec={null}
+            user={user}
           />
         </div>
         <SearchButton

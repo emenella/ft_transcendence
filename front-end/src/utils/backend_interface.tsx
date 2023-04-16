@@ -22,4 +22,5 @@ export interface User {
     blacklist: User[];
     isConnected : boolean;
     isPlaying : boolean;
+    isProfileComplete : boolean;
 }

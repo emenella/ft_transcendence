@@ -35,8 +35,8 @@ export class UserService {
 		await this.userRepository.delete(id);
 	}
 
-	async change2FA(user: User): Promise<void> {
-		user.is2FAActivated = user.is2FAActivated? false: true;
+	async change2FA(user: User, state: boolean): Promise<void> {
+		user.is2FAActivated = state;
 		await this.userRepository.save(user);
 	}
 

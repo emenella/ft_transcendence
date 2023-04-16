@@ -9,6 +9,8 @@ import Footer from '../components/Footer';
 import HeaderConnected from '../components/Header_connected';
 import HeaderNotConnected from '../components/Header_not_connected';
 import BodyNotConnected from '../components/Body_not_connected';
+import { User } from '../utils/backend_interface';
+import { getMe } from '../api/User';
 
 
 export default function Spectate() {
@@ -21,6 +23,30 @@ export default function Spectate() {
     }
 
     const [hasToken, setHasToken] = useState(!!getToken());
+	const [user, setUser] = useState<User>();
+	const [loading, setLoading] = useState(true);
+  	const [error, setError] = useState<any>(null);
+
+	React.useEffect(() => {
+		if (hasToken) {
+			fetchUser();
+		}
+		else {
+			setLoading(false);
+		}
+	}, [hasToken]);
+
+	async function fetchUser() {
+		try {
+			const user = await getMe();
+			setUser(user);
+			setLoading(false);
+		}
+		catch (error) {
+			setError(error);
+			setLoading(false);
+		}
+	}
 
 	function handleLogout() {
 		localStorage.removeItem('token');
@@ -30,6 +56,10 @@ export default function Spectate() {
 	function handleLogin(token: string) {
 		setToken(token);
 		setHasToken(true);
+	}
+
+	if (loading) {
+		return <p>Chargement en cours...</p>;
 	}
 
 	return (
@@ -50,7 +80,7 @@ export default function Spectate() {
 					)}
 				</div>
 			</div>
-			{hasToken ? <PongGame height={600} width={800} token={token as string} spec={spec} isQueue={false} />: <BodyNotConnected />}
+			{hasToken ? <PongGame height={600} width={800} token={token as string} spec={spec} isQueue={false} user={user!} />: <BodyNotConnected />}
 			<Footer />
             
 		</div>

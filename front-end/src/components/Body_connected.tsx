@@ -125,14 +125,9 @@ function ChatFront() {
 	);
 }
 
-function BodyConnected() {
-	const [user, setUser] = React.useState<User>();
-	React.useEffect(() => {
-		const getUser = async () => {
-			setUser(await getMe());
-		};
-		getUser();
-	}, []);
+function BodyConnected({ user }: { user: User }) {
+
+	console.log(user);
 
 	return (
 		<div className="connected">
@@ -140,7 +135,7 @@ function BodyConnected() {
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking />} />
+						<Route path="/" element={<Matchmaking user={user} />} />
 						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
 						<Route path="/profil" element={<Profil id={user?.id!} />} />
 					</Routes>
