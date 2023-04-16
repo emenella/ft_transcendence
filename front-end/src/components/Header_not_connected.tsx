@@ -11,7 +11,7 @@ class HeaderNotConnected extends React.Component<isNotConnected> {
     render() {
         return (
             <div>
-                <SignUpButton />
+                <SignUpButton url={this.props.url} />
                 <br />
                 <LoginWithout42 login={this.props.login} />
             </div>

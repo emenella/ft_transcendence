@@ -10,12 +10,14 @@ import BodyConnected from './components/Body_connected';
 import { getToken, setToken } from './api/Api';
 import { getMe } from './api/User';
 import { User } from './utils/backend_interface';
+import { firstConnexion } from './api/Auth';
 
 function App() {
 	const [hasToken, setHasToken] = useState(!!getToken());
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
   	const [error, setError] = useState<any>(null);
+	const [url, setUrl] = useState<string | null>(null);
 
 	function handleLogout() {
 		localStorage.removeItem('token');
@@ -39,12 +41,24 @@ function App() {
 		}
 	}
 
+	async function fetchUrl() {
+		try {
+			const url = await firstConnexion() as string;
+			setUrl(url);
+			setLoading(false);
+		}
+		catch (error) {
+			setError(error);
+		}
+	}
+
 	React.useEffect(() => {
 		if (hasToken) {
+			console.log('fetchUser');
 			fetchUser();
 		}
 		else {
-			setLoading(false);
+			fetchUrl();
 		}
 	}, [hasToken]);
 
@@ -70,7 +84,7 @@ function App() {
 					{hasToken ? (
 						<HeaderConnected logout={handleLogout} />
 					) : (
-						<HeaderNotConnected login={handleLogin} />
+						<HeaderNotConnected login={handleLogin} url={url!} />
 					)}
 				</div>
 			</div>

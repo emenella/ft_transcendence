@@ -1,16 +1,8 @@
 import React from "react";
 import { firstConnexion } from '../../api/Auth'
 
-function ConnectionButton() {
-	const [url, setUrl] = React.useState<string>();
-	React.useEffect(() => {
-		const getUrl = async () => {
-			const tmp = await firstConnexion();
-			setUrl(tmp);
-		};
-		getUrl();
-	}, []);
-
+function ConnectionButton({ url }: { url: string }) {
+	
 	return (
 		<a href={url}>
 			<button>Connexion</button>

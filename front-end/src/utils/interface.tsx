@@ -10,6 +10,7 @@ export interface isConnected {
 
 export interface isNotConnected {
     login: (token: string) => void;
+	url: string;
 }
 
 export interface ConnexionProps {

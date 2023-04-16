@@ -2,7 +2,7 @@ import React from "react";
 import { login } from '../../api/Auth'
 import { isNotConnected } from "../../utils/interface";
 
-class LoginWithout42 extends React.Component<isNotConnected> {
+class LoginWithout42 extends React.Component<{login: (token: string) => void}> {
     constructor(props: isNotConnected) {
         super(props);
     }
