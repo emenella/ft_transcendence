@@ -1,16 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { getToken, url } from '../../api/Api';
-import { io, Socket } from 'socket.io-client';
+import { getToken } from '../../api/Api';
 import { User } from '../../utils/backend_interface';
 
 const Matchmaking = ({user} : {user: User} ) => {
   const [isSearching, setIsSearching] = useState(false);
-
-  const WebMatchmaking = url + '/matchmaking';
 
   const joinQueueHandler = () => {
     setIsSearching(true);

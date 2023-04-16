@@ -4,7 +4,7 @@ import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
-import { HttpException, UseFilters } from "@nestjs/common";
+import { HttpException } from "@nestjs/common";
 
 
 

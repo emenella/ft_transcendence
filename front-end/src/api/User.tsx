@@ -51,6 +51,7 @@ export async function getUserById(id: number) {
 export async function getMatchs(id: number) {
     try {
         const res = await axios.get('api/users/match_history/?id=' + id, { headers: authHeader() });
+        console.log(res.data);
         return res.data;
     }
     catch (e) {
