@@ -61,6 +61,7 @@ export class AuthenticationService {
         const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!passPhrase.secret)
             throw new HttpException('Passphrase not set', 500);
+        console.log(connection);
         if (connection.otp) {
             throw new HttpException('OTP already set', 401);
         }
@@ -129,7 +130,9 @@ export class AuthenticationService {
         if (!decode) {
             throw new HttpException('Secret not found', 404);
         }
-        const updateConnection = await this.connectionService.updateConnection(connection.id, decode.secret, decode.iv);
+        connection.otp = decode.secret;
+        connection.iv = decode.iv;
+        const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
         this.secret.delete(connection.id);
         return await this.otp(updateConnection, code);
     }
@@ -185,7 +188,11 @@ export class AuthenticationService {
         if (!connection.otp) {
             throw new Error("User is not otp");
         }
-        await this.connectionService.updateConnection(connection.id, undefined, undefined);
+        console.log("delete secret");
+        connection.otp = null;
+        connection.iv = null;
+        const ret = await this.connectionService.updateConnection(connection.id, connection);
+        console.log(ret);
     }
 
     async verifyJWT(token: string): Promise<IToken> {

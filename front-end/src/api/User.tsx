@@ -1,8 +1,9 @@
+import { User } from '../utils/backend_interface';
 import { client as axios, authHeader } from './Api'
 
-export async function getMe() {
+export async function getMe(): Promise<any> {
     try {
-        const res = await axios.get('api/users/me', { headers: authHeader() });
+        const res = await axios.get<User>('api/users/me', { headers: authHeader() });
         return res.data;
     }
     catch (e) {
@@ -30,7 +31,7 @@ export async function uploadAvatar(formData: FormData) {
 
 export async function delete2FA() {
     try {
-        await axios.delete('api/auth/2fa/delete', { headers: authHeader() });
+        return await axios.delete('api/auth/2fa/delete', { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
