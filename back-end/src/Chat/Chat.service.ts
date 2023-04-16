@@ -26,11 +26,9 @@ export class ChatService {
                 return (undefined);
     
             const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
-            let ret = this.chatUsers.find((u) => { return u.id === user.id})
     
-            if (user === null || user === undefined || ret !== undefined)
+            if (user === null || user === undefined)
             {
-                socket.emit('error', 'Already logged in !\nPlease close this tab !')
                 socket.disconnect();
                 return (undefined);
             }

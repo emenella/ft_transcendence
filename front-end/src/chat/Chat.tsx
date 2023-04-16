@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from 'react'
+import { Route, Routes } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import Matchmaking from '../components/Game/Matchmaking';
+import Profil from '../components/Profil';
+import AccountManagement from '../components/AccountManagement';
+import '../components/Body_connected.css'
 import { getToken, url } from '../api/Api'
 import io, { Socket } from 'socket.io-client'
-import Error from './Error'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
 import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
+import { User } from '../utils/backend_interface';
 
 let activeChan: string = '';
 let chans : Map<string, string[]> = new Map<string, string[]>()
 
-function Chat() {
+function Chat(props : {user: User | undefined}) {
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [messages, setMessages] = useState<string[]>([]);
-  const [errorToShow, setErrorToShow] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   const WebChat = url + '/chat'
   
   const send = (value: string) => {
-    setErrorToShow(false);
     socket?.emit("msgToServer", {author: socket?.id, chan: activeChan, msg: value});
   }
 
   const createChan = (title: string, isPrivate: boolean, password: string | undefined) => {
-    console.log("create chan pressed");
-    if (chans.get(title) !== undefined)
-      return;
     let data = {title: title, isPrivate: isPrivate, password: password};
     socket?.emit("createChan", data);
   }
 
   const joinChan = (value: string, password: string | null) => {
-    if (chans.get(value) !== undefined)
-      return;
     if (password === "") {
       password = null;
     }
@@ -62,13 +60,11 @@ function Chat() {
   }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
-    setErrorToShow(true);
-    setError(error);
+    toast.error(error);
   }
 
   const inviteListener = (chan : string) => {
-    setErrorToShow(true);
-    setError("You have been invited in channel : " + chan + " !\nIt is now visible in Join chan section.");
+    toast.success("You have been invited in channel : " + chan + " !\nIt is now visible in Join chan section.")
     if (publicChanList.findIndex((c) => { return c === chan}) === -1) {
       setPublicChan([...publicChanList, ...[chan]]);
     }
@@ -189,16 +185,37 @@ function Chat() {
     }
   }, [refreshListListener])
 
-
   return (
     <>
-      {" "}
-      <Error isShown={errorToShow} error={error} close={setErrorToShow}/>
-      <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={chans}/>
-      <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
-      <CreateChanInput createChan={createChan}/>
-      <MessageInput send={send}/>
-      <Message messages = {messages}/>
+      <div className='chatSidebar'>
+        <div className='toggle&leaveChan'>
+          <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={chans}/>
+        </div>
+        <div className='joinChan'>
+          <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
+        </div>
+        <div className='createChan'>
+          <CreateChanInput createChan={createChan}/>
+        </div>
+      </div>
+
+      <div className="connectedCenter">
+				<div>
+					<Routes>
+						<Route path="/" element={<Matchmaking />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
+						<Route path="/profil" element={<Profil id={props.user?.id!} />} />
+					</Routes>
+				</div>
+        <div className='chat'>
+          <div className='messagesList'>
+            <Message messages = {messages}/>
+          </div>
+          <div className='inputMessage'>
+            <MessageInput send={send}/>
+          </div>
+        </div>
+			</div>
     </>
   )
 }

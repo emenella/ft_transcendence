@@ -49,7 +49,7 @@ export class ChatGateway {
             hour = message.date.getUTCHours() - 22;
           else
             hour = message.date.getUTCHours() + 2;
-          sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + message.date.getMinutes()
+          sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + (message.date.getMinutes() >= 10 ? message.date.getMinutes() : ("0" + message.date.getMinutes()) )
                         + " --- " + message.authorName + ": " + message.content);
         })
         
@@ -145,7 +145,13 @@ export class ChatGateway {
       let sendList : string[] = [];
       
       messages.forEach((message) => {
-        sendList.push(message.date + " --- " + message.authorName + ": " + message.content);
+        let hour: number;
+        if (message.date.getUTCHours() >= 22)
+          hour = message.date.getUTCHours() - 22;
+        else
+          hour = message.date.getUTCHours() + 2;
+        sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + (message.date.getMinutes() >= 10 ? message.date.getMinutes() : ("0" + message.date.getMinutes()) )
+                      + " --- " + message.authorName + ": " + message.content);
       })
       
       let joinData : {chan: string, messages: string[]} = {chan : data.chan, messages : sendList};

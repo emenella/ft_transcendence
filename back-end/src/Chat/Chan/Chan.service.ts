@@ -205,7 +205,7 @@ export class ChanService {
 				return ("You can't join dm chan");
 			return (await this.joinChan(chan, user, password_key));
 		}
-		throw new HttpException("Chan doesn't exist", HttpStatus.NOT_FOUND);
+		return ("Chan doesn't exist");
 	}
 
 	async leaveChanByTitle(title: string, userId: number) : Promise<boolean> {
