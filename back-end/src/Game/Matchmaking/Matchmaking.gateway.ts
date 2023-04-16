@@ -62,7 +62,7 @@ export class MatchmakingGateway{
     async authentificate(client: Socket): Promise<User> {
         if (client.handshake.headers.authorization) {
             const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-            let user = await this.userService.getUserFromConnectionId(payload.connectionId);
+            let user = await this.userService.getUserByConnectionId(payload.connectionId);
             if (user) {
                 return user;
             }

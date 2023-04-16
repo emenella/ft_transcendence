@@ -10,7 +10,7 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 		return (
 			<div className="winner">
 				<tr>
-					<td>{props.match.winner.username} VS {props.match.looser.username}</td>
+					<td>{props.match.winner.username} VS {props.match.loser.username}</td>
 					<td>{props.match.scores[0]} - {props.match.scores[1]}</td>
 				</tr>
 			</div>
@@ -20,7 +20,7 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 		return (
 			<div className="loser">
 				<tr>
-					<td>{props.match.looser.username} VS {props.match.winner.username}</td>
+					<td>{props.match.loser.username} VS {props.match.winner.username}</td>
 					<td>{props.match.scores[1]} - {props.match.scores[0]}</td>
 				</tr>
 			</div>

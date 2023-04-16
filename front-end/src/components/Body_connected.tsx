@@ -71,7 +71,7 @@ function UserSidebar() {
 
 	const [friendsInvites, setFriendsInvite] = React.useState<User[]>();
 	React.useEffect(() => {
-		setFriendsInvite(user?.friend_invites);
+		setFriendsInvite(user?.friend_requests);
 	}, []);
 
 	const listFriendsInvite = friendsInvites?.map((friend: User) => {

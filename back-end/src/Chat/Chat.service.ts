@@ -25,7 +25,7 @@ export class ChatService {
             if (connection === null || connection === undefined)
                 return (undefined);
     
-            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+            const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
     
             if (user === null || user === undefined)
             {
@@ -54,7 +54,7 @@ export class ChatService {
             if (connection === null || connection === undefined)
                 return (undefined);
     
-            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+            const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
     
             if (user === null || user === undefined)
             {
@@ -100,7 +100,7 @@ export class ChatService {
             if (connection === null || connection === undefined)
                 return (undefined);
     
-            const user : User = await this.userService.getUserFromConnectionId(connection.connectionId);
+            const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
     
             if (user === null || user === undefined)
             {
