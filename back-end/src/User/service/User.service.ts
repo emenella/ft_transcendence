@@ -110,7 +110,9 @@ export class UserService {
 
 	//~~FRIENDS
 	async inviteFriend(sender: User, receiver: User): Promise<void> {
-		if (sender.friends.some((f) => { return f.id === receiver.id }))
+		if (sender.id === receiver.id)
+			throw new HttpException(`You cannot send friend request to yourself, go touch grass.`, 400);
+		else if (sender.friends.some((f) => { return f.id === receiver.id }))
 			throw new HttpException(`User with ID ${receiver.id} is already friend with User with ID ${sender.id}.`, 400);
 		else if (receiver.friend_requests.some((f) => { return f.id === sender.id }))
 			throw new HttpException(`User with ID ${receiver.id} already has pending friend request from User with ID ${sender.id}.`, 400);
