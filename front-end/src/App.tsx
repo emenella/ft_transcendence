@@ -65,6 +65,7 @@ function App() {
 		return <p>Erreur : {error.message}</p>;
 	  }
 
+	console.log(user + " APP");
 	return (
 		<div>
 			<Toaster />

@@ -40,7 +40,7 @@ export async function delete2FA() {
 
 export async function getUserById(id: number) {
     try {
-        const res = await axios.get('api/users/id/?id=' + id, { headers: authHeader() });
+        const res = await axios.get<User>('api/users/id/?id=' + id, { headers: authHeader() });
         return res.data;
     }
     catch (e) {

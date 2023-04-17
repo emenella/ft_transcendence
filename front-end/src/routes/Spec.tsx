@@ -6,8 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import '../App.css';
 import logo from '../assets/black_logo.png';
 import Footer from '../components/Footer';
-import HeaderConnected from '../components/Header_connected';
-import HeaderNotConnected from '../components/Header_not_connected';
+import {HeaderConnected, HeaderNotConnected } from '../components/Headers';
 import BodyNotConnected from '../components/Body_not_connected';
 import { User } from '../utils/backend_interface';
 import { getMe } from '../api/User';
@@ -80,11 +79,11 @@ export default function Spectate() {
 					{hasToken ? (
 						<HeaderConnected logout={handleLogout} />
 					) : (
-						<HeaderNotConnected login={handleLogin} url={""} />
+						<HeaderNotConnected url={""} />
 					)}
 				</div>
 			</div>
-			{hasToken ? <PongGame height={600} width={800} token={token as string} spec={spec} isQueue={false} user={user!} />: <BodyNotConnected />}
+			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} />: <BodyNotConnected />}
 			<Footer />
             
 		</div>
