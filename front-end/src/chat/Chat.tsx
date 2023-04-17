@@ -208,9 +208,11 @@ function Chat(props : {user: User | undefined}) {
 					</Routes>
 				</div>
         <div className='chat'>
+          <label>{activeChan}
           <div className='messagesList'>
             <Message messages = {messages}/>
           </div>
+          </label>
           <div className='inputMessage'>
             <MessageInput send={send}/>
           </div>

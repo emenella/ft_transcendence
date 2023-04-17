@@ -12,11 +12,13 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 placeholder="title"
                 value={value}
             />
-            <label>Private</label>
+            <label>Private
             <input
+                type="checkbox"
                 checked={invitOnly}
                 onChange={(e) => setInviteOnly(e.target.checked)}
             />
+            </label>
             <input
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="password"

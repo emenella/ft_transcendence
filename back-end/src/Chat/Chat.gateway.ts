@@ -44,12 +44,14 @@ export class ChatGateway {
         let sendList : string[] = [];
         
         messages.forEach((message) => {
-          let hour: number;
-          if (message.date.getUTCHours() >= 22)
-            hour = message.date.getUTCHours() - 22;
+          let hour: number = message.date.getUTCHours();
+          let minute: number = message.date.getMinutes();
+          let month: number = message.date.getMonth() + 1;
+          if (hour >= 22)
+            hour -= 22;
           else
-            hour = message.date.getUTCHours() + 2;
-          sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + (message.date.getMinutes() >= 10 ? message.date.getMinutes() : ("0" + message.date.getMinutes()) )
+            hour += 2;
+          sendList.push("(" + message.date.getDate() + "/" + (month >= 10 ? month : "0" + month) + ") " + hour + ":" + (minute >= 10 ? minute : "0" + minute)
                         + " --- " + message.authorName + ": " + message.content);
         })
         
@@ -145,12 +147,14 @@ export class ChatGateway {
       let sendList : string[] = [];
       
       messages.forEach((message) => {
-        let hour: number;
-        if (message.date.getUTCHours() >= 22)
-          hour = message.date.getUTCHours() - 22;
+        let hour: number = message.date.getUTCHours();
+        let minute: number = message.date.getMinutes();
+        let month: number = message.date.getMonth() + 1;
+        if (hour >= 22)
+          hour -= 22;
         else
-          hour = message.date.getUTCHours() + 2;
-        sendList.push("(" + message.date.getDate() + "/" + (message.date.getMonth() + 1) + ") " + hour + ":" + (message.date.getMinutes() >= 10 ? message.date.getMinutes() : ("0" + message.date.getMinutes()) )
+          hour += 2;
+        sendList.push("(" + message.date.getDate() + "/" + (month >= 10 ? month : "0" + month) + ") " + hour + ":" + (minute >= 10 ? minute : "0" + minute)
                       + " --- " + message.authorName + ": " + message.content);
       })
       

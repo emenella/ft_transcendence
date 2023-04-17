@@ -14,7 +14,7 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
     return (
         <>
             <select onChange={(e) =>setValue(e.target.value)}>
-            {props.publicChans.map(arrayChan => <option value={arrayChan}>{arrayChan}</option>)}
+            {props.publicChans.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <input
                 onChange={(e) => setValue(e.target.value)}

@@ -17,7 +17,7 @@ export default function ToggleChanInput(props : {toggleChan: (value : string) =>
     return (
         <>
             <select onChange={(e) =>setValue(e.target.value)}>
-            {chanJoined.map(arrayChan => <option value={arrayChan}>{arrayChan}</option>)}
+            {chanJoined.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <button onClick={() => props.toggleChan(value)}>Select Channel</button>
             <button onClick={() => props.leaveChan(value)}>Leave Channel</button>
