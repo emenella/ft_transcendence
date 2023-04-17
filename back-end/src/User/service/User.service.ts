@@ -190,6 +190,7 @@ export class UserService {
 					user.friend_requests.splice(userToBlockIndexR, 1);
 			}
 			await this.userRepository.save(user);
+			await this.userRepository.save(userToBlock);
 		}
 	}
 
