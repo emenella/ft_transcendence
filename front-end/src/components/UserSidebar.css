@@ -1,5 +1,5 @@
 .userSidebar {
-    width: 10%;
+    width: 15%;
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;
@@ -7,12 +7,18 @@
     margin-right: 1px;
 }
 
-.userSidebar>table {
-    text-align: left;
-    table-layout: fixed;
-    width: 100%;
+.friend {
+    display: flex;
+    justify-content: space-evenly;
 }
 
-.userSidebar>table>thead th:nth-child(1) {
-    width: 25%;
+.friend>img {
+    object-fit: contain;
+}
+
+
+.friend-invite {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
 }

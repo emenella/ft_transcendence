@@ -26,7 +26,8 @@
 .player-info {
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 10px 200px;
 }
 
 .history>table {

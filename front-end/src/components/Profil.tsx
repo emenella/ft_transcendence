@@ -63,20 +63,16 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 	if (props.match.winner.username === props.username) {
 		return (
 			<div className="winner">
-				<tr>
-					<td>{props.match.winner.username} VS {props.match.loser.username}</td>
-					<td>{props.match.scores[0]} - {props.match.scores[1]}</td>
-				</tr>
+				<p>{props.match.winner.username} VS {props.match.loser.username}</p>
+				<p>{props.match.scores[0]} - {props.match.scores[1]}</p>
 			</div>
 		);
 	}
 	else {
 		return (
 			<div className="loser">
-				<tr>
-					<td>{props.match.loser.username} VS {props.match.winner.username}</td>
-					<td>{props.match.scores[1]} - {props.match.scores[0]}</td>
-				</tr>
+				<p>{props.match.loser.username} VS {props.match.winner.username}</p>
+				<p>{props.match.scores[1]} - {props.match.scores[0]}</p>
 			</div>
 		);
 	}
@@ -130,7 +126,7 @@ function Profil() {
 				</div>
 				{ (user?.id === me?.id)
 					? <></>
-					:	<PlayerInteraction user={user} me={me} />
+					: <PlayerInteraction user={user} me={me} />
 				}
 				<div className='player-info'>
 					<div className='statistics'>
@@ -143,17 +139,8 @@ function Profil() {
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>
-						<table>
-							<thead>
-								<tr>
-									<th scope='row'>Versus</th>
-									<th scope='row'>Résultat</th>
-								</tr>
-							</thead>
-							<tbody>
-								{matchs?.map((match: Match) => { return(<PrintMatch username={user?.username} match={match} />); })}
-							</tbody>
-						</table>
+						<h4>Versus | Résultat</h4>
+						{matchs?.map((match: Match) => { return(<PrintMatch username={user?.username} match={match} />); })}
 					</div>
 				</div>
 			</div>

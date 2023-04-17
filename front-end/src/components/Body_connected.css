@@ -1,5 +1,6 @@
 .connected {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: stretch;
     padding-top: 10px;
@@ -7,7 +8,7 @@
 }
 
 .chatSidebar {
-    width: 10%;
+    width: 15%;
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;
@@ -26,7 +27,6 @@
 }
 
 .connectedCenter {
-    width: 80%;
     display: flex;
     flex-direction: column;
 }
