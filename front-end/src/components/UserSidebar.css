@@ -3,13 +3,14 @@
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;
+    padding: 5px;
     margin-left: 5px;
     margin-right: 1px;
 }
 
 .friend {
     display: flex;
-    justify-content: space-evenly;
+    column-gap: 20px
 }
 
 .friend>img {

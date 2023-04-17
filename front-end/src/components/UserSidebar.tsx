@@ -4,6 +4,7 @@ import { getMe } from '../api/User';
 import { User } from '../utils/backend_interface';
 import { invite, accept, deny } from '../utils/friends_blacklists_system';
 import Emoji from './Emoji';
+import UsernameLink from '../utils/UsernameLink';
 
 function renderSwitch(num: number) {
     switch (num) {
@@ -37,7 +38,7 @@ function UserSidebar() {
             <div className='friend'>
                 <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
                 <div>
-                    <p>{friend.username}</p>
+                    <UsernameLink user={friend} />
                     {renderSwitch(friend.status)}
                 </div>
             </div>
@@ -54,7 +55,7 @@ function UserSidebar() {
         return (
             <div className='friend-invite'>
                 <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
-                <p>{friend.username}</p>
+                <UsernameLink user={friend} />
                 <div>
                     <button onClick={() => accept(friend.username)}>Accepter <Emoji label="check_mark" symbol="✔️" /></button>
                     <button onClick={() => deny(friend.username)}>Refuser <Emoji label="cross_mark" symbol="❌" /></button>
@@ -76,13 +77,13 @@ function UserSidebar() {
     return (
         <div className='userSidebar'>
             <h4>Amis</h4>
-            {listFriends
+            {listFriends?.length
                 ? <div>{listFriends}</div>
                 : <p>Aucun ami pour le moment</p>
             }
 
             <h4>Invitations d'amis</h4>
-            {listFriendsInvite
+            {listFriendsInvite?.length
                 ? <div>{listFriendsInvite}</div>
                 : <p>Aucune demande d'ami pour le moment</p>
             }
