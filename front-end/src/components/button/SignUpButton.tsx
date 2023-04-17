@@ -1,5 +1,4 @@
 import React from "react";
-import { firstConnexion } from '../../api/Auth'
 
 function ConnectionButton({ url }: { url: string }) {
 	

@@ -1,9 +1,9 @@
 import React from 'react';
-import { isConnected } from '../utils/interface';
+// import { isConnected } from '../utils/interface';
 import { Link } from "react-router-dom";
 
-class HeaderConnected extends React.Component<isConnected> {
-    constructor(props: isConnected) {
+class HeaderConnected extends React.Component<{logout: () => void}> {
+    constructor(props: {logout: () => void}) {
         super(props);
     }
 
