@@ -7,10 +7,6 @@
 NAME			= pong
 COMPOSE			= docker-compose --project-directory=. -p $(NAME)
 
-#~~~~ VOLUMES ~~~~#
-
-VOLUMES_PATH	= ./volumes
-
 #========================================#
 #=============== TARGETS ================#
 #========================================#
@@ -29,7 +25,7 @@ down:
 
 #~~~~ Build ~~~~#
 # Build or rebuild services
-build:		volumes
+build:
 			$(COMPOSE) build --parallel
 # Create services
 create:		build
@@ -70,18 +66,14 @@ stop:
 clean:
 			docker-compose --project-directory=. $(BONUS_FLAG) down --rmi all
 # Stop and remove containers, networks, images, and volumes
-# (volumes are deleted on the docker side, as their content is stored locally, it remains at $(VOLUME_PATH))
 fclean:
 			docker-compose --project-directory=. $(BONUS_FLAG) down --rmi all --volumes
-# Removes locally stored volumes
+# Removes volumes
 vclean:
+			docker volume rm database
 			docker volume rm pong_database
-			rm -rf $(VOLUMES_PATH)
 
 #~~~~ Misc ~~~~#
-# Create volume directories if they don't already exist
-volumes:
-			@mkdir -p $(VOLUMES_PATH)/database
 # Create a self signed ssl certificate
 certificate:
 			@mkdir -p ssl_credentials
@@ -128,4 +120,4 @@ eugene :
 			@ echo "                7____,,..--'      /          |"
 			@ echo "                                  \`---.__,--.'"
 								  
-.PHONY:		all bonus re up down build create ps exec logs start restart stop clean fclean vclean volumes certificate eugene
+.PHONY:		all bonus re up down build create ps exec logs start restart stop clean fclean vclean certificate eugene
