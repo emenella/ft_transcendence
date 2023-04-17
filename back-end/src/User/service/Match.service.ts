@@ -10,4 +10,13 @@ export class HistoryService {
 	async addMatch(history: Match): Promise<Match> {
 		return this.historyRepository.save(history);
 	}
+
+	async getAllMatches(): Promise<Match[]> {
+		return this.historyRepository.find({ relations: ['winner', 'looser']});
+	}
+
+	async getAllMatchesByUser(id: number): Promise<Match[]> {
+		return this.historyRepository.find({ where: [{ winner: { id: id } }, { loser: { id: id } }], relations: ['winner', 'loser']});
+	}
+
 }

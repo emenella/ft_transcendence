@@ -8,7 +8,7 @@ function Auth() {
 	const [searchParams] = useSearchParams();
 	const access_token = searchParams.get('token');
 	const navigate = useNavigate();
-
+	
 	React.useEffect(() => {
 		if (access_token) {
 			setToken(access_token);
@@ -20,7 +20,7 @@ function Auth() {
 			changeUserStatus(UserStatus.Connected);
 			navigate('/');
 		}
-	}, []);
+	}, [access_token, navigate]);
 
 	return (<h1>Wait a moment...</h1>);
 }

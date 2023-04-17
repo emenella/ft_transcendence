@@ -6,6 +6,8 @@ const port = process.env.REACT_APP_API_PORT
 
 export const url = `${protocol}://${host}:${port}`;
 
+export const ws = `${protocol}://${host}:81`
+
 export const client = axios.create({
 	baseURL: `${protocol}://${host}:${port}`,
 });

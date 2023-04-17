@@ -4,6 +4,9 @@ import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
+import { HttpException } from "@nestjs/common";
+
+
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {
@@ -17,7 +20,7 @@ export class GameGateway {
     }
 
     async handleConnection(@ConnectedSocket() client: Socket) {
-        const user = this.authentificate(client);
+        const user = await this.authentificate(client);
         if (!user) {
             client.disconnect();
         }
@@ -26,9 +29,13 @@ export class GameGateway {
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         const user = await this.authentificate(client);
         if (user) {
-            let ret  = this.gameService.leavePlayer(user.id);
-            if (!ret) {
-                this.gameService.leaveSpectator(user.id);
+            const ret = this.gameService.isPlayer(client);
+            if (ret) {
+                if (ret.isPlayer) {
+                    this.gameService.leavePlayer(user.id);
+                } else {
+                    this.gameService.leaveSpectator(user.id);
+                }
             }
         }
         client.disconnect();
@@ -111,6 +118,6 @@ export class GameGateway {
             }
         }
         client.disconnect();
-        throw new Error('Unauthorized');
+        throw new HttpException('Unauthorized', 401);
     }
 }
