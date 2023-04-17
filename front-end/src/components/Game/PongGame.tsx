@@ -1,98 +1,95 @@
-import React, { Component, createRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
-import { Socket, io } from 'socket.io-client';
-import { getMe } from '../../api/User';
-import { url } from '../../api/Api';
+import { io } from 'socket.io-client';
+import { getToken, url } from '../../api/Api';
 import { User } from './engine/interfaces/ft_pong.interface';
 
 const WebGame = url + '/game';
+const WebMatchmaking = url + '/matchmaking';
 
 interface PongGameProps {
     width: number;
     height: number;
     token: string;
-    socketMatchmaking: Socket;
+    isQueue: boolean;
+    spec: string | null;
+    user: User;
 }
 
-interface PongGameState {
-    game: Game | null;
-    me: User | null;
-    canvasRef: React.RefObject<HTMLCanvasElement>;
-}
 
-class PongGame extends Component<PongGameProps, PongGameState> {
-    canvasRef: React.RefObject<HTMLCanvasElement>;
-    socketGame: Socket;
-
-    constructor(props: PongGameProps) {
-        super(props);
-        this.canvasRef = createRef();
-        console.log(props.token);
-        this.socketGame = io(WebGame, { extraHeaders: { Authorization: props.token } });
-        this.state = {
-            game: null,
-            me: null,
-            canvasRef: this.canvasRef
+const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec, user }) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
+    let game: Game | null = null;
+    
+    useEffect(() => {
+        console.log('componentDidMount Pong');
+        
+        return () => {
+            console.log('componentWillUnmount Pong');
+            game?.leaveQueue();
+            game?.leaveGame();
+            socketGame.disconnect();
+            socketMatchmaking.disconnect();
         };
-    }
-
-    componentDidMount() {
-        this.fetchUser();
-        this.setGame();
-    }
-
-    async fetchUser() {
-        const user = await getMe();
-        console.log(user);
-        this.setState({ me: user });
-    }
-
-    componentDidUpdate(prevProps: PongGameProps, prevState: PongGameState) {
-        this.searchGame();
-    }
-
-    setGame() {
-        const { me } = this.state;
-        const ctx = this.canvasRef.current!.getContext('2d');
-        if (me && ctx) {
-            const newGame = new Game(this.socketGame, this.props.socketMatchmaking, me, ctx);
-            this.setState({ game: newGame });
+    }, []);
+    
+    useEffect(() => {
+        console.log('componentDidUpdate Pong');
+        const joinQueue = () => {
+            if (!game) {
+                console.log('no state game');
+                return;
+            }
+            game.joinQueue();
+        };
+        
+        const leaveQueue = () => {
+            if (!game) {
+                console.log('no state game');
+                return;
+            }
+            game.leaveQueue();
+        };
+        
+        const searchGame = () => {
+            if (game === null) {
+                console.log('no state game');
+                return;
+            }
+            game.searchGame();
+        };
+        function setGame() {
+            const ctx = canvasRef.current?.getContext('2d');
+            if (!game && user && ctx) {
+                console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
+                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
+                game = newGame;
+            }
         }
-    }
-
-    joinQueue = () => {
-        const { game } = this.state;
-        if (!game) {
-            return;
+    
+        setGame();
+        if (spec === null) searchGame();
+        if (isQueue) joinQueue();
+        else leaveQueue();
+        
+        if (spec) {
+            game?.spectateGame(spec);
         }
-        game.joinQueue();
-    };
+    }, [isQueue, spec]);
+    
+    
 
-    leaveQueue = () => {
-        const { game } = this.state;
-        if (!game) {
-            return;
-        }
-        game.leaveQueue();
-    };
-
-    searchGame = () => {
-        const { game } = this.state;
-        if (!game) {
-            console.log('no state game');
-            return;
-        }
-        game.searchGame();
-    };
-
-    render() {
-        const { width, height } = this.props;
-        return (
-            <div>
-                <canvas ref={this.canvasRef} width={width} height={height} />
-            </div>
+    return (
+        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+            <canvas
+                ref={canvasRef}
+                width={width}
+                height={height}
+                style={{ width: '100%', height: '100%' }}
+            />
+        </div>
         );
-    }
-}
-
+};
 export default PongGame;

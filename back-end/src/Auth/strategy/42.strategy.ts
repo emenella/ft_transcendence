@@ -21,7 +21,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42') {
                 'phoneNumbers.0.value': 'phone',
                 'photos.0.value': 'image_url'
             }});
-            console.log(API.UID, API.KEY, API.URL);
     }
 
     async validate(accessToken: string, refreshToken: string, profile: any, done: any) {

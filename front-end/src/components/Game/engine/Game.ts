@@ -24,11 +24,12 @@ export class Game {
     private gameFind: Array<string>;
     private ctx: CanvasRenderingContext2D;
     private gameSettings: GameSettings;
+    private isSpec: boolean;
 
 
-    constructor(socket: Socket, socketGame: Socket, user: User, ctx: CanvasRenderingContext2D) {
+    constructor(socket: Socket, socketMatch: Socket, user: User, ctx: CanvasRenderingContext2D) {
         this.socketGame = socket;
-        this.socketMatchmaking = socketGame;
+        this.socketMatchmaking = socketMatch;
         this.ctx = ctx;
         this.pong = null;
         this.gameSettings = defaultGameSettings;
@@ -36,8 +37,12 @@ export class Game {
         this.gameSettings.width = ctx.canvas.width;
         this.gameSettings.height = ctx.canvas.height;
         this.gameFind = [];
+        this.isSpec = false;
         this.socketGame.on("game:search", this.handleSearchGame.bind(this));
         this.socketGame.on("game:join", this.handleJoinGame.bind(this));
+        this.socketGame.on("game:finish", this.handleFinishGame.bind(this));
+        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
+        console.log(this.socketMatchmaking);
     }
 
     public searchGame() {
@@ -49,6 +54,7 @@ export class Game {
     }
 
     public joinGame(gameId: string) {
+        console.log(gameId);
         this.socketGame.emit("game:join", gameId);
     }
 
@@ -60,40 +66,46 @@ export class Game {
     }
 
     public spectateGame(id: string) {
+        this.isSpec = true;
         this.socketGame.emit("game:spec", id);
     }
 
     private handleJoinGame(gameSetup: Setup) {
-        console.log(gameSetup);
+        console.log(this.isSpec);
         if (!this.pong) {
-            this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup);
+            this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup, this.isSpec);
         }
         else {
             this.pong.stop();
-            this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup);
+            this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup, this.isSpec);
         }
     }
 
     private handleSearchGame(ids: string[]) {
         this.gameFind = ids;
-        for (let i = 0; i < this.gameFind.length; i++) {
-            console.log(this.gameFind[i]);
-        }
+        if (ids.length > 0)
+            this.joinGame(ids[0]);
     }
 
     public joinQueue() {
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue);
         this.socketMatchmaking.emit("matchmaking:join");
-        console.log("join");
     }
 
     public leaveQueue() {
         this.socketMatchmaking.emit("matchmaking:leave");
-        this.socketMatchmaking.off("matchmaking:foundMatch");
     }
 
     private handleQueue(id: string) {
-        console.log(id);
+        console.log("found match");
         this.joinGame(id);
+    }
+
+    private handleFinishGame() {
+        setTimeout(() => {
+            if (this.pong) {
+                this.pong.stop();
+                this.pong = null;
+            }
+        }, 1000);
     }
 }

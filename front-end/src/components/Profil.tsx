@@ -78,36 +78,22 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 	}
 }
 
-function Profil() {
-	let id = parseInt(useParams<{ id: string }>().id!);
-
-	const [user, setUser] = React.useState<User>();
+function Profil(props: { user: User }) {
+	const [matchs, setMatchs] = React.useState<Match[]>([]);
+	const [avatar, setAvatar] = React.useState<string>();
+	
 	React.useEffect(() => {
-		const getUser = async () => {
-			setUser(await getUserById(id));
-		};
-		getUser();
-	}, [id]);
-
-	const [matchs, setMatchs] = React.useState<Match[]>();
-	React.useEffect(() => {
+		console.log(props.user);
 		const getUserMatchs = async () => {
-			setMatchs(await getMatchs(id));
+			setMatchs(await getMatchs(props.user.id));
+			setAvatar(props.user.avatarPath);
 		};
 		getUserMatchs();
-	}, [id]);
-
-	const [me, setMe] = React.useState<User>();
-	React.useEffect(() => {
-		const getUser = async () => {
-			setMe(await getMe());
-		};
-		getUser();
 	}, []);
 
-	const wins = user?.winMatch.length;
-	const loses = user?.loseMatch.length;
-	const games = matchs?.length;
+	const wins = props.user.winMatch.length;
+	const loses = props.user.loseMatch.length;
+	const games = matchs.length;
 	const winrate = ((wins! / games!) * 100) || 0;
 
 	const linkStyle = {
@@ -115,18 +101,20 @@ function Profil() {
 		textDecoration: "none"
 	}
 
+	console.log(matchs, avatar);
+
 	return (
 		<div>
 			<Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={"../" + user?.avatarPath} alt="Logo du joueur" />
-					<h3>{user?.username}</h3>
+					<img src={"../" + props.user.avatarPath} alt="Logo du joueur" />
+					<h3>{props.user.username}</h3>
 				</div>
-				{ (user?.id === me?.id)
+				{ (props.user.id === props.user.id)
 					? <></>
-					: <PlayerInteraction user={user} me={me} />
+					: <PlayerInteraction user={props.user} me={props.user} />
 				}
 				<div className='player-info'>
 					<div className='statistics'>
@@ -135,12 +123,12 @@ function Profil() {
 						<p>Nombre de parties gagnées : {wins}</p>
 						<p>Nombre de parties perdues : {loses}</p>
 						<p>Win rate : {winrate}%</p>
-						<p>Elo : {user?.elo}</p>
+						<p>Elo : {props.user.elo}</p>
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>
 						<h4>Versus | Résultat</h4>
-						{matchs?.map((match: Match) => { return(<PrintMatch username={user?.username} match={match} />); })}
+						{matchs?.map((match: Match) => { return(<PrintMatch username={props.user.username} match={match} />); })}
 					</div>
 				</div>
 			</div>

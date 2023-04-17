@@ -53,9 +53,9 @@ function BodyConnected({ user }: { user: User }) {
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking />} />
+						<Route path="/" element={<Matchmaking user={user} />} />
 						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/profil/:id" element={<Profil />} />
+						<Route path="/profil" element={<Profil user={user!} />} />
 					</Routes>
 				</div>
 				<div>
