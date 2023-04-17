@@ -40,7 +40,7 @@ export async function delete2FA() {
 
 export async function getUserById(id: number) {
     try {
-        const res = await axios.get('api/users/id/?id=' + id, { headers: authHeader() });
+        const res = await axios.get<User>('api/users/id/?id=' + id, { headers: authHeader() });
         return res.data;
     }
     catch (e) {
@@ -61,6 +61,7 @@ export async function getUserByUsername(username: string) {
 export async function getMatchs(id: number) {
     try {
         const res = await axios.get('api/users/match_history/?id=' + id, { headers: authHeader() });
+        console.log(res.data);
         return res.data;
     }
     catch (e) {

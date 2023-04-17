@@ -28,10 +28,10 @@ export function HeaderConnected(props : { logout: () => void }) {
     );
 }
 
-export function HeaderNotConnected() {
+export function HeaderNotConnected(props : { url: string }) {
     return (
         <div>
-            <SignUpButton />
+            <SignUpButton url={props.url} />
         </div>
     );
 }
