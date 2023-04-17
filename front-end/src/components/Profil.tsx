@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import './Profil.css';
 import { getMe, getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
