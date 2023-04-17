@@ -19,7 +19,7 @@ export function HeaderConnected(props : { logout: () => void }) {
 
     return (
         <div>
-            <Link to={"/profil/" + user?.id} style={linkStyle}>Profil</Link>
+            <Link to={"/profil/"} style={linkStyle}>Profil</Link>
             <br />
             <Link to="/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
             <br />
