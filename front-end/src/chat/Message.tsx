@@ -19,7 +19,6 @@ export default function Message({messages}:{messages: string[]}) {
             {messages.map((message, index) => (
                 <div key={index}>
                     {/* <Link to={"/profil/" + user?.id} style={linkStyle}>Profil</Link> */}
-                    coucou
                     {message}
                 </div>
             ))}
