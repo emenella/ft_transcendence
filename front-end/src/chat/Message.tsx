@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Message.css"
 
 function useChatScroll<T>(dep: T): React.MutableRefObject<HTMLDivElement> {
@@ -16,7 +17,11 @@ export default function Message({messages}:{messages: string[]}) {
     return (
         <div className="message" ref={ref}>
             {messages.map((message, index) => (
-                <div key={index}>{message}</div>
+                <div key={index}>
+                    {/* <Link to={"/profil/" + user?.id} style={linkStyle}>Profil</Link> */}
+                    coucou
+                    {message}
+                </div>
             ))}
         </div>
     )

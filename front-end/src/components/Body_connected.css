@@ -61,3 +61,21 @@
     background-color:#DAF0EE;
     margin-top: 5px;
 }
+
+.chanTitle {
+    font-weight: bold;
+    margin-top: 100px;
+    margin-left: 10px;
+}
+
+.messagesList {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.inputMessage {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}

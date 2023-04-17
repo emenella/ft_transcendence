@@ -1,4 +1,12 @@
+.message>div:nth-child(even) {
+    background: #91D2CC;
+}
+.message>div:nth-child(odd) {
+    background: #DAF0EE;
+}
+
 .message {
     height: 15vh;
-    overflow-x: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
