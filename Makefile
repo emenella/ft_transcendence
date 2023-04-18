@@ -71,7 +71,6 @@ fclean:
 # Removes volumes
 vclean:
 			docker volume rm database
-			docker volume rm pong_database
 
 #~~~~ Misc ~~~~#
 # Create a self signed ssl certificate

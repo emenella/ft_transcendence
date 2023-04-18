@@ -5,6 +5,3 @@
 
 # Vscode
 .eslintrc.js
-
-# Other
-package-lock.json
