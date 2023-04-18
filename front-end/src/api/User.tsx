@@ -1,5 +1,8 @@
 import { User } from '../utils/backend_interface';
 import { client as axios, authHeader } from './Api'
+import  { AxiosError } from 'axios';
+import toast from 'react-hot-toast';
+import { toastError } from '../components/Error';
 
 export async function getMe(): Promise<any> {
     try {
@@ -11,21 +14,25 @@ export async function getMe(): Promise<any> {
     }
 }
 
-export async function setUsername(username: string) {
+export async function changeUsername(username: string) {
     try {
-        return await axios.post('api/users/me', { username: username }, { headers: authHeader() });
+        const req = await axios.post('api/users/me', { username: username }, { headers: authHeader() });
+        toast.success('Pseudo enregistré.');
+        return req;
     }
     catch (e) {
-        console.log(e);
+        toastError(e as AxiosError);
     }
 }
 
 export async function uploadAvatar(formData: FormData) {
     try {
-        return await axios.post('api/users/avatar/upload', formData, { headers: authHeader('multipart/form-data') });
+        const req = await axios.post('api/users/avatar/upload', formData, { headers: authHeader('multipart/form-data') });
+        toast.success('Image enregistrée.');
+        return req;
     }
     catch (e) {
-        console.log(e);
+        toastError(e as AxiosError);
     }
 }
 

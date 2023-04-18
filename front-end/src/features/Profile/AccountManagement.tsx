@@ -1,51 +1,26 @@
-import React, { ChangeEvent, useState, } from 'react';
+import React, { ChangeEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
 import './AccountManagement.css'
-import { setUsername, uploadAvatar, delete2FA } from '../api/User';
-import { AccountManagementProps } from '../utils/interface';
-import Emoji from './Emoji';
+import Emoji from '../../components/Emoji';
+import { Enable2FA, Disable2FA } from '../../components/button/Buttons';
+import { changeUsername, uploadAvatar, delete2FA } from '../../api/User';
+import { User } from '../../utils/backend_interface';
 
-function Deactivation2FA({ onClick }: { onClick: () => void }) {
-    return (
-        <div>
-            <button onClick={onClick}>Désactivation 2FA <Emoji label="cross_mark" symbol="❌" /></button>
-        </div>
-    )
-};
-
-function Activation2FA() {
-    const navigate = useNavigate();
-
-    function move() {
-        navigate("/2fa");
-    }
-
-    return (
-        <div>
-            <button onClick={move}>Activation 2FA <Emoji label="check_mark" symbol="✔️" /></button>
-        </div>
-    )
-};
-
-function AccountManagement({ user }: AccountManagementProps) {
-    const [username, SetUsername] = useState('');
+function AccountManagement({ user }: { user: User }) {
+    const [username, setUsername] = useState('');
     const [image, setImage] = useState<File>();
     const [activated2FA, setActivated2FA] = useState(user.is2FAActivated);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (username !== '') {
-            const req = await setUsername(username);
-            if (req?.status === 201) toast.success('Pseudo enregistré.');
-            else toast.error('Erreur. Veuillez réessayer.');
+            await changeUsername(username);
         }
         if (image) {
             const formData = new FormData();
             formData.append('file', image);
-            const req = await uploadAvatar(formData);
-            if (req?.status === 201) toast.success('Image enregistrée.');
-            else toast.error('Erreur. Veuillez réessayer.');
+            await uploadAvatar(formData);
         }
     };
 
@@ -58,7 +33,7 @@ function AccountManagement({ user }: AccountManagementProps) {
     };
 
     const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-        SetUsername(e.target.value);
+        setUsername(e.target.value);
     };
 
     const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -83,14 +58,14 @@ function AccountManagement({ user }: AccountManagementProps) {
                     <br />
                     <br />
                     <label>Changer de photo de profil : </label>{' '}
-                    <input type="file" accept=".PNG,.JPG" onChange={handleImageChange} />
+                    <input type="file" accept=".PNG,.JPG,.GIF" onChange={handleImageChange} />
                     <br />
                     <br />
                     <button type="submit">Valider</button>
                 </form>
                 <br />
                 <br />
-                <div>{activated2FA ? <Deactivation2FA onClick={handle2FADelete} /> : <Activation2FA />}</div>
+                <div>{ activated2FA ? <Disable2FA onClick={handle2FADelete} /> : <Enable2FA /> }</div>
             </div>
         </div>
     );

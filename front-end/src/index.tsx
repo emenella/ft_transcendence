@@ -6,7 +6,7 @@ import Auth from "./routes/Auth";
 import Spectate from "./routes/Spec";
 import { Activate2FA, Connection } from "./routes/2FA";
 import SetUsername from "./routes/SetUsername";
-import Error from "./components/Error";
+import { Error } from "./components/Error";
 
 const root = createRoot(
 	document.getElementById('root') as HTMLElement
