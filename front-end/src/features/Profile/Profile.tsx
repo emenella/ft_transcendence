@@ -101,7 +101,7 @@ function Profile({ me }: { me: User }) {
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={"../" + user?.avatarPath} alt="Logo du joueur" />
+					<img src={"../../" + user?.avatarPath} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
 				{ (me.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }

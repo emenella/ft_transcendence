@@ -37,7 +37,7 @@ function UserSidebar() {
     const listFriends = friends?.map((friend: User) => {
         return (
             <div className='friend'>
-                <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
+                <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <div>
                     <UsernameLink user={friend} />
                     {renderSwitch(friend.status)}
@@ -55,7 +55,7 @@ function UserSidebar() {
     const listFriendsInvite = friendsInvites?.map((friend: User) => {
         return (
             <div className='friend-invite'>
-                <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
+                <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <UsernameLink user={friend} />
                 <div>
                     <AcceptAndDenyFriendButtons username={friend.username} />

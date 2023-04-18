@@ -9,7 +9,7 @@ function UsernameLink(props: { user : User }) {
 
     return(
         <div>
-            <Link to={"/profil/" + props.user.id} style={linkStyle}>{props.user.username}</Link>
+            <Link to={"/profile/" + props.user.id} style={linkStyle}>{props.user.username}</Link>
         </div>
     );
 }

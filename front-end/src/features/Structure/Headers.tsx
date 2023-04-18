@@ -9,9 +9,9 @@ export function HeaderConnected({ logout, user }: { logout: () => void, user: Us
 
     return (
         <div>
-            <Link to={"/profil/" + user?.id} style={linkStyle}>Profil</Link>
+            <Link to={"/home/profile/" + user?.id} style={linkStyle}>Profil</Link>
 			<br />
-            <Link to="/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
+            <Link to="/home/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
             <br />
             <br />
 			<button onClick={logout}>Déconnexion</button>

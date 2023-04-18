@@ -1,5 +1,6 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import App from '../../App';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './Body_connected.css';
 import Profile from '../Profile/Profile';
 import AccountManagement from '../Profile/AccountManagement';
@@ -55,10 +56,11 @@ function BodyConnected({ user }: { user: User }) {
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/profil/:id" element={<Profile me={user} />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/" element={<Matchmaking user={user} />} />
-						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} />} />
+						<Route index element={<Matchmaking user={user} />}></Route>
+							<Route path="profile/:id" element={<Profile me={user} />} />
+							<Route path="accountmanagement" element={<AccountManagement user={user!} />} />
+							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} />} />
+							<Route path="*" element={<Navigate to="/home" replace />} />
 					</Routes>
 				</div>
 				<div>
