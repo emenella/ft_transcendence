@@ -49,7 +49,6 @@ function ChatFront() {
 
 
 function BodyConnected(props: { user: User }) {
-	console.log(props);
 	return (
 		<div className="connected">
 			<ChatSidebar />
@@ -59,7 +58,7 @@ function BodyConnected(props: { user: User }) {
 						<Route path="/" element={<Matchmaking user={props.user} />} />
 						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
 						<Route path="/profil/:id" element={<Profil user={props.user} />} />
-						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user}/>} />
+						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user} />} />
 					</Routes>
 				</div>
 				<div>

@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 import logo from './assets/black_logo.png';
 import Footer from './components/Footer';
-import {HeaderConnected, HeaderNotConnected } from './components/Headers';
+import { HeaderConnected, HeaderNotConnected } from './components/Headers';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
 import { getToken } from './api/Api';
@@ -15,7 +15,7 @@ function App() {
 	const [hasToken, setHasToken] = useState(!!getToken());
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
-  	const [error, setError] = useState<any>(null);
+	const [error, setError] = useState<any>(null);
 	const [url, setUrl] = useState<string | null>(null);
 
 	function handleLogout() {
@@ -49,7 +49,6 @@ function App() {
 
 	React.useEffect(() => {
 		if (hasToken) {
-			console.log('fetchUser');
 			fetchUser();
 		}
 		else {
@@ -59,13 +58,12 @@ function App() {
 
 	if (loading) {
 		return <p>Chargement en cours...</p>;
-	  }
-	
+	}
+
 	if (error) {
 		return <p>Erreur : {error.message}</p>;
-	  }
+	}
 
-	console.log(user + " APP");
 	return (
 		<div>
 			<Toaster />

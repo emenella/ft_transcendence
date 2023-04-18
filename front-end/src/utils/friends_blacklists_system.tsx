@@ -11,7 +11,6 @@ export async function invite(username : string) {
 
 export async function remove(username : string) {
     const req = await removeFriend(username);
-	console.log(req?.status)
     if (req?.status === 200)
         toast.success('Ami supprimé.');
     else

@@ -40,7 +40,7 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 			<div className="parent">
 				<Toaster />
 				<p>Veuillez scanner ce QRCode avec votre application Google Authenticator.</p>
-				<img src={this.props.qrcode} />
+				<img src={this.props.qrcode} alt="QRCode" />
 				<br />
 				<div className="form">
 					<label>Veuillez entrer votre code secret correspondant : <input type="text" onChange={this.setSecret} /> </label>
