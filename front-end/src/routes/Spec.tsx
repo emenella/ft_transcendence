@@ -78,7 +78,7 @@ export default function Spectate() {
 					)}
 				</div>
 			</div>
-			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} />: <BodyNotConnected />}
+			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} handlefound={() => {}} />: <BodyNotConnected />}
 			<Footer />
             
 		</div>

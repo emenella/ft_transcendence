@@ -29,6 +29,7 @@ function App() {
 
 	async function fetchUser() {
 		try {
+			setLoading(true);
 			const user = await getMe();
 			setUser(user);
 			setLoading(false);
@@ -41,6 +42,7 @@ function App() {
 
 	async function fetchUrl() {
 		try {
+			setLoading(true);
 			const url = await firstConnexion() as string;
 			setUrl(url);
 			setLoading(false);
