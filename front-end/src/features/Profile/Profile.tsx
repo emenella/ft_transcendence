@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import './Profile.css';
 import { getMatchs, getUserById } from '../../api/User';
@@ -46,12 +46,14 @@ function PrintMatch({ username, match }: { username: string | undefined, match: 
 
 function Profile({ me }: { me: User }) {
 	let id = parseInt(useParams().id!);
-
-	const [user, setUser] = React.useState<User>();
-	const [matchs, setMatchs] = React.useState<Match[]>([]);
-	const [loading, setLoading] = React.useState<boolean>(true);
-	const [error, setError] = React.useState<string>("");
 	
+	//~~ States
+	const [user, setUser] = useState<User>();
+	const [matchs, setMatchs] = useState<Match[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<any>(null);
+
+	//~~ Functions
 	React.useEffect(() => {
 		const getUser = async () => {
 			const user = await getUserById(id).catch((err) => {
@@ -73,12 +75,13 @@ function Profile({ me }: { me: User }) {
 		getUserMatchs();
 	}, [user]);
 
+	//~~ Body
 	if (error) {
-		return (<div>{error}</div>);
+		return <p>Erreur : {error.message}</p>;
 	}
 
 	if (loading) {
-		return (<div>Chargement...</div>);
+		return <p>Chargement en cours...</p>;
 	}
 
 	const wins = user!.winMatch.length;

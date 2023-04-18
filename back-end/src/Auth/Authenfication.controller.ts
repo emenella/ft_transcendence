@@ -36,13 +36,6 @@ export class AuthenticationController {
         }
     }
     
-    // Sign up without 42
-    @Public()
-    @Post('admin')
-    async getAdmin(@Req() req: Request) {
-        return await this.authenticationService.login(req.body.user);
-    }
-    
     @Get('2fa/qrcode')
     async getQrCode(@Req() req: Request) {
         return await this.authenticationService.generateQR(req.user as User);

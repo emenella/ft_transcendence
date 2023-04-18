@@ -55,9 +55,9 @@ function BodyConnected({ user }: { user: User }) {
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking user={user} />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
 						<Route path="/profil/:id" element={<Profile me={user} />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
+						<Route path="/" element={<Matchmaking user={user} />} />
 						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} />} />
 					</Routes>
 				</div>

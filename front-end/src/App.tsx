@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
-import logo from './assets/black_logo.png';
 import { HeaderConnected, HeaderNotConnected } from './features/Structure/Headers';
-import Footer from './features/Structure/Footer';
 import BodyNotConnected from './features/Structure/Body_not_connected';
 import BodyConnected from './features/Structure/Body_connected';
+import Footer from './features/Structure/Footer';
 import { getToken } from './api/Api';
 import { getMe, changeUserStatus } from './api/User';
 import { firstConnexion } from './api/Auth';
 import { User, UserStatus } from './utils/backend_interface';
+import logo from './assets/black_logo.png';
 
 function App() {
+	//~~ States
 	const [hasToken, setHasToken] = useState(!!getToken());
 	const [user, setUser] = useState<User>();
+	const [url, setUrl] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<any>(null);
-	const [url, setUrl] = useState<string | null>(null);
 
+	//~~ Functions
 	function handleLogout() {
 		changeUserStatus(UserStatus.Disconnected);
 		// Supprimer cookie
@@ -57,6 +59,7 @@ function App() {
 		}
 	}, [hasToken]);
 
+	//~~ Body
 	if (loading) {
 		return <p>Chargement en cours...</p>;
 	}
@@ -76,14 +79,16 @@ function App() {
 					<h1>Le meilleur jeu de pong de tout 42</h1>
 				</div>
 				<div>
-					{
-						hasToken ?
-						(<HeaderConnected logout={handleLogout} user={user!} />) :
-						(<HeaderNotConnected url={url!} />)
+					{	hasToken ?
+						<HeaderConnected logout={handleLogout} user={user!} /> :
+						<HeaderNotConnected url={url!} />
 					}
 				</div>
 			</div>
-			{hasToken ? <BodyConnected user={user!} /> : <BodyNotConnected />}
+			{	hasToken ?
+				<BodyConnected user={user!} /> :
+				<BodyNotConnected />
+			}
 			<Footer />
 		</div>
 	);
