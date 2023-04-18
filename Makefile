@@ -15,7 +15,7 @@ COMPOSE			= docker-compose --project-directory=. -p $(NAME)
 # default `make` behavior set to `make up`
 all:		up logs
 
-re:			fclean all
+re:			down vclean all
 # Create and start containers
 up:			build
 			$(COMPOSE) up --detach --remove-orphans
