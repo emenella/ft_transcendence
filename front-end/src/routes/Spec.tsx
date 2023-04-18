@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
-import { getToken, setToken } from "../api/Api";
+import { getToken } from "../api/Api";
 import PongGame from "../components/Game/PongGame";
 import { Toaster } from 'react-hot-toast';
 import '../App.css';
@@ -50,11 +50,6 @@ export default function Spectate() {
 	function handleLogout() {
 		localStorage.removeItem('token');
 		setHasToken(false);
-	}
-
-	function handleLogin(token: string) {
-		setToken(token);
-		setHasToken(true);
 	}
 
 	if (loading) {

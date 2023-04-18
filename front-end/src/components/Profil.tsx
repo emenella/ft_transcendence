@@ -1,57 +1,57 @@
 import React from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import './Profil.css';
-import { getMe, getMatchs, getUserById } from '../api/User';
+import { getMatchs, getUserById } from '../api/User';
 import Emoji from './Emoji';
 import { User, Match } from '../utils/backend_interface';
 import { invite, remove, blacklist, unblacklist } from '../utils/friends_blacklists_system';
 
-function PlayerInteraction(props : { user : User | undefined, me : User | undefined }) {
+function PlayerInteraction(props: { user: User | undefined, me: User | undefined }) {
 	return (
 		<div className='player-interaction'>
-			{ props.me?.friends.some((friend: User) => { return friend.id === props.user?.id })
-				?	<div>
-						<label>Supprimer des amis </label>
-						<button onClick={() => { remove(props.user!.username); }}>
-							<Emoji label="handshake" symbol="🤝" />
-						</button>
-					</div>
-				:	<div>
-						<label>Ajouter en ami </label>
-						<button onClick={() => { invite(props.user!.username); }}>
-							<Emoji label="handshake" symbol="🤝" />
-						</button>
-					</div>
+			{props.me?.friends.some((friend: User) => { return friend.id === props.user?.id })
+				? <div>
+					<label>Supprimer des amis </label>
+					<button onClick={() => { remove(props.user!.username); }}>
+						<Emoji label="handshake" symbol="🤝" />
+					</button>
+				</div>
+				: <div>
+					<label>Ajouter en ami </label>
+					<button onClick={() => { invite(props.user!.username); }}>
+						<Emoji label="handshake" symbol="🤝" />
+					</button>
+				</div>
 			}
 			<div>
 				<label>Proposer une partie </label>
-				<button onClick={() => {  }}>
+				<button onClick={() => { }}>
 					<Emoji label="crossed_swords" symbol="⚔️" />
 				</button>
 			</div>
 			<div>
 				<label>Regarder sa partie </label>
-				<button onClick={() => {  }}>
+				<button onClick={() => { }}>
 					<Emoji label="tv" symbol="📺" />
 				</button>
 			</div>
-			{ props.me?.blacklist.some((friend: User) => { return friend.id === props.user?.id })
-				?	<div>
-						<label>Débloquer l'utilisateur </label>
-						<button onClick={() => { unblacklist(props.user!.username); }}>
-							<Emoji label="no_entry_sign" symbol="🚫" />
-						</button>
-					</div>
-				:	<div>
-						<label>Bloquer l'utilisateur </label>
-						<button onClick={() => { blacklist(props.user!.username); }}>
-							<Emoji label="no_entry_sign" symbol="🚫" />
-						</button>
-					</div>
+			{props.me?.blacklist.some((friend: User) => { return friend.id === props.user?.id })
+				? <div>
+					<label>Débloquer l'utilisateur </label>
+					<button onClick={() => { unblacklist(props.user!.username); }}>
+						<Emoji label="no_entry_sign" symbol="🚫" />
+					</button>
+				</div>
+				: <div>
+					<label>Bloquer l'utilisateur </label>
+					<button onClick={() => { blacklist(props.user!.username); }}>
+						<Emoji label="no_entry_sign" symbol="🚫" />
+					</button>
+				</div>
 			}
 			<div>
 				<label>Discussion privée </label>
-				<button onClick={() => {  }}>
+				<button onClick={() => { }}>
 					<Emoji label="speech_balloon" symbol="💬" />
 				</button>
 			</div>
@@ -59,7 +59,7 @@ function PlayerInteraction(props : { user : User | undefined, me : User | undefi
 	);
 }
 
-function PrintMatch(props : { username: string | undefined, match: Match }) {
+function PrintMatch(props: { username: string | undefined, match: Match }) {
 	if (props.match.winner.username === props.username) {
 		return (
 			<div className="winner">
@@ -79,46 +79,42 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 }
 
 function Profil(props: { user: User }) {
-	const [matchs, setMatchs] = React.useState<Match[]>([]);
-	const [avatar, setAvatar] = React.useState<string>();
+	let id = parseInt(useParams<{ id: string }>().id!);
+
 	const [observed, setObserved] = React.useState<User>();
+	const [matchs, setMatchs] = React.useState<Match[]>([]);
 	const [loading, setLoading] = React.useState<boolean>(true);
 	const [error, setError] = React.useState<string>("");
-	let id = parseInt(useParams<{ id: string }>().id!);
 	
 	React.useEffect(() => {
-		console.log(props.user);
-		const getUserMatchs = async () => {
-			setMatchs(await getMatchs(observed!.id));
-			setAvatar(observed!.avatarPath);
-		};
-		
-		getUserMatchs();
-	}, [observed]);
-
-	React.useEffect(() => {
-		console.log("mount Profil")
 		const getUser = async () => {
 			const user = await getUserById(id).catch((err) => {
 				setError(err);
 			});
 			setObserved(user!);
 			setLoading(false);
-	   }
-	   getUser();
+		}
+		getUser();
 	}, [id]);
-		
+	
+	React.useEffect(() => {
+		const getUserMatchs = async () => {
+			const match = await getMatchs(observed!.id).catch((err) => {
+				setError(err);
+			});
+			setMatchs(match!);
+		};
+		getUserMatchs();
+	}, [observed]);
 
-	
-	console.log(observed, props.user);
-	
 	if (error) {
-		return ( <div>{error}</div> );
+		return (<div>{error}</div>);
 	}
-	
+
 	if (loading) {
-		return ( <div>Chargement...</div> );
+		return (<div>Chargement...</div>);
 	}
+
 	const wins = observed!.winMatch.length;
 	const loses = observed!.loseMatch.length;
 	const games = matchs.length;
@@ -138,7 +134,7 @@ function Profil(props: { user: User }) {
 					<img src={"../" + observed!.avatarPath} alt="Logo du joueur" />
 					<p>{observed!.username}</p>
 				</div>
-				{ (props.user.id === observed!.id)
+				{(props.user.id === observed!.id)
 					? <></>
 					: <PlayerInteraction user={observed} me={props.user} />
 				}
@@ -154,7 +150,7 @@ function Profil(props: { user: User }) {
 					<div className='history'>
 						<h3>Historique des parties</h3>
 						<h4>Versus | Résultat</h4>
-						{matchs?.map((match: Match) => { return(<PrintMatch username={observed!.username} match={match} />); })}
+						{matchs?.map((match: Match) => { return (<PrintMatch username={observed!.username} match={match} />); })}
 					</div>
 				</div>
 			</div>

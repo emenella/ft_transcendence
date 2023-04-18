@@ -35,7 +35,7 @@ export function Activate2FA() {
 			setQRCode(tmp);
 		};
 		getQRCodeSrc();
-	}, []);
+	});
     
     if (!access_token) {
         navigate("/error");
