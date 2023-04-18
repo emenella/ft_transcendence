@@ -69,8 +69,7 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
                 game = newGame;
             }
         }
-        const handlefoundGame = (gameId: string) => {
-            gameId;
+        const handlefoundGame = () => {
             handlefound();
         };
         socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
