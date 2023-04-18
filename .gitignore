@@ -5,3 +5,6 @@
 
 # Vscode
 .eslintrc.js
+
+# Linux
+.nfs*
