@@ -4,7 +4,6 @@ import {GameService} from './Game.service';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
-import { HttpException } from "@nestjs/common";
 
 
 
@@ -109,15 +108,21 @@ export class GameGateway {
         }
     }
 
-    async authentificate(client: Socket): Promise<User> {
+    async authentificate(client: Socket): Promise<User | null> {
         if (client.handshake.headers.authorization) {
-            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-            let user = await this.userService.getUserByConnectionId(payload.connectionId);
-            if (user) {
-                return user;
+            try {
+                const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+                let user = await this.userService.getUserByConnectionId(payload.connectionId);
+                if (user) {
+                    return user;
+                }
+            } catch (e) {
+                client.disconnect();
+                return null;
             }
         }
         client.disconnect();
-        throw new HttpException('Unauthorized', 401);
+        return null;
+        
     }
 }

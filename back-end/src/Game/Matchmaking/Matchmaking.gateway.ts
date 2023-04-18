@@ -18,11 +18,10 @@ export class MatchmakingGateway{
     async handleConnection(@ConnectedSocket() client: Socket)
     {
         const user = await this.authentificate(client);
-        if (!user)
+        if (user)
         {
-            client.disconnect()
+            this.matchmakingService.addSocket(user, client);
         }
-        this.matchmakingService.addSocket(user, client);
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket)
@@ -34,7 +33,6 @@ export class MatchmakingGateway{
             this.matchmakingService.removeSocket(user);
         }
         client.disconnect();
-        this.matchmakingService.removeSocket(user);
     }
 
     @SubscribeMessage('matchmaking:join')
@@ -57,15 +55,20 @@ export class MatchmakingGateway{
         }
     }
 
-    async authentificate(client: Socket): Promise<User> {
+    async authentificate(client: Socket): Promise<User | null> {
         if (client.handshake.headers.authorization) {
-            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-            let user = await this.userService.getUserByConnectionId(payload.connectionId);
-            if (user) {
-                return user;
+            try {
+                const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+                let user = await this.userService.getUserByConnectionId(payload.connectionId);
+                if (user) {
+                    return user;
+                }
+            } catch (e) {
+                client.disconnect();
+                return null;
             }
         }
         client.disconnect();
-        throw new Error('Unauthorized');
+        return null;
     }
 }

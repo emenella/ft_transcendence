@@ -16,11 +16,11 @@ interface PongGameProps {
     user: User;
 }
 
+const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
 
 const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec, user }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
-    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
     let game: Game | null = null;
     
     useEffect(() => {
