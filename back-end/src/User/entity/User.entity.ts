@@ -4,7 +4,6 @@ import { Message } from '../../Chat/Message/Message.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
-import { Avatar } from './Avatar.entity';
 import { UserStatus } from '../service/User.service';
 
 @Entity()
@@ -16,8 +15,8 @@ export class User {
     @Column({unique: true, nullable: true})
     username: string;
 
-    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
-    avatar: Avatar;
+	@Column({ default: "avatars/stormtrooper.jpg" })
+	avatarPath: string;
 
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
@@ -36,7 +35,7 @@ export class User {
     winMatch: Match[];
 	
     @OneToMany(() => Match, match => match.loser, {cascade: true})
-    looseMatch: Match[];
+    loseMatch: Match[];
 
 	// float in 
 	@Column({default: 1000})

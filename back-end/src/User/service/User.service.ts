@@ -2,7 +2,6 @@ import { HttpException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
-import { Avatar } from "../entity/Avatar.entity";
 import { Match } from '../entity/Match.entity';
 import { Connection } from "../entity/Connection.entity";
 import { HistoryService } from "./Match.service";
@@ -14,7 +13,7 @@ export const enum UserStatus {
 	Inactive
 }
 
-const UserRelations: string[] = ["avatar", "connection", "winMatch", "looseMatch", "ownedChans", "relations", "messages", "friends", "friend_requests", "blacklist"]
+const UserRelations: string[] = ["connection", "winMatch", "loseMatch", "ownedChans", "relations", "messages", "friends", "friend_requests", "blacklist"]
 
 const UsernameMaxLength: number = 16;
 
@@ -23,8 +22,6 @@ export class UserService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly historyService: HistoryService) {}
 
 	async createUser(user: User, connection: Connection): Promise<User> {
-		user.avatar = new Avatar();
-		user.avatar.user = user;
 		user.connection = connection;
 		return await this.userRepository.save(user);
 	}
@@ -35,7 +32,7 @@ export class UserService {
 			throw new HttpException(`User with ID ${id} not found.`, 404);
 		if (updatedUser.username) userToUpdate.username = updatedUser.username;
 		if (updatedUser.connection) userToUpdate.connection = updatedUser.connection;
-		if (updatedUser.avatar) userToUpdate.avatar = updatedUser.avatar;
+		if (updatedUser.avatarPath) userToUpdate.avatarPath = updatedUser.avatarPath;
 		if (updatedUser.elo) userToUpdate.elo = updatedUser.elo;
 		return await this.userRepository.save(userToUpdate);
 	}
@@ -101,7 +98,7 @@ export class UserService {
 		let user = await this.userRepository.findOne({ where: { id: id }, relations: UserRelations });
 		if (!user)
 			throw new HttpException(`User with ID ${id} not found.`, 404);
-		user.avatar.path = file.path;
+		user.avatarPath = file.path;
 		await this.userRepository.save(user);
 		return file.path;
 	}
@@ -113,13 +110,15 @@ export class UserService {
 
 	//~~FRIENDS
 	async inviteFriend(sender: User, receiver: User): Promise<void> {
-		if (sender.friends.some(f => f.id === receiver.id))
-			throw new HttpException(`User with ID ${receiver.id} is already a friend of User with ID ${sender.id}.`, 400);
-		else if (receiver.friend_requests.some(f => f.id === sender.id))
+		if (sender.id === receiver.id)
+			throw new HttpException(`You cannot send friend request to yourself, go touch grass.`, 400);
+		else if (sender.friends.some((f) => { return f.id === receiver.id }))
+			throw new HttpException(`User with ID ${receiver.id} is already friend with User with ID ${sender.id}.`, 400);
+		else if (receiver.friend_requests.some((f) => { return f.id === sender.id }))
 			throw new HttpException(`User with ID ${receiver.id} already has pending friend request from User with ID ${sender.id}.`, 400);
-		else if (receiver.blacklist.some(f => f.id === sender.id))
+		else if (receiver.blacklist.some((f) => { return f.id === sender.id }))
 			throw new HttpException(`User with ID ${receiver.id} has blocked User with ID ${sender.id}.`, 400);
-		else if (sender.friend_requests.some(f => f.id === receiver.id))
+		else if (sender.friend_requests.some((f) => { return f.id === receiver.id }))
 			this.acceptFriend(sender, receiver);
 		else {
 			receiver.friend_requests.push(sender);
@@ -130,9 +129,9 @@ export class UserService {
 	}
 
 	async acceptFriend(sender: User, receiver: User): Promise<void> {
-		if (sender.friends.some(f => f.id === receiver.id))
-			throw new HttpException(`User with ID ${receiver.id} is already a friend of User with ID ${sender.id}.`, 400);
-		else if (!sender.friend_requests.some(f => f.id === receiver.id))
+		if (sender.friends.some((f) => { return f.id === receiver.id }))
+			throw new HttpException(`User with ID ${receiver.id} is already friend with User with ID ${sender.id}.`, 400);
+		else if (!sender.friend_requests.some((f) => { return f.id === receiver.id }))
 			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
 		else {
 			sender.friend_requests.splice(sender.friends.indexOf(receiver), 1)
@@ -146,7 +145,7 @@ export class UserService {
 	}
 
 	async denyFriend(receiver: User, sender: User): Promise<void> {
-		if (!receiver.friend_requests.some(f => f.id === sender.id))
+		if (!receiver.friend_requests.some((f) => { return f.id === sender.id }))
 			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
 		else {
 			receiver.friend_requests.splice(receiver.friends.indexOf(sender), 1);
@@ -155,8 +154,8 @@ export class UserService {
 	}
 
 	async removeFriend(user: User, friend: User): Promise<void> {
-		const userIndex = friend.friends.findIndex(f => f.id === user.id);
-		const friendIndex = user.friends.findIndex(f => f.id === friend.id);
+		const userIndex = friend.friends.findIndex((f) => { return f.id === user.id });
+		const friendIndex = user.friends.findIndex((f) => { return f.id === friend.id });
 		if (userIndex === -1 || friendIndex === -1) {
 			throw new HttpException(`User with ID ${friend.id} is not friend with User with ID ${user.id}.`, 400);
 		}
@@ -170,15 +169,15 @@ export class UserService {
 
 	//~~ BLACKLIST
 	async addBlacklist(user: User, userToBlock: User): Promise<void> {
-		if (user.blacklist.some(f => f.id === userToBlock.id))
+		if (user.blacklist.some((f) => { return f.id === userToBlock.id }))
 			throw new HttpException(`User with ID ${userToBlock.id} is already blocked by User with ID ${user.id}.`, 400);
 		else {
 			user.blacklist.push(userToBlock);
 			user.blacklist.sort();
-			const userIndexF = userToBlock.friends.findIndex(f => f.id === user.id);
-			const userToBlockIndexF = user.friends.findIndex(f => f.id === userToBlock.id);
-			const userIndexR = userToBlock.friend_requests.findIndex(f => f.id === user.id);
-			const userToBlockIndexR = user.friend_requests.findIndex(f => f.id === userToBlock.id);
+			const userIndexF = userToBlock.friends.findIndex((f) => { return f.id === user.id });
+			const userToBlockIndexF = user.friends.findIndex((f) => { return f.id === userToBlock.id });
+			const userIndexR = userToBlock.friend_requests.findIndex((f) => { return f.id === user.id });
+			const userToBlockIndexR = user.friend_requests.findIndex((f) => { return f.id === userToBlock.id });
 
 			if (userIndexF != -1 && userToBlockIndexF != -1) {
 				user.friends.splice(userToBlockIndexF, 1);
@@ -191,11 +190,12 @@ export class UserService {
 					user.friend_requests.splice(userToBlockIndexR, 1);
 			}
 			await this.userRepository.save(user);
+			await this.userRepository.save(userToBlock);
 		}
 	}
 
 	async removeBlacklist(user: User, blockedUser: User): Promise<void> {
-		if (!user.blacklist.some(f => f.id === blockedUser.id))
+		if (!user.blacklist.some((f) => { return f.id === blockedUser.id }))
 			throw new HttpException(`User with ID ${blockedUser.id} is not blocked by User with ID ${user.id}.`, 400);
 		else {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);

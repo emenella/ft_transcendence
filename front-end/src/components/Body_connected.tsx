@@ -4,11 +4,10 @@ import './Body_connected.css';
 import Matchmaking from './Game/Matchmaking';
 import Profil from './Profil';
 import AccountManagement from './AccountManagement';
-import { getMe } from '../api/User';
+import UserSidebar from './UserSidebar';
 import Chat from '../chat/Chat';
-import { User, Avatar } from '../utils/backend_interface';
-import Emoji from './Emoji';
-import { accept, deny } from '../utils/friends_system';
+import { User } from '../utils/backend_interface';
+import PongGame from './Game/PongGame';
 
 function ChatSidebar() {
 	return (
@@ -31,83 +30,6 @@ function ChatSidebar() {
 	);
 }
 
-function UserSidebar() {
-	const [user, setUser] = React.useState<User>();
-	React.useEffect(() => {
-		const getUser = async () => {
-			setUser(await getMe());
-		};
-		getUser();
-	}, []);
-
-	const [friends, setFriends] = React.useState<User[]>();
-	React.useEffect(() => {
-		setFriends(user?.friends);
-	}, []);
-
-	const listFriends = friends?.map((friend: User) => {
-		const avatar : Avatar = friend?.avatar;
-
-		return(
-			<tr>
-				<td><img src={avatar?.path} /></td>
-				<td>
-					<div className='friendStatus'>
-						<p>{friend.username}</p>
-						{friend.isPlaying
-							? <p>En partie <Emoji label="video_game" symbol="🎮" /></p>
-							: (
-								friend.isConnected
-								? <p>En ligne <Emoji label="green_circle" symbol="🟢" /></p>
-								: <p>Hors ligne <Emoji label="white_circle" symbol="⚪" /></p>
-							)
-						}
-					</div>
-				</td>
-			</tr>
-		)
-	}
-	);
-
-	const [friendsInvites, setFriendsInvite] = React.useState<User[]>();
-	React.useEffect(() => {
-		setFriendsInvite(user?.friend_requests);
-	}, []);
-
-	const listFriendsInvite = friendsInvites?.map((friend: User) => {
-		const avatar : Avatar = friend?.avatar;
-
-		return(
-			<div>
-				<tr>Demande d'ami de :</tr>
-				<tr>
-					<td><img src={avatar?.path} /></td>
-					<td>{friend.username}</td>
-				</tr>
-				<tr>
-					<button onClick={() => accept(friend.username)}>Accepter <Emoji label="check_mark" symbol="✔️" /></button>
-					ou
-					<button onClick={() => deny(friend.username)}>Refuser <Emoji label="cross_mark" symbol="❌" /></button>
-				</tr>
-			</div>
-		)
-	}
-	);
-
-	return (
-		<div className='userSidebar'>
-			<table>
-				<thead>
-					<tr>
-						<th scope='row'>Amis</th>
-					</tr>
-				</thead>
-				<tbody>{listFriends}{listFriendsInvite}</tbody>
-			</table>
-		</div>
-	);
-}
-
 function ChatFront() {
 	return (
 		<div className='chat'>
@@ -125,19 +47,18 @@ function ChatFront() {
 	);
 }
 
-function BodyConnected({ user }: { user: User }) {
 
-	console.log(user);
-
+function BodyConnected(props: { user: User }) {
 	return (
 		<div className="connected">
 			<ChatSidebar />
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking user={user} />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/profil" element={<Profil user={user!} />} />
+						<Route path="/" element={<Matchmaking user={props.user} />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
+						<Route path="/profil/:id" element={<Profil user={props.user} />} />
+						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user} handlefound={() => {}} />} />
 					</Routes>
 				</div>
 				<div>

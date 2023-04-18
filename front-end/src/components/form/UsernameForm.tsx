@@ -1,8 +1,9 @@
 import React, { ChangeEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import "./Form.css";
-import { setUsername } from "../../api/User";
+import { setUsername, changeUserStatus } from "../../api/User";
 import { UsernameFormProps, UsernameFormState } from "../../utils/interface";
+import { UserStatus } from "../../utils/backend_interface";
 
 class UsernameForm extends React.Component<UsernameFormProps, UsernameFormState> {
 	state = {
@@ -13,12 +14,12 @@ class UsernameForm extends React.Component<UsernameFormProps, UsernameFormState>
 		super(props);
 		this.setUsername = this.setUsername.bind(this);
 		this.handleClick = this.handleClick.bind(this);
-
 	}
 
 	async handleClick() {
 		const req = await setUsername(this.state.username);
 		if (req?.status === 201) {
+			changeUserStatus(UserStatus.Connected);
 			this.props.navigate("/");
 		}
 		else {

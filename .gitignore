@@ -6,5 +6,5 @@
 # Vscode
 .eslintrc.js
 
-# Other
-package-lock.json
+# Linux
+.nfs*

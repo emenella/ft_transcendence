@@ -7,21 +7,16 @@
 
 .flexbox {
     display: flex;
-    /* flex-wrap: wrap; */
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 20px;
 }
 
 .flexbox>div {
-    margin: 5px;
-    /* min-width: 500px;
-    max-width: 100px; */
+    flex-basis: 24%;
 }
 
 .profilPhoto {
     border-radius: 50%;
     width: 200px;
-}
-
-.profilPhotoErwan {
-    clip-path: ellipse(33% 50%);
-    width: 300px;
 }

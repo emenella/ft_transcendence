@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
 import { io } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
-import { User } from './engine/interfaces/ft_pong.interface';
+import { User } from '../../utils/backend_interface';
 
 const WebGame = url + '/game';
 const WebMatchmaking = url + '/matchmaking';
@@ -10,15 +10,14 @@ const WebMatchmaking = url + '/matchmaking';
 interface PongGameProps {
     width: number;
     height: number;
-    token: string;
     isQueue: boolean;
-    spec: string | null;
+    spec?: string | null;
     user: User;
     handlefound: () => void;
 }
 
 
-const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec, user, handlefound }) => {
+const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
     const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
@@ -63,27 +62,26 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
         };
         function setGame() {
             const ctx = canvasRef.current?.getContext('2d');
-            if (!game && user && ctx) {
-                console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
-                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
+            if (!game && props.user && ctx) {
+                console.log('Game created' + socketGame, socketMatchmaking, props.user, ctx);
+                const newGame = new Game(socketGame, socketMatchmaking, props.user, ctx);
                 game = newGame;
             }
         }
-        const handlefoundGame = (gameId: string) => {
-            gameId;
-            handlefound();
+        const handlefoundGame = () => {
+            props.handlefound();
         };
         socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
     
         setGame();
-        if (spec === null) searchGame();
-        if (isQueue) joinQueue();
+        if (props.spec === null) searchGame();
+        if (props.isQueue) joinQueue();
         else leaveQueue();
         
-        if (spec) {
-            game?.spectateGame(spec);
+        if (props.spec) {
+            game?.spectateGame(props.spec);
         }
-    }, [isQueue, spec]);
+    }, [props.isQueue, props.spec]);
     
     
 
@@ -91,8 +89,8 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
             <canvas
                 ref={canvasRef}
-                width={width}
-                height={height}
+                width={props.width}
+                height={props.height}
                 style={{ width: '100%', height: '100%' }}
             />
         </div>

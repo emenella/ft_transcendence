@@ -3,30 +3,25 @@ import { Toaster } from 'react-hot-toast';
 import './App.css';
 import logo from './assets/black_logo.png';
 import Footer from './components/Footer';
-import HeaderConnected from './components/Header_connected';
-import HeaderNotConnected from './components/Header_not_connected';
+import { HeaderConnected, HeaderNotConnected } from './components/Headers';
 import BodyNotConnected from './components/Body_not_connected';
 import BodyConnected from './components/Body_connected';
-import { getToken, setToken } from './api/Api';
-import { getMe } from './api/User';
-import { User } from './utils/backend_interface';
+import { getToken } from './api/Api';
+import { getMe, changeUserStatus } from './api/User';
+import { User, UserStatus } from './utils/backend_interface';
 import { firstConnexion } from './api/Auth';
 
 function App() {
 	const [hasToken, setHasToken] = useState(!!getToken());
 	const [user, setUser] = useState<User>();
 	const [loading, setLoading] = useState(true);
-  	const [error, setError] = useState<any>(null);
+	const [error, setError] = useState<any>(null);
 	const [url, setUrl] = useState<string | null>(null);
 
 	function handleLogout() {
 		localStorage.removeItem('token');
+		changeUserStatus(UserStatus.Disconnected);
 		setHasToken(false);
-	}
-
-	function handleLogin(token: string) {
-		setToken(token);
-		setHasToken(true);
 	}
 
 	async function fetchUser() {
@@ -54,7 +49,6 @@ function App() {
 
 	React.useEffect(() => {
 		if (hasToken) {
-			console.log('fetchUser');
 			fetchUser();
 		}
 		else {
@@ -64,11 +58,11 @@ function App() {
 
 	if (loading) {
 		return <p>Chargement en cours...</p>;
-	  }
-	
+	}
+
 	if (error) {
 		return <p>Erreur : {error.message}</p>;
-	  }
+	}
 
 	return (
 		<div>
@@ -82,9 +76,9 @@ function App() {
 				</div>
 				<div>
 					{hasToken ? (
-						<HeaderConnected logout={handleLogout} />
+						<HeaderConnected logout={handleLogout} user={user!} />
 					) : (
-						<HeaderNotConnected login={handleLogin} url={url!} />
+						<HeaderNotConnected url={url!} />
 					)}
 				</div>
 			</div>

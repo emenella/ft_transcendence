@@ -2,6 +2,8 @@ import React, { ChangeEvent } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import "./Form.css";
 import { submitCode2FA } from "../../api/Auth";
+import { changeUserStatus } from "../../api/User";
+import { UserStatus } from "../../utils/backend_interface";
 import { ConnexionProps } from "../../utils/interface";
 
 class Connexion extends React.Component<ConnexionProps, { secret: string }> {
@@ -19,6 +21,7 @@ class Connexion extends React.Component<ConnexionProps, { secret: string }> {
 		const token = await submitCode2FA(this.state.secret, this.props.access_code);
 		if (token) {
 			localStorage.setItem("token", token);
+			changeUserStatus(UserStatus.Connected);
 			this.props.navigate("/");
 		}
 		else {

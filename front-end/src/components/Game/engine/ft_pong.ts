@@ -4,7 +4,7 @@ import { Paddle } from "./Paddle";
 import { Socket } from "socket.io-client";
 import { PlayerClient } from "./playerClient";
 import { PlayerRemote } from "./playerRemote";
-import { User } from "./interfaces/ft_pong.interface";
+import { User } from "../../../utils/backend_interface";
 import { Setup, GameInfo, Bind, GameSettings } from "./interfaces/ft_pong.interface";
 
 export class ft_pong {

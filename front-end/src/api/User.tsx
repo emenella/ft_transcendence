@@ -40,7 +40,17 @@ export async function delete2FA() {
 
 export async function getUserById(id: number) {
     try {
-        const res = await axios.get('api/users/id/?id=' + id, { headers: authHeader() });
+        const res = await axios.get<User>('api/users/id/?id=' + id, { headers: authHeader() });
+        return res.data;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function getUserByUsername(username: string) {
+    try {
+        const res = await axios.get('api/users/username/?username=' + username, { headers: authHeader() });
         return res.data;
     }
     catch (e) {
@@ -61,7 +71,7 @@ export async function getMatchs(id: number) {
 
 export async function inviteFriend(username : string) {
     try {
-        return await axios.post('api/users/friends/invite?username=' + username, { headers: authHeader() });
+        return await axios.post('api/users/friends/invite', { username: username }, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -70,7 +80,7 @@ export async function inviteFriend(username : string) {
 
 export async function removeFriend(username : string) {
     try {
-        return await axios.delete('api/users/friends/remove?username=' + username, { headers: authHeader() });
+        return await axios.delete('api/users/friends/remove', { headers: authHeader(), data : { username: username } });
     }
     catch (e) {
         console.log(e);
@@ -79,7 +89,7 @@ export async function removeFriend(username : string) {
 
 export async function acceptFriend(username : string) {
     try {
-        return await axios.post('api/users/friends/accept?username=' + username, { headers: authHeader() });
+        return await axios.post('api/users/friends/accept', { username: username }, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -88,16 +98,16 @@ export async function acceptFriend(username : string) {
 
 export async function denyFriend(username : string) {
     try {
-        return await axios.delete('api/users/friends/deny?username=' + username, { headers: authHeader() });
+        return await axios.delete('api/users/friends/deny', { headers: authHeader(), data : { username: username } });
     }
     catch (e) {
         console.log(e);
     }
 }
 
-export async function addToBlacklist(username : string) {
+export async function addFromBlacklist(username : string) {
     try {
-        return await axios.delete('api/users/blacklist/add?username=' + username, { headers: authHeader() });
+        return await axios.post('api/users/blacklist/add', { username: username }, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -106,7 +116,16 @@ export async function addToBlacklist(username : string) {
 
 export async function removeFromBlacklist(username : string) {
     try {
-        return await axios.delete('api/users/blacklist/remove?username=' + username, { headers: authHeader() });
+        return await axios.delete('api/users/blacklist/remove', { headers: authHeader(), data : { username: username } });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function changeUserStatus(status : number) {
+    try {
+        return await axios.post('api/users/status/?status=' + status, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
