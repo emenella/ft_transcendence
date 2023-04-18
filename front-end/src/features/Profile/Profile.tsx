@@ -107,16 +107,15 @@ function Profile({ me }: { me: User }) {
 				{ (me.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
 				<div className='player-info'>
 					<div className='statistics'>
-						<h3>Statistiques du joueur</h3>
-						<p>Nombre de parties jouées : {games}</p>
-						<p>Nombre de parties gagnées : {wins}</p>
-						<p>Nombre de parties perdues : {loses}</p>
-						<p>Win rate : {winrate}%</p>
+						<h3>Statistiques</h3>
+						<p>Parties jouées : {games}</p>
+						<p>Parties gagnées : {wins}</p>
+						<p>Parties perdues : {loses}</p>
+						<p>Ratio de victoire : {winrate}%</p>
 						<p>Elo : {user?.elo}</p>
 					</div>
 					<div className='history'>
-						<h3>Historique des parties</h3>
-						<h4>Versus | Résultat</h4>
+						<h3>Historique</h3>
 						{ matchs?.map((match: Match) => { return (<PrintMatch username={user?.username} match={match} />); }) }
 					</div>
 				</div>

@@ -16,11 +16,14 @@ function AccountManagement({ user }: { user: User }) {
         e.preventDefault();
         if (username !== '') {
             await changeUsername(username);
+			user.username = username;
+			setUsername('');
         }
         if (image) {
             const formData = new FormData();
             formData.append('file', image);
             await uploadAvatar(formData);
+			setImage(undefined);
         }
     };
 
@@ -53,12 +56,12 @@ function AccountManagement({ user }: { user: User }) {
             <div className="account-management">
                 <h2>Gestion du compte</h2>
                 <form onSubmit={handleSubmit}>
-                    <label>Changer de pseudo : </label>{' '}
-                    <input type="text" onChange={handleUsernameChange}></input>
+                    <label>Pseudonyme : </label>{' '}
+                    <input type="text" placeholder={user.username} value={username} onChange={handleUsernameChange}></input>
                     <br />
                     <br />
-                    <label>Changer de photo de profil : </label>{' '}
-                    <input type="file" accept=".PNG,.JPG,.GIF" onChange={handleImageChange} />
+                    <label>Avatar : </label>{' '}
+                    <input type="file" accept=".PNG,.JPG,.JPEG,.GIF" onChange={handleImageChange} />
                     <br />
                     <br />
                     <button type="submit">Valider</button>
