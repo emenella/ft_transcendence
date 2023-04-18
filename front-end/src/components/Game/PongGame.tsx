@@ -14,13 +14,14 @@ interface PongGameProps {
     isQueue: boolean;
     spec: string | null;
     user: User;
+    handlefound: () => void;
 }
 
-const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
-const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
 
-const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec, user }) => {
+const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec, user, handlefound }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
     let game: Game | null = null;
     
     useEffect(() => {
@@ -68,6 +69,11 @@ const PongGame: React.FC<PongGameProps> = ({ width, height, token, isQueue, spec
                 game = newGame;
             }
         }
+        const handlefoundGame = (gameId: string) => {
+            gameId;
+            handlefound();
+        };
+        socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
     
         setGame();
         if (spec === null) searchGame();
