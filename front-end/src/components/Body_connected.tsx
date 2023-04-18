@@ -7,6 +7,7 @@ import AccountManagement from './AccountManagement';
 import UserSidebar from './UserSidebar';
 import Chat from '../chat/Chat';
 import { User } from '../utils/backend_interface';
+import PongGame from './Game/PongGame';
 
 function ChatSidebar() {
 	return (
@@ -46,16 +47,19 @@ function ChatFront() {
 	);
 }
 
-function BodyConnected({ user }: { user: User }) {
+
+function BodyConnected(props: { user: User }) {
+	console.log(props);
 	return (
 		<div className="connected">
 			<ChatSidebar />
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking user={user} />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={user!} />} />
-						<Route path="/profil" element={<Profil user={user!} />} />
+						<Route path="/" element={<Matchmaking user={props.user} />} />
+						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
+						<Route path="/profil/:id" element={<Profil user={props.user} />} />
+						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user}/>} />
 					</Routes>
 				</div>
 				<div>

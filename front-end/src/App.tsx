@@ -65,6 +65,7 @@ function App() {
 		return <p>Erreur : {error.message}</p>;
 	  }
 
+	console.log(user + " APP");
 	return (
 		<div>
 			<Toaster />
@@ -77,7 +78,7 @@ function App() {
 				</div>
 				<div>
 					{hasToken ? (
-						<HeaderConnected logout={handleLogout} />
+						<HeaderConnected logout={handleLogout} user={user!} />
 					) : (
 						<HeaderNotConnected url={url!} />
 					)}

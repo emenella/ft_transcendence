@@ -81,18 +81,46 @@ function PrintMatch(props : { username: string | undefined, match: Match }) {
 function Profil(props: { user: User }) {
 	const [matchs, setMatchs] = React.useState<Match[]>([]);
 	const [avatar, setAvatar] = React.useState<string>();
+	const [observed, setObserved] = React.useState<User>();
+	const [loading, setLoading] = React.useState<boolean>(true);
+	const [error, setError] = React.useState<string>("");
+	let id = parseInt(useParams<{ id: string }>().id!);
 	
 	React.useEffect(() => {
 		console.log(props.user);
 		const getUserMatchs = async () => {
-			setMatchs(await getMatchs(props.user.id));
-			setAvatar(props.user.avatarPath);
+			setMatchs(await getMatchs(observed!.id));
+			setAvatar(observed!.avatarPath);
 		};
+		
 		getUserMatchs();
-	}, []);
+	}, [observed]);
 
-	const wins = props.user.winMatch.length;
-	const loses = props.user.loseMatch.length;
+	React.useEffect(() => {
+		console.log("mount Profil")
+		const getUser = async () => {
+			const user = await getUserById(id).catch((err) => {
+				setError(err);
+			});
+			setObserved(user!);
+			setLoading(false);
+	   }
+	   getUser();
+	}, [id]);
+		
+
+	
+	console.log(observed, props.user);
+	
+	if (error) {
+		return ( <div>{error}</div> );
+	}
+	
+	if (loading) {
+		return ( <div>Chargement...</div> );
+	}
+	const wins = observed!.winMatch.length;
+	const loses = observed!.loseMatch.length;
 	const games = matchs.length;
 	const winrate = ((wins! / games!) * 100) || 0;
 
@@ -101,20 +129,18 @@ function Profil(props: { user: User }) {
 		textDecoration: "none"
 	}
 
-	console.log(matchs, avatar);
-
 	return (
 		<div>
 			<Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
-					<img src={"../" + props.user.avatarPath} alt="Logo du joueur" />
-					<h3>{props.user.username}</h3>
+					<img src={"../" + observed!.avatarPath} alt="Logo du joueur" />
+					<p>{observed!.username}</p>
 				</div>
-				{ (props.user.id === props.user.id)
+				{ (props.user.id === observed!.id)
 					? <></>
-					: <PlayerInteraction user={props.user} me={props.user} />
+					: <PlayerInteraction user={observed} me={props.user} />
 				}
 				<div className='player-info'>
 					<div className='statistics'>
@@ -123,12 +149,12 @@ function Profil(props: { user: User }) {
 						<p>Nombre de parties gagnées : {wins}</p>
 						<p>Nombre de parties perdues : {loses}</p>
 						<p>Win rate : {winrate}%</p>
-						<p>Elo : {props.user.elo}</p>
+						<p>Elo : {observed!.elo}</p>
 					</div>
 					<div className='history'>
 						<h3>Historique des parties</h3>
 						<h4>Versus | Résultat</h4>
-						{matchs?.map((match: Match) => { return(<PrintMatch username={props.user.username} match={match} />); })}
+						{matchs?.map((match: Match) => { return(<PrintMatch username={observed!.username} match={match} />); })}
 					</div>
 				</div>
 			</div>

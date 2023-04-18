@@ -24,7 +24,6 @@ const Matchmaking = ({user} : {user: User} ) => {
           <PongGame
             width={800}
             height={600}
-            token={getToken() as string}
             isQueue={isSearching}
             spec={null}
             user={user}
