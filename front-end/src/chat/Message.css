@@ -1,11 +1,22 @@
-.message>div:nth-child(even) {
-    background: #91D2CC;
+.ligne {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
-.message>div:nth-child(odd) {
-    background: #DAF0EE;
+
+.header {
+    display: block;
+    white-space: nowrap;
+    margin-left: 1px;
+}
+
+.content {
+    background: #91D2CC;
+    border-radius: 5px;
 }
 
 .message {
+    white-space: pre-line;
     height: 15vh;
     overflow-x: hidden;
     overflow-y: auto;
