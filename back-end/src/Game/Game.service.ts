@@ -40,7 +40,7 @@ export class GameService {
         ball: {
             color: "green",
             radius: 20,
-            speed: 10,
+            speed: 15,
             maxSpeed: 20
         },
     };

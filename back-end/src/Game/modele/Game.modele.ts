@@ -40,7 +40,7 @@ export class Game {
                 this.sendGameInfo();
                 this.sendGameInfoToSpectators();
             }
-            setTimeout(() => this.loop(), 1000/60);
+            setTimeout(() => this.loop(), 1000/128);
         }
     }
     
