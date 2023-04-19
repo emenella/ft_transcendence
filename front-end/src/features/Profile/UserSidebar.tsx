@@ -15,8 +15,6 @@ function renderSwitch(num: number) {
             return (<p>En ligne <Emoji label="green_circle" symbol="🟢" /></p>);
         case 2:
             return (<p>En partie <Emoji label="video_game" symbol="🔵" /></p>);
-        // case 3:
-        // 	return ( <p>Inactif <Emoji label="yellow_circle" symbol="🟡" /></p> );
     }
 };
 

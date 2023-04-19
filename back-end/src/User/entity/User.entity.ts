@@ -5,9 +5,12 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany
 import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
 import { UserStatus } from '../service/User.service';
+import { Socket } from 'socket.io';
 
 @Entity()
 export class User {
+    socket: Socket | null = null;
+
 	//~~ INFO
     @PrimaryGeneratedColumn()
     id: number;

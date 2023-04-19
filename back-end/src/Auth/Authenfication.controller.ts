@@ -1,4 +1,4 @@
-import { Get, Post, Controller, UseGuards, Req, Res, Delete, HttpException } from '@nestjs/common';
+import { Inject, forwardRef, Get, Post, Controller, UseGuards, Req, Res, Delete, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthenticationService } from './Authenfication.service';
 import { FortyTwoGuard } from './guard/42.guard';
@@ -13,7 +13,7 @@ export class AuthenticationController {
 
     constructor(private readonly authenticationService: AuthenticationService,
 				private readonly connectionService: ConnectionService,
-				private readonly userService: UserService) {}
+				@Inject(forwardRef(() => UserService)) private readonly userService: UserService) {}
     
     @Public()
     @Get('')

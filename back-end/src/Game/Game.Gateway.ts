@@ -15,7 +15,6 @@ export class GameGateway {
     constructor(private readonly gameService: GameService, private readonly authService: AuthenticationService, private readonly userService: UserService) {}
 
     afterInit() {
-        console.log('GameGateway initialized');
     }
 
     async handleConnection(@ConnectedSocket() client: Socket) {

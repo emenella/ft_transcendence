@@ -41,7 +41,7 @@ export class Ball
         {
             if (this.posY + this.radius > player.paddle.getPosY() - player.paddle.getLength() && this.posY - this.radius < player.paddle.getPosY() + player.paddle.getLength())
             {
-                this.veloY = (player.paddle.getPosY() - this.posY) / player.paddle.getLength() * 10;
+                this.veloY = -((player.paddle.getPosY() - this.posY) / player.paddle.getLength() * 10);
                 this.veloX = -this.veloX;
                 this.accelerate();
                 return true;
