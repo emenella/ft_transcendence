@@ -1,4 +1,10 @@
 import { createContext } from "react";
 import { User } from "./backend_interface";
+import { Dispatch, SetStateAction } from "react";
 
-export const UserContext = createContext<User | undefined>(undefined);
+export interface UserContextType {
+	user: User | undefined;
+	setUser: Dispatch<SetStateAction<User | undefined>>;
+}
+
+export const UserContext = createContext<UserContextType | undefined>(undefined);

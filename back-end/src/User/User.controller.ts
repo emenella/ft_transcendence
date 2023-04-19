@@ -53,12 +53,6 @@ export class UserController {
 		return await this.userService.uploadAvatar(user.id, file);
 	}
 
-	@Post("/status")
-	async updateStatus(@Req() req: Request, @Query('status') status: number): Promise<void> {
-		const user: User = await this.getMe(req);
-		this.userService.changeStatus(user, status);
-	}
-
 	//~~FRIENDS
 	@Post("/friends/invite")
 	async inviteFriend(@Req() req: Request, @Body('username') username: string): Promise<void> {

@@ -11,6 +11,7 @@ import { getMe } from '../api/User';
 import { User } from '../utils/backend_interface';
 import logo from '../assets/black_logo.png';
 import { UserContext } from '../utils/UserContext';
+import { Dispatch, SetStateAction } from "react";
 
 export default function Spectate() {
     const navigate = useNavigate();
@@ -63,7 +64,7 @@ export default function Spectate() {
 	return (
 		<div>
 			<Toaster />
-			<UserContext.Provider value={user}>
+			<UserContext.Provider value={{ user, setUser }}>
 				<div className='flex-container'>
 					<div>
 						<img src={logo} alt='Logo du site' />

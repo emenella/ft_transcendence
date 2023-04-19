@@ -45,7 +45,8 @@ function PrintMatch({ username, match }: { username: string | undefined, match: 
 }
 
 function Profile() {
-	const me = useContext(UserContext) as User;
+	const userContext = useContext(UserContext);
+    const me = userContext?.user;
 
 	let id = parseInt(useParams().id!);
 	
@@ -106,7 +107,7 @@ function Profile() {
 					<img src={"../../" + user?.avatarPath} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
-				{ (me.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
+				{ (me?.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
 				<div className='player-info'>
 					<div className='statistics'>
 						<h3>Statistiques</h3>

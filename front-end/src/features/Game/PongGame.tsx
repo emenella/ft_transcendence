@@ -19,7 +19,8 @@ interface PongGameProps {
 
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
-    const user = useContext(UserContext) as User;
+    const userContext = useContext(UserContext);
+    const user = userContext?.user;
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
