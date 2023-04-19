@@ -39,7 +39,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 />
             </label>
             </div>
-            <button onClick={() => createChan(value, invitOnly, password)}>Create Channel</button>
+            <button className="button" onClick={() => createChan(value, invitOnly, password)}>Create Channel</button>
         </>
     )
 }

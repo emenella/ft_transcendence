@@ -21,3 +21,10 @@
     overflow-x: hidden;
     overflow-y: auto;
 }
+
+.button {
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #009688;
+    background: #B6E1DD;
+}

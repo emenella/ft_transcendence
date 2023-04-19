@@ -1,5 +1,6 @@
 import React, { useEffect , useState } from "react";
 import { msg } from "./interfaceChat";
+import "./Message.css"
 
 export default function ToggleChanInput(props : {toggleChan: (value : string) => void, leaveChan: (chan : string) => void, chans : Map<string, msg[]>, activeChan: string}) {
     const [value, setValue] = useState(props.activeChan);
@@ -33,8 +34,8 @@ export default function ToggleChanInput(props : {toggleChan: (value : string) =>
             >
             {chanJoined.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
-            <button onClick={() => props.toggleChan(value)}>Select Channel</button>
-            <button onClick={() => {props.leaveChan(value); setValue(chanJoined[0])}}>Leave Channel</button>
+            <div><button className="button" onClick={() => props.toggleChan(value)}>Select Channel</button></div>
+            <div><button className="button" onClick={() => {props.leaveChan(value); setValue(chanJoined[0])}}>Leave Channel</button></div>
         </>
     )
 }

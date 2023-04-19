@@ -43,7 +43,7 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
                 placeholder="password (optional)"
                 value={password}
             />
-            <button onClick={() => props.joinChan(value, password)}>Join Channel</button>
+            <button className="button" onClick={() => props.joinChan(value, password)}>Join Channel</button>
         </>
     )
 }

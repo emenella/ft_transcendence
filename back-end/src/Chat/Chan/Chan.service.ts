@@ -224,27 +224,26 @@ export class ChanService {
 		const chan = await this.getChanById(chanId);
 		
 		if (chan === undefined || chan === null)
-		return "No such chan !";
+			return "No such chan !";
 		if (chan.isDm === true)
 			return ("You can't leave dm chan !");
 			
-			const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
-			where : { chan: { id : chan.id }, user : { id : userId} } })
-			if (ret === undefined || ret === null)
-		    return ("your are not in chan");
-			console.log("ret = ");
-			console.log(ret);
+		const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
+					where : { chan: { id : chan.id }, user : { id : userId} } })
+		if (ret === undefined || ret === null)
+			return ("your are not in chan");
 			
-			await this.chanRelRepo.remove(ret);
+		await this.chanRelRepo.remove(ret);
+
 		const rels = await this.chanRelRepo.find({ relations : ["chan"],
 			        where : { chan : { id : chan.id}, ban_expire: undefined }});
 
 		if (rels.length === 0) {
-			// await this.chanRelRepo.createQueryBuilder()
-			// 	.relation("chan")
-			// 	.of({id: chan.id})
-			// 	.delete()
-			// 	.execute();
+			const banRels : RelationTable[] = await this.chanRelRepo.find({ relations : ["chan"],
+					where : { chan : { id : chan.id}}});
+			banRels.forEach((rel) => {
+				this.chanRelRepo.remove(rel)
+			})
 			
 			const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
 			const messagesIds : number[] = [];
@@ -255,6 +254,7 @@ export class ChanService {
 				await this.messageService.deleteMessage(id);
 			})
 			await this.chanRepo.remove(chan);
+			return (undefined);
 		}
 		else if (userId === chan.ownerId) {
 			let newOwner : User;
@@ -280,7 +280,7 @@ export class ChanService {
 				}
 			}
 		}
-		return (undefined);
+		return (chan.ownerId);
 	}
 
     async checkBan(chanId: number, userId: number) : Promise<boolean> {
