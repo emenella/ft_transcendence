@@ -53,9 +53,10 @@ function AccountManagement() {
     };
     
     const handleColorSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         if (color) {
             const req = await changeColorPaddle(color);
-            if (req?.status === 200)
+            if (req?.status === 201)
                 toast.success('Couleur changée.');
             else
                 toast.error('Erreur. Veuillez réessayer.');
@@ -65,6 +66,7 @@ function AccountManagement() {
     const linkStyle = {
         color: 'black',
         textDecoration: 'none',
+        fontSize: "1.4rem"
     };
 
     return (

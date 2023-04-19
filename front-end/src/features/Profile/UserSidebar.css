@@ -1,5 +1,6 @@
 .userSidebar {
     width: 10%;
+    border-radius: 5px;
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;

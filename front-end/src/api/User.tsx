@@ -141,7 +141,7 @@ export async function changeUserStatus(status : number) {
 
 export async function changeColorPaddle(color: string) {
     try {
-        return await axios.post('api/users/?', { color: color }, { headers: authHeader() });
+        return await axios.post('api/users/color', { color: color }, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
