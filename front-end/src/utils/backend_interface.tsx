@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface Match {
     id: number;
     scores: number[];
@@ -6,6 +8,7 @@ export interface Match {
 }
 
 export interface User {
+    socket: Socket;
     id: number;
     username: string;
 	avatarPath: string;

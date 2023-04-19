@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import './AccountManagement.css'
 import Emoji from '../../components/Emoji';
 import { Enable2FA, Disable2FA } from '../../components/button/Buttons';
-import { changeUsername, uploadAvatar, delete2FA } from '../../api/User';
+import { changeUsername, uploadAvatar, delete2FA, changeColorPaddle } from '../../api/User';
 import { User } from '../../utils/backend_interface';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
@@ -15,6 +15,7 @@ function AccountManagement() {
     const [username, setUsername] = useState('');
     const [image, setImage] = useState<File>();
     const [activated2FA, setActivated2FA] = useState(user.is2FAActivated);
+    const [color, setColor] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -47,6 +48,20 @@ function AccountManagement() {
         setImage(e.target.files?.[0]);
     };
 
+    const handleColorChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setColor(e.target.value);
+    };
+    
+    const handleColorSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        if (color) {
+            const req = await changeColorPaddle(color);
+            if (req?.status === 200)
+                toast.success('Couleur changée.');
+            else
+                toast.error('Erreur. Veuillez réessayer.');
+        }
+    };
+
     const linkStyle = {
         color: 'black',
         textDecoration: 'none',
@@ -68,6 +83,20 @@ function AccountManagement() {
                     <input type="file" accept=".PNG,.JPG,.JPEG,.GIF" onChange={handleImageChange} />
                     <br />
                     <br />
+                    <button type="submit">Valider</button>
+                </form>
+                <br />
+                <br />
+                <form onSubmit={handleColorSubmit}>
+                    <label>Couleur de la raquette : </label>
+                    <select onChange={handleColorChange}>
+                        <option value="white">Blanc</option>
+                        <option value="red">Rouge</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Jaune</option>
+                        <option value="green">Vert</option>
+                        <option value="blue">Bleu</option>
+                    </select>{' '}
                     <button type="submit">Valider</button>
                 </form>
                 <br />

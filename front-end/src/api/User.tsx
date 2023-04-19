@@ -138,3 +138,12 @@ export async function changeUserStatus(status : number) {
         console.log(e);
     }
 }
+
+export async function changeColorPaddle(color: string) {
+    try {
+        return await axios.post('api/users/?', { color: color }, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
