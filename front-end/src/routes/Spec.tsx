@@ -72,7 +72,7 @@ export default function Spectate() {
 				</div>
 				<div>
 					{hasToken ? (
-						<HeaderConnected logout={handleLogout} user={user!} />
+						<HeaderConnected logout={handleLogout} />
 					) : (
 						<HeaderNotConnected url={""} />
 					)}
