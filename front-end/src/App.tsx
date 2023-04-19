@@ -90,7 +90,7 @@ function App() {
 				</div>
 			</div>
 			{	hasToken ?
-				<BodyConnected user={user!} /> :
+				<BodyConnected /> :
 				<BodyNotConnected />
 			}
 			<Footer />

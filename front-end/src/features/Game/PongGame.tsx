@@ -3,6 +3,8 @@ import { Game } from './engine/Game';
 import { io } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
 import { User } from '../../utils/backend_interface';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/UserContext';
 
 const WebGame = url + '/game';
 const WebMatchmaking = url + '/matchmaking';
@@ -12,12 +14,13 @@ interface PongGameProps {
     height: number;
     isQueue: boolean;
     spec?: string | null;
-    user: User;
     handlefound: () => void;
 }
 
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
+    const user = useContext(UserContext) as User;
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
     const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
@@ -62,9 +65,9 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         };
         function setGame() {
             const ctx = canvasRef.current?.getContext('2d');
-            if (!game && props.user && ctx) {
-                console.log('Game created' + socketGame, socketMatchmaking, props.user, ctx);
-                const newGame = new Game(socketGame, socketMatchmaking, props.user, ctx);
+            if (!game && user && ctx) {
+                console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
+                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
                 game = newGame;
             }
         }

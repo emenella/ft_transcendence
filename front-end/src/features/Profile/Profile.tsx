@@ -5,6 +5,8 @@ import { getMatchs, getUserById } from '../../api/User';
 import Emoji from '../../components/Emoji';
 import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from '../../components/button/Buttons';
 import { User, Match } from '../../utils/backend_interface';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/UserContext';
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	return (
@@ -44,7 +46,9 @@ function PrintMatch({ username, match }: { username: string | undefined, match: 
 	}
 }
 
-function Profile({ me }: { me: User }) {
+function Profile() {
+	const me = useContext(UserContext) as User;
+
 	let id = parseInt(useParams().id!);
 	
 	//~~ States

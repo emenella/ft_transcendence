@@ -10,7 +10,7 @@ import { getToken } from "../api/Api";
 import { getMe } from '../api/User';
 import { User } from '../utils/backend_interface';
 import logo from '../assets/black_logo.png';
-
+import { UserContext } from '../utils/UserContext';
 
 export default function Spectate() {
     const navigate = useNavigate();
@@ -63,24 +63,25 @@ export default function Spectate() {
 	return (
 		<div>
 			<Toaster />
-			<div className='flex-container'>
-				<div>
-					<img src={logo} alt='Logo du site' />
+			<UserContext.Provider value={user}>
+				<div className='flex-container'>
+					<div>
+						<img src={logo} alt='Logo du site' />
+					</div>
+					<div>
+						<h1>Le meilleur jeu de pong de tout 42</h1>
+					</div>
+					<div>
+						{hasToken ? (
+							<HeaderConnected logout={handleLogout} />
+						) : (
+							<HeaderNotConnected url={""} />
+						)}
+					</div>
 				</div>
-				<div>
-					<h1>Le meilleur jeu de pong de tout 42</h1>
-				</div>
-				<div>
-					{hasToken ? (
-						<HeaderConnected logout={handleLogout} />
-					) : (
-						<HeaderNotConnected url={""} />
-					)}
-				</div>
-			</div>
-			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} handlefound={() => {}} />: <BodyNotConnected />}
+				{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} handlefound={() => { }} /> : <BodyNotConnected />}
+			</UserContext.Provider>
 			<Footer />
-            
 		</div>
 	);
 }

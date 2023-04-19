@@ -6,8 +6,12 @@ import Emoji from '../../components/Emoji';
 import { Enable2FA, Disable2FA } from '../../components/button/Buttons';
 import { changeUsername, uploadAvatar, delete2FA } from '../../api/User';
 import { User } from '../../utils/backend_interface';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/UserContext';
 
-function AccountManagement({ user }: { user: User }) {
+function AccountManagement() {
+    const user = useContext(UserContext) as User;
+
     const [username, setUsername] = useState('');
     const [image, setImage] = useState<File>();
     const [activated2FA, setActivated2FA] = useState(user.is2FAActivated);

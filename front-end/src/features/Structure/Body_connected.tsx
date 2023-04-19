@@ -1,14 +1,11 @@
 import React from 'react';
-import App from '../../App';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import './Body_connected.css';
 import Profile from '../Profile/Profile';
 import AccountManagement from '../Profile/AccountManagement';
 import UserSidebar from '../Profile/UserSidebar';
-import Chat from '../Chat/Chat';
 import Matchmaking from '../Game/Matchmaking';
 import PongGame from '../Game/PongGame';
-import { User } from '../../utils/backend_interface';
 
 function ChatSidebar() {
 	return (
@@ -49,23 +46,18 @@ function ChatFront() {
 }
 
 
-function BodyConnected({ user }: { user: User }) {
+function BodyConnected() {
 	return (
 		<div className="connected">
 			<ChatSidebar />
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route index element={<Matchmaking user={user} />}></Route>
-							<Route path="profile/:id" element={<Profile me={user} />} />
-							<Route path="accountmanagement" element={<AccountManagement user={user!} />} />
-							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} handlefound={() => {}} />} />
+						<Route index element={<Matchmaking />}></Route>
+							<Route path="profile/:id" element={<Profile />} />
+							<Route path="accountmanagement" element={<AccountManagement />} />
+							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} handlefound={() => {}} />} />
 							<Route path="*" element={<Navigate to="/home" replace />} />
-					</Routes>
-				</div>
-				<div>
-					<Routes>
-						<Route path="/" element={<Chat />} />
 					</Routes>
 				</div>
 				<ChatFront />
