@@ -30,17 +30,15 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 function PrintMatch({ username, match }: { username: string | undefined, match: Match }) {
 	if (match.winner.username === username) {
 		return (
-			<div className="winner">
-				<p>{match.winner.username} VS {match.loser.username}</p>
-				<p>{match.scores[0]} - {match.scores[1]}</p>
+			<div className="win">
+				<p>{match.winner.username} VS {match.loser.username} | {match.scores[0]} - {match.scores[1]}</p>
 			</div>
 		);
 	}
 	else {
 		return (
-			<div className="loser">
-				<p>{match.loser.username} VS {match.winner.username}</p>
-				<p>{match.scores[1]} - {match.scores[0]}</p>
+			<div className="lose">
+				<p>{match.loser.username} VS {match.winner.username} | {match.scores[1]} - {match.scores[0]}</p>
 			</div>
 		);
 	}

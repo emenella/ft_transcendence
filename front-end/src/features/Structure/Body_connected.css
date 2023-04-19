@@ -8,22 +8,13 @@
 }
 
 .chatSidebar {
-    width: 15%;
+    border-radius: 5px;
+    width: 10%;
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;
     margin-left: 1px;
     margin-right: 5px;
-}
-
-.chatSidebar>table {
-    table-layout: fixed;
-    text-align: left;
-    width: 100%;
-}
-
-.chatSidebar>table>thead th:nth-child(1) {
-    width: 90%;
 }
 
 .connectedCenter {
@@ -41,4 +32,41 @@
     border-color: #009688;
     background-color:#DAF0EE;
     margin-top: 5px;
+    border-radius: 5px;
+}
+
+.chanTitle {
+    font-weight: bold;
+    margin-top: 0.5%;
+    margin-left: 1%;
+}
+
+.messagesList {
+    margin-left: 1%;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+.inputMessage {
+    margin-left: 1%;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+}
+
+.joinChan {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.createChan {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.toggleLeaveChan {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

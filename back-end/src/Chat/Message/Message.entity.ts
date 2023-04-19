@@ -16,7 +16,10 @@ export class Message {
     id: number;
 
     @CreateDateColumn()
-    date: number;
+    date: Date;
+
+    @Column()
+    authorName: string;
 
     @Column()
     content: string;

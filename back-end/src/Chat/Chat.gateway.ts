@@ -10,6 +10,13 @@ import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
 
+interface msg {
+  date : string;
+  authorId : number;
+  author : string;
+  content : string;
+}
+
 @WebSocketGateway(81, {namespace: 'chat', cors: true})
 export class ChatGateway {
 
@@ -34,28 +41,36 @@ export class ChatGateway {
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
-    console.log(`Client connected: ${client.id}`);
-    console.log("CONNECTED CHAT ?")
     const user : ChatUser | undefined = await this.chatService.connectUserFromSocket(client);
-    console.log("CONNECTED CHAT YEAH")
-
+    
     if (user !== undefined) {
       const chanToJoin : ChanListDTO[] = await this.chanService.chanListOfUser(user.id);
-
+      
       chanToJoin.forEach(async (chan) => {
         const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
-        let sendList : string[] = [];
+        let sendList : msg[] = [];
         
         messages.forEach((message) => {
-          sendList.push(" --- " + message.author + ": " + message.content);
+          let hour: number = (message.date.getUTCHours() >= 22 ? message.date.getUTCHours() - 22 : message.date.getUTCHours() + 2 );
+          let minute: string | number = (message.date.getMinutes() >= 10 ? message.date.getMinutes() : "0" + message.date.getMinutes());
+          let month: string | number = (message.date.getMonth() + 1 >= 10 ? (message.date.getMonth() + 1) : "0" + (message.date.getMonth() + 1))
+         
+          let newMessage : msg = {
+            date: "(" + message.date.getDate() + "/" + month + ") " + hour + ":" + minute,
+            authorId: message.authorId,
+            author: message.authorName,
+            content: message.content
+          };
+          sendList.push(newMessage);
         })
-
-        let data : {chan: string, messages: string[]} = {chan : chan.title, messages : sendList};
-
+        
+        let data : {chan: string, messages: msg[]} = {chan : chan.title, messages : sendList};
+        
         client.join(chan.id.toString());
         client.emit('joinedChan', data);
       })
       client.emit('listOfChan', this.chans);
+      this.logger.log(`Client connected: ${client.id}`);
     }
   }
 
@@ -69,22 +84,31 @@ export class ChatGateway {
         client.leave(chan.id.toString());
       })
       this.chatService.disconnectClient(client);
+      this.logger.log(`Client disconnected: ${client.id}`);
     }
-    this.logger.log(`Client disconnected: ${client.id}`);
   }
 
   @SubscribeMessage('msgToServer')
-  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {author: string, chan: string, msg: string}): Promise<void> {
-    this.logger.log(data);
+  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {chan: string, msg: string}): Promise<void> {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
     if (user !== undefined) {
       if (data.chan[0] !== '#') {
         const dmChan : Chan | undefined = await this.chanService.getDm(await this.userService.getUserById(user.id), await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number))
         if (dmChan !== undefined) {
-          data.author = user.username;
-          this.messageService.createMessage(await this.userService.getUserById(user.id), dmChan, data.msg);
-          this.server.to(dmChan.id.toString()).emit('msgToClient', data);
+          let ret = await this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, dmChan, data.msg);
+          let hour: number = (ret.date.getUTCHours() >= 22 ? ret.date.getUTCHours() - 22 : ret.date.getUTCHours() + 2 );
+          let minute: string | number = (ret.date.getMinutes() >= 10 ? ret.date.getMinutes() : "0" + ret.date.getMinutes());
+          let month: string | number = (ret.date.getMonth() + 1 >= 10 ? (ret.date.getMonth() + 1) : "0" + (ret.date.getMonth() + 1))
+          
+          let newMessage : any = {
+            date: "(" + ret.date.getDate() + "/" + month + ") " + hour + ":" + minute,
+            authorId: ret.authorId,
+            author: ret.authorName,
+            chan: data.chan,
+            msg: ret.content
+          };
+          this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
           return;
         }
         client.emit('error', 'No such DM');
@@ -105,17 +129,28 @@ export class ChatGateway {
           return;
         }
 
+        let ret = await this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, chan, data.msg);
+        let hour: number = (ret.date.getUTCHours() >= 22 ? ret.date.getUTCHours() - 22 : ret.date.getUTCHours() + 2 );
+        let minute: string | number = (ret.date.getMinutes() >= 10 ? ret.date.getMinutes() : "0" + ret.date.getMinutes());
+        let month: string | number = (ret.date.getMonth() + 1 >= 10 ? (ret.date.getMonth() + 1) : "0" + (ret.date.getMonth() + 1))
+        
+        let newMessage : any = {
+          date: "(" + ret.date.getDate() + "/" + month + ") " + hour + ":" + minute,
+          authorId: ret.authorId,
+          author: ret.authorName,
+          chan: chan.title,
+          msg: ret.content
+        };
         if (chan.ownerId === user.id) {
-          data.author = '[owner] ' + user.username; 
+          newMessage.author = '[owner] ' + user.username; 
         }
         else if (await this.chanService.isAdmin(chan.id, user.id) === true) {
-          data.author = '[admin] ' + user.username;
+          newMessage.author = '[admin] ' + user.username;
         }
         else {
-          data.author = user.username;
+          newMessage.author = user.username;
         }
-        await this.messageService.createMessage(await this.userService.getUserById(user.id), chan, data.msg);
-        this.server.to(chan.id.toString()).emit('msgToClient', data);
+        this.server.to(chan.id.toString()).emit('msgToClient', newMessage);
         return;
       }
       client.emit('error', 'No such channel !');
@@ -139,13 +174,23 @@ export class ChatGateway {
       }
       
       const messages : Message[] = await this.messageService.getMessagesFromChanTitle(data.chan);
-      let sendList : string[] = [];
-      
+      let sendList : msg[] = [];
+        
       messages.forEach((message) => {
-        sendList.push(" --- " + message.author + ": " + message.content);
+        let hour: number = (message.date.getUTCHours() >= 22 ? message.date.getUTCHours() - 22 : message.date.getUTCHours() + 2 );
+        let minute: string | number = (message.date.getMinutes() >= 10 ? message.date.getMinutes() : "0" + message.date.getMinutes());
+        let month: string | number = (message.date.getMonth() + 1 >= 10 ? (message.date.getMonth() + 1) : "0" + (message.date.getMonth() + 1))
+       
+        let newMessage : msg = {
+          date: "(" + message.date.getDate() + "/" + month + ") " + hour + ":" + minute,
+          authorId: message.authorId,
+          author: message.authorName,
+          content: message.content
+        };
+        sendList.push(newMessage);
       })
       
-      let joinData : {chan: string, messages: string[]} = {chan : data.chan, messages : sendList};
+      let joinData : {chan: string, messages: msg[]} = {chan : data.chan, messages : sendList};
 
       client.join(ret.id.toString());
       client.emit('joinedChan', joinData);
@@ -154,26 +199,27 @@ export class ChatGateway {
 
   @SubscribeMessage('leaveChan')
   async handleLeaveChan(@ConnectedSocket() client: Socket, @MessageBody() chan: string) {
-    console.log("chan to leave : "+ chan);
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
-
+    
     if (user !== undefined) {
       const chanToLeave : Chan | undefined = await this.chanService.getChanByTitle(chan);
-
+      
       if (chanToLeave !== undefined) {
         const ret : string | number | undefined = await this.chanService.leaveChanById(chanToLeave.id, user.id);
-
+        
         if (typeof ret === 'string') {
           client.emit('error', ret);
           return;
         }
         if (ret === undefined && chanToLeave.isPrivate === false) {
           this.chans.splice(this.chans.findIndex((c) => {return c === chanToLeave.title}), 1);
+          this.server.emit('listOfChan', this.chans);
         }
         else if (ret !== undefined) {
           this.server.to(chanToLeave.id.toString()).emit('msgToClient', {author: user.username, chan: chanToLeave.title, msg: ' leaved the channel !'});
         }
-
+        
+        console.log("chan to leave : "+ chanToLeave.title);
         client.leave(chanToLeave.id.toString());
         client.emit('leftChan', chan);
       }
@@ -205,12 +251,5 @@ export class ChatGateway {
       client.emit('createdChan', ret.title);
     }
     
-  }
-
-  @SubscribeMessage('check')
-  async checking(@ConnectedSocket() client: Socket, @MessageBody() data: string[]) {
-    this.logger.log('check');
-    this.logger.log((await this.chatService.getUserFromSocket(client))?.username);
-    this.logger.log(data);
   }
 }

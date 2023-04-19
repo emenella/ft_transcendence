@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import Matchmaking from '../Game/Matchmaking';
+import Profile from '../Profile/Profile';
+import PongGame from '../Game/PongGame';
+import { Navigate } from 'react-router-dom';
+import AccountManagement from '../Profile/AccountManagement';
+import '../Structure/Body_connected.css'
 import { getToken, url } from '../../api/Api'
 import io, { Socket } from 'socket.io-client'
-import Error from './Error'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
 import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
+import { msg } from './interfaceChat';
 
 let activeChan: string = '';
-let chans : Map<string, string[]> = new Map<string, string[]>()
+let channels : Map<string, msg[]> = new Map<string,msg[]>();
 
 function Chat() {
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
-  const [messages, setMessages] = useState<string[]>([]);
-  const [errorToShow, setErrorToShow] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [msgs, setMsgs] = useState<msg[]>([]);
 
   const WebChat = url + '/chat'
-  
+
   const send = (value: string) => {
-    setErrorToShow(false);
-    socket?.emit("msgToServer", {author: socket?.id, chan: activeChan, msg: value});
+    socket?.emit("msgToServer", {chan: activeChan, msg: value});
   }
 
   const createChan = (title: string, isPrivate: boolean, password: string | undefined) => {
-    console.log("create chan pressed");
-    if (chans.get(title) !== undefined)
-      return;
     let data = {title: title, isPrivate: isPrivate, password: password};
     socket?.emit("createChan", data);
   }
 
   const joinChan = (value: string, password: string | null) => {
-    if (chans.get(value) !== undefined)
-      return;
     if (password === "") {
       password = null;
     }
@@ -43,14 +43,14 @@ function Chat() {
   }
 
   const toggleChan = (value: string) => {
-    if (chans.get(value) !== undefined) {
+    if (channels.get(value) !== undefined) {
       activeChan = value;
-      setMessages(chans.get(activeChan) as string[]);
+      setMsgs(channels.get(activeChan) as msg[]);
     }
   }
 
   const leaveChan = (chan: string) => {
-    if (chans.get(chan) !== undefined) {
+    if (channels.get(chan) !== undefined) {
       socket?.emit('leaveChan', chan);
     }
   }
@@ -62,70 +62,70 @@ function Chat() {
   }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
-    setErrorToShow(true);
-    setError(error);
+    toast.error(error);
   }
 
   const inviteListener = (chan : string) => {
-    setErrorToShow(true);
-    setError("You have been invited in channel : " + chan + " !\nIt is now visible in Join chan section.");
+    toast.success("You have been invited in channel : " + chan + " !\nIt is now visible in Join chan section.")
     if (publicChanList.findIndex((c) => { return c === chan}) === -1) {
       setPublicChan([...publicChanList, ...[chan]]);
     }
   }
 
   const banListener = (chan : string) => {
-    chans.delete(chan);
-    if (activeChan === chan && chans.size > 0) {
-      for (let [key, msg] of chans.entries()) {
+    channels.delete(chan);
+    if (activeChan === chan && channels.size > 0) {
+      for (let [key, msg] of channels.entries()) {
         activeChan = key;
-        setMessages(chans.get(activeChan) as string[]);
+        setMsgs(channels.get(activeChan) as msg[]);
         return;
       }
     }
-    if (chans.size === 0) {
+    if (channels.size === 0) {
       activeChan = '';
-      setMessages(['']);
+      setMsgs([]);
     }
   }
 
-  const messageListener = (data: {author: string, chan: string, msg: string}) => {
-    let chanMessages : string[] = chans.get(data.chan) as string[];
-    chans.set(data.chan, [...chanMessages, ...[data.author + ': ' + data.msg]]);
+  const messageListener = (data: {date: string, authorId: number, author: string, chan: string, msg: string}) => {
+    console.log(data);
+    let chanMessages : msg[] = channels.get(data.chan) as msg[];
+    let message : msg = {date: data.date, authorId: data.authorId, author: data.author, content: data.msg};
+    channels.set(data.chan, [...chanMessages, ...[message]]);
     if (activeChan === data.chan) {
-      setMessages(chans.get(activeChan) as string[]);
+      setMsgs(channels.get(activeChan) as msg[]);
     }
   }
 
   const createChanListener = (chan: string) => {
     activeChan = chan;
-    chans.set(chan, [""]);
-    setMessages(['']);
+    channels.set(chan, []);
+    setMsgs([]);
   }
 
-  const joinChanListener = (data : {chan: string, messages: string[]}) => {
+  const joinChanListener = (data : {chan: string, messages: msg[]}) => {
     activeChan = data.chan;
 
-    if (chans.get(data.chan) !== undefined) {
-      setMessages(chans.get(data.chan) as string[]);
+    if (channels.get(data.chan) !== undefined) {
+      setMsgs(channels.get(data.chan) as msg[]);
       return;
     }
-    chans.set(data.chan, data.messages);
-    setMessages(chans.get(data.chan) as string[]);
+    channels.set(data.chan, data.messages);
+    setMsgs(channels.get(data.chan) as msg[]);
   }
 
   const leftChanListener = (chan : string) => {
-    chans.delete(chan);
-    if (activeChan === chan && chans.size > 0) {
-      for (let [key, msg] of chans.entries()) {
+    channels.delete(chan);
+    if (activeChan === chan && channels.size > 0) {
+      for (let [key, msg] of channels.entries()) {
         activeChan = key;
-        setMessages(chans.get(activeChan) as string[]);
+        setMsgs(channels.get(activeChan) as msg[]);
         return;
       }
     }
-    if (chans.size === 0) {
+    if (channels.size === 0) {
       activeChan = '';
-      setMessages(['']);
+      setMsgs([]);
     }
   }
 
@@ -189,16 +189,43 @@ function Chat() {
     }
   }, [refreshListListener])
 
-
   return (
     <>
-      {" "}
-      <Error isShown={errorToShow} error={error} close={setErrorToShow}/>
-      <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={chans}/>
-      <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
-      <CreateChanInput createChan={createChan}/>
-      <MessageInput send={send}/>
-      <Message messages = {messages}/>
+      <div className='chatSidebar'>
+        <div className='toggleLeaveChan'>
+          <label>- Select Chan Menu -</label>
+          <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={channels} activeChan={activeChan}/>
+        </div>
+        <div className='joinChan'>
+          <label>- Join Chan Menu -</label>
+          <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
+        </div>
+        <div className='createChan'>
+          <label>- Create Chan Menu -</label>
+          <CreateChanInput createChan={createChan}/>
+        </div>
+      </div>
+
+      <div className="connectedCenter">
+        <div>
+          <Routes>
+            <Route index element={<Matchmaking />}></Route>
+            <Route path="profile/:id" element={<Profile />} />
+            <Route path="accountmanagement" element={<AccountManagement />} />
+            <Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} handlefound={() => { }} />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </div>
+        <div className='chat'>
+          <div className='chanTitle'>{activeChan}</div>
+          <div className='messagesList'>
+            <Message messages = {msgs}/>
+          </div>
+          <div className='inputMessage'>
+            <MessageInput send={send} activeChan={activeChan}/>
+          </div>
+        </div>
+			</div>
     </>
   )
 }
