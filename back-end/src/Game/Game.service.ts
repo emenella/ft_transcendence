@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
 import { User } from "../User/entity/User.entity";
 import { player, ball, general } from "./interface/Game.interface";
+import { UserService } from "../User/service/User.service";
 
 @Injectable()
 export class GameService {
@@ -29,7 +30,7 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructor() {
+    constructor(private readonly userService: UserService) {
     }
 
     public getGame(id: string): Game | undefined {
@@ -188,11 +189,20 @@ export class GameService {
         return -1;
     }
 
-    public async acceptRequest(id: number, from: User, user: User): Promise<boolean> {
-        if (this.request[id] && this.request[id].from == from.id) {
+    public async acceptRequest(id: number, user: User): Promise<boolean> {
+        if (this.request[id] && this.request[id].to == user.id) {
+            const from = await this.userService.getUserById(this.request[id].from);
             const setup: Setup = await this.createSetup(from, user);
             console.log(setup);
             this.createGame(setup, this.handlerGameFinish.bind(this));
+            this.request.splice(id, 1);
+            return true;
+        }
+        return false;
+    }
+
+    public async declineRequest(id: number, user: User): Promise<boolean> {
+        if (this.request[id] && this.request[id].to == user.id) {
             this.request.splice(id, 1);
             return true;
         }
