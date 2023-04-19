@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, Inject, HttpException, forwardRef } from '@nestjs/common';
 import { UserService } from '../User/service/User.service';
 import { JwtService } from '@nestjs/jwt';
 import { API } from './Authenfication.constants';
@@ -26,7 +26,9 @@ export class AuthenticationService {
     
     private secret: Map<number, secretEncrypted> = new Map<number, secretEncrypted>();
     
-    constructor(private readonly userService: UserService, private readonly connectionService: ConnectionService,private readonly jwtService: JwtService) { }
+    constructor(@Inject(forwardRef(() => UserService)) private readonly userService: UserService,
+                private readonly connectionService: ConnectionService,
+                private readonly jwtService: JwtService) {}
     
     async getUrl42() {
         return "https://api.intra.42.fr/oauth/authorize?client_id=" + API.UID + "&redirect_uri=" + API.URL + "&response_type=code";
