@@ -203,7 +203,7 @@ export class GameService {
         const player: player = {
             id: user.id,
             username: user.username,
-            color: "red",
+            color: user.color,
             length: 150,
             width: 10,
             speedX: 0,

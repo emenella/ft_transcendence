@@ -33,6 +33,9 @@ export class User {
 	@Column({default: UserStatus.Disconnected})
     status: number;
 
+    @Column({default: "white"})
+    color: string;
+
     //~~ GAME AND STATS
     @OneToMany(() => Match, match => match.winner, {cascade: true})
     winMatch: Match[];

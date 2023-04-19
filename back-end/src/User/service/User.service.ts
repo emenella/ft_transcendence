@@ -202,16 +202,8 @@ export class UserService {
 		}
 	}
 
-// 	//~~ Game
-// 	async inviteGame(sender: User, receiver: User): Promise<void> {
-// 		//
-// 	}
-	
-// 	async acceptGame(sender: User, receiver: User): Promise<void> {
-// 		//
-// 	}
-
-// 	async denyGame(receiver: User, sender: User): Promise<void> {
-// 		//
-// 	}
+	async changeColor(user: User, color: string): Promise<void> {
+		user.color = color;
+		await this.userRepository.save(user);
+	}
 }
