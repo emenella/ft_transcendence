@@ -23,5 +23,4 @@ export const enum UserStatus {
     Disconnected,
     Connected,
     InGame,
-    Inactive
 }
