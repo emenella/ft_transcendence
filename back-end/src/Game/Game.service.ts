@@ -3,46 +3,30 @@ import { Game } from "./modele/Game.modele";
 import { Setup, GameInfo } from "./interface/Game.interface";
 import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
+import { User } from "../User/entity/User.entity";
+import { player, ball, general } from "./interface/Game.interface";
 
 @Injectable()
 export class GameService {
     private games: Map<string, Game> = new Map();
     private users: Map<number, Game> = new Map();
     private spectators: Map<number, Game> = new Map();
+    private request: Array<{ from: number, to: number }> = [];
 
-    private default: Setup = {
-        general: {
+    private setup: general = {
             id: null,
             ScoreWin: 5,
             Overtime: true,
             OvertimeScore: 3,
             height: 1000,
             width: 1000,
-        },
-        player0: {
-            id: 1,
-            username: "Player 1",
-            color: "red",
-            length: 100,
-            width: 10,
-            speedX: 0,
-            speedY: 5
-        },
-        player1: {
-            id: 2,
-            username: "Player 2",
-            color: "blue",
-            length: 100,
-            width: 10,
-            speedX: 0,
-            speedY: 5
-        },
-        ball: {
-            color: "green",
-            radius: 20,
-            speed: 15,
-            maxSpeed: 20
-        },
+    };
+
+    private setupBall: ball = {
+        color: "green",
+        radius: 20,
+        speed: 10,
+        maxSpeed: 20
     };
 
     constructor() {
@@ -61,10 +45,10 @@ export class GameService {
         this.games.delete(id);
     }
 
-    public createGame(setting?: Setup, handleEnd?: (id: string) => Promise<void>): Game {
+    public createGame(setting: Setup, handleEnd?: (id: string) => Promise<void>): Game {
         let game: Game;
         const id = uuidv4();
-        const setup: Setup = setting ? setting : this.default;
+        const setup: Setup = setting;
         const handler: (id: string) => Promise<void> = handleEnd ? handleEnd : this.handlerGameFinish.bind(this);
         setup.general.id = id;
         game = new Game(setup, handler);
@@ -193,5 +177,48 @@ export class GameService {
             }
         }
         return undefined;
+    }
+
+    public async requestGametoUser(from: User, to: User): Promise<number> {
+        if (this.request.find((req) => req.from == from.id && req.to == to.id)) {
+        this.request.push({ from: from.id, to: to.id });
+        console.log(this.request.length - 1);
+        return this.request.length - 1;
+        }
+        return -1;
+    }
+
+    public async acceptRequest(id: number, from: User, user: User): Promise<boolean> {
+        if (this.request[id] && this.request[id].from == from.id) {
+            const setup: Setup = await this.createSetup(from, user);
+            console.log(setup);
+            this.createGame(setup, this.handlerGameFinish.bind(this));
+            this.request.splice(id, 1);
+            return true;
+        }
+        return false;
+    }
+
+    public getPlayerSetup(user: User): player {
+        const player: player = {
+            id: user.id,
+            username: user.username,
+            color: user.color,
+            length: 150,
+            width: 10,
+            speedX: 0,
+            speedY: 5
+        };
+        return player;
+    }
+
+    async createSetup(user1: User, user2: User): Promise<Setup> {
+        const setup: Setup = {
+            general: this.setup,
+            player0: this.getPlayerSetup(user1),
+            player1: this.getPlayerSetup(user2),
+            ball: this.setupBall,
+        };
+        return setup;
     }
 }

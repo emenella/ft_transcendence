@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Matchmaking from '../Game/Matchmaking';
 import Profile from '../Profile/Profile';
-import PongGame from '../Game/PongGame';
 import { Navigate } from 'react-router-dom';
 import AccountManagement from '../Profile/AccountManagement';
 import '../Structure/Body_connected.css'
@@ -15,6 +14,7 @@ import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { msg } from './interfaceChat';
+import Spectate from '../../routes/Spec';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
@@ -212,10 +212,10 @@ function Chat() {
             <Route index element={<Matchmaking />}></Route>
             <Route path="profile/:id" element={<Profile />} />
             <Route path="accountmanagement" element={<AccountManagement />} />
-            <Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} handlefound={() => { }} />} />
+            <Route path="spec/:id" element={<Spectate />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
-        </div>
+				</div>
         <div className='chat'>
           <div className='chanTitle'>{activeChan}</div>
           <div className='messagesList'>
