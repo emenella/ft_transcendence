@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { getToken } from "../api/Api";
-import PongGame from "../components/Game/PongGame";
 import { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom'
 import '../App.css';
-import logo from '../assets/black_logo.png';
-import Footer from '../components/Footer';
-import {HeaderConnected, HeaderNotConnected } from '../components/Headers';
-import BodyNotConnected from '../components/Body_not_connected';
-import { User } from '../utils/backend_interface';
+import {HeaderConnected, HeaderNotConnected } from '../features/Structure/Headers';
+import Footer from '../features/Structure/Footer';
+import BodyNotConnected from '../features/Structure/Body_not_connected';
+import PongGame from "../features/Game/PongGame";
+import { getToken } from "../api/Api";
 import { getMe } from '../api/User';
+import { User } from '../utils/backend_interface';
+import logo from '../assets/black_logo.png';
 
 
 export default function Spectate() {
@@ -78,7 +78,7 @@ export default function Spectate() {
 					)}
 				</div>
 			</div>
-			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} />: <BodyNotConnected />}
+			{hasToken ? <PongGame height={600} width={800} spec={spec} isQueue={false} user={user!} handlefound={() => {}} />: <BodyNotConnected />}
 			<Footer />
             
 		</div>

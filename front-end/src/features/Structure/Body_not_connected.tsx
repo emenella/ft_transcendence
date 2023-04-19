@@ -1,10 +1,10 @@
 import React from 'react';
 import './Body_not_connected.css';
-import logo from '../assets/white_logo.png';
-import emenella from '../assets/emenella.jpg';
-import ebellon from '../assets/ebellon.jpg';
-import pthomas from '../assets/pthomas.jpg';
-import mberne from '../assets/mberne.jpg';
+import logo from '../../assets/white_logo.png';
+import emenella from '../../assets/emenella.jpg';
+import ebellon from '../../assets/ebellon.jpg';
+import pthomas from '../../assets/pthomas.jpg';
+import mberne from '../../assets/mberne.jpg';
 
 function BodyNotConnected() {
 	return (

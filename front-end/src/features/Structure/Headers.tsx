@@ -1,0 +1,28 @@
+import React from 'react';
+import { Link } from "react-router-dom";
+import { User } from '../../utils/backend_interface';
+
+export function HeaderConnected({ logout, user }: { logout: () => void, user: User }) {
+	const linkStyle = {
+		color: "white",
+	}
+
+    return (
+        <div>
+            <Link to={"/home/profile/" + user?.id} style={linkStyle}>Profil</Link>
+			<br />
+            <Link to="/home/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
+            <br />
+            <br />
+			<button onClick={logout}>Déconnexion</button>
+        </div>
+    );
+}
+
+export function HeaderNotConnected({ url } : { url: string }) {
+	return (
+		<a href={url}>
+			<button>Connexion</button>
+		</a>
+	);
+}

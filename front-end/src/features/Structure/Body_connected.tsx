@@ -1,13 +1,14 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import App from '../../App';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './Body_connected.css';
-import Matchmaking from './Game/Matchmaking';
-import Profil from './Profil';
-import AccountManagement from './AccountManagement';
-import UserSidebar from './UserSidebar';
-import Chat from '../chat/Chat';
-import { User } from '../utils/backend_interface';
-import PongGame from './Game/PongGame';
+import Profile from '../Profile/Profile';
+import AccountManagement from '../Profile/AccountManagement';
+import UserSidebar from '../Profile/UserSidebar';
+import Chat from '../Chat/Chat';
+import Matchmaking from '../Game/Matchmaking';
+import PongGame from '../Game/PongGame';
+import { User } from '../../utils/backend_interface';
 
 function ChatSidebar() {
 	return (
@@ -48,17 +49,18 @@ function ChatFront() {
 }
 
 
-function BodyConnected(props: { user: User }) {
+function BodyConnected({ user }: { user: User }) {
 	return (
 		<div className="connected">
 			<ChatSidebar />
 			<div className="connectedCenter">
 				<div>
 					<Routes>
-						<Route path="/" element={<Matchmaking user={props.user} />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
-						<Route path="/profil/:id" element={<Profil user={props.user} />} />
-						<Route path="/spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user} />} />
+						<Route index element={<Matchmaking user={user} />}></Route>
+							<Route path="profile/:id" element={<Profile me={user} />} />
+							<Route path="accountmanagement" element={<AccountManagement user={user!} />} />
+							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} handlefound={() => {}} />} />
+							<Route path="*" element={<Navigate to="/home" replace />} />
 					</Routes>
 				</div>
 				<div>

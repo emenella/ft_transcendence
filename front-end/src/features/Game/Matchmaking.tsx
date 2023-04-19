@@ -27,6 +27,7 @@ const Matchmaking = ({user} : {user: User} ) => {
             isQueue={isSearching}
             spec={null}
             user={user}
+            handlefound={leaveQueueHandler}
           />
         </div>
         <SearchButton

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { User } from "./backend_interface";
+import { User } from "../utils/backend_interface";
 
 function UsernameLink(props: { user : User }) {
     const linkStyle = {
@@ -9,7 +9,7 @@ function UsernameLink(props: { user : User }) {
 
     return(
         <div>
-            <Link to={"/profil/" + props.user.id} style={linkStyle}>{props.user.username}</Link>
+            <Link to={"/profile/" + props.user.id} style={linkStyle}>{props.user.username}</Link>
         </div>
     );
 }

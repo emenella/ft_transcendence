@@ -13,6 +13,7 @@ interface PongGameProps {
     isQueue: boolean;
     spec?: string | null;
     user: User;
+    handlefound: () => void;
 }
 
 
@@ -67,6 +68,10 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 game = newGame;
             }
         }
+        const handlefoundGame = () => {
+            props.handlefound();
+        };
+        socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
     
         setGame();
         if (props.spec === null) searchGame();

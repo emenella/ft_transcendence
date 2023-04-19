@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getToken, url } from '../api/Api'
+import { getToken, url } from '../../api/Api'
 import io, { Socket } from 'socket.io-client'
 import Error from './Error'
 import MessageInput from './MessageInput'

@@ -1,10 +1,11 @@
 import React, { ChangeEvent } from 'react';
 import './UserSidebar.css'
-import { getMe } from '../api/User';
-import { User } from '../utils/backend_interface';
-import { invite, accept, deny } from '../utils/friends_blacklists_system';
-import Emoji from './Emoji';
-import UsernameLink from '../utils/UsernameLink';
+import { getMe } from '../../api/User';
+import { User } from '../../utils/backend_interface';
+import { invite, accept, deny } from '../../utils/friends_blacklists_system';
+import Emoji from '../../components/Emoji';
+import UsernameLink from '../../components/UsernameLink';
+import { AcceptAndDenyFriendButtons } from '../../components/button/Buttons';
 
 function renderSwitch(num: number) {
     switch (num) {
@@ -13,7 +14,7 @@ function renderSwitch(num: number) {
         case 1:
             return (<p>En ligne <Emoji label="green_circle" symbol="🟢" /></p>);
         case 2:
-            return (<p>En partie <Emoji label="video_game" symbol="🎮" /></p>);
+            return (<p>En partie <Emoji label="video_game" symbol="🔵" /></p>);
         // case 3:
         // 	return ( <p>Inactif <Emoji label="yellow_circle" symbol="🟡" /></p> );
     }
@@ -36,7 +37,7 @@ function UserSidebar() {
     const listFriends = friends?.map((friend: User) => {
         return (
             <div className='friend'>
-                <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
+                <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <div>
                     <UsernameLink user={friend} />
                     {renderSwitch(friend.status)}
@@ -54,11 +55,10 @@ function UserSidebar() {
     const listFriendsInvite = friendsInvites?.map((friend: User) => {
         return (
             <div className='friend-invite'>
-                <img src={"../" + friend?.avatarPath} alt="Logo du joueur" />
+                <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <UsernameLink user={friend} />
                 <div>
-                    <button onClick={() => accept(friend.username)}>Accepter <Emoji label="check_mark" symbol="✔️" /></button>
-                    <button onClick={() => deny(friend.username)}>Refuser <Emoji label="cross_mark" symbol="❌" /></button>
+                    <AcceptAndDenyFriendButtons username={friend.username} />
                 </div>
             </div>
         )
