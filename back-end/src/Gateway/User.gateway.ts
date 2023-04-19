@@ -4,6 +4,7 @@ import { Server, Socket } from 'socket.io';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
+import { UserStatus } from '../User/service/User.service';
 
 @WebSocketGateway(81, {namespace: 'user', cors: true})
 export class UserGateway {
@@ -15,18 +16,21 @@ export class UserGateway {
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
-		if (!user) {
-			client.disconnect();
+		if (user) {
+			user.socket = client;
+			this.userService.changeStatus(user, UserStatus.Connected);
 		}
 		else {
-			user.socket = client;
+			client.disconnect();
 		}
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
-		if (user)
-            user.socket = null;
+		if (user) {
+			user.socket = null;
+			this.userService.changeStatus(user, UserStatus.Disconnected);
+		}
 		client.disconnect();
 	}
 
