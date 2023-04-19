@@ -16,11 +16,12 @@ import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { User } from '../../utils/backend_interface';
 import { msg } from './interfaceChat';
+import Spectate from '../../routes/Spec';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
 
-function Chat(props : {user: User | undefined}) {
+function Chat(props : {user: User}) {
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
@@ -211,10 +212,10 @@ function Chat(props : {user: User | undefined}) {
 				<div>
           <Routes>
 						<Route index element={<Matchmaking user={props.user!} />}></Route>
-							<Route path="profile/:id" element={<Profile me={props.user!} />} />
-							<Route path="accountmanagement" element={<AccountManagement user={props.user!} />} />
-							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user!} handlefound={() => {}} />} />
-							<Route path="*" element={<Navigate to="/home" replace />} />
+						<Route path="profile/:id" element={<Profile me={props.user!} />} />
+						<Route path="accountmanagement" element={<AccountManagement user={props.user!} />} />
+						<Route path="spec/:id" element={<Spectate user={props.user!}/>} />
+						{/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
 					</Routes>
 				</div>
         <div className='chat'>

@@ -3,7 +3,6 @@ import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { getToken } from '../../api/Api';
 import { User } from '../../utils/backend_interface';
 
 const Matchmaking = ({user} : {user: User} ) => {

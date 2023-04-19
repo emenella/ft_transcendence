@@ -16,11 +16,11 @@ interface PongGameProps {
     handlefound: () => void;
 }
 
+const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
-    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
     let game: Game | null = null;
     
     useEffect(() => {
@@ -30,8 +30,6 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
             console.log('componentWillUnmount Pong');
             game?.leaveQueue();
             game?.leaveGame();
-            socketGame.disconnect();
-            socketMatchmaking.disconnect();
         };
     }, []);
     
@@ -58,6 +56,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 console.log('no state game');
                 return;
             }
+            console.log('searching game');
             game.searchGame();
         };
         function setGame() {

@@ -22,7 +22,7 @@ export default function Message({messages}:{messages: msg[]}) {
                     <div className="header">
                         {message.date}
                         &nbsp;
-                        <Link to={"/home/profil/" + message.authorId} style={{color: "black"}}>{message.author + ':'}</Link>
+                        <Link to={"/home/profile/" + message.authorId} style={{color: "black"}}>{message.author + ':'}</Link>
                         &nbsp;
                     </div>
                     <div className="content">&nbsp;{message.content}&nbsp;</div>
