@@ -4,7 +4,7 @@ import { Message } from '../../Chat/Message/Message.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
-import { Avatar } from './Avatar.entity';
+import { UserStatus } from '../service/User.service';
 
 @Entity()
 export class User {
@@ -15,8 +15,8 @@ export class User {
     @Column({unique: true, nullable: true})
     username: string;
 
-    @OneToOne(() => Avatar, avatar => avatar.user, {cascade: true})
-    avatar: Avatar;
+	@Column({ default: "avatars/stormtrooper.jpg" })
+	avatarPath: string;
 
     @OneToOne(() => Connection, connection => connection.user, {cascade: true})
     connection: Connection;
@@ -24,28 +24,31 @@ export class User {
     @Column({type: 'boolean', default: false})
     isProfileComplete: boolean;
 
-	@Column({type: 'boolean', default: false}) // À changer en false
+	@Column({type: 'boolean', default: false})
     is2FAActivated: boolean;
 
+	@Column({default: UserStatus.Disconnected})
+    status: number;
+
     //~~ GAME AND STATS
-    @OneToMany(() => Match, matchHistory => matchHistory.winner, {cascade: true})
+    @OneToMany(() => Match, match => match.winner, {cascade: true})
     winMatch: Match[];
 	
-    @OneToMany(() => Match, matchHistory => matchHistory.looser, {cascade: true})
-    looseMatch: Match[];
+    @OneToMany(() => Match, match => match.loser, {cascade: true})
+    loseMatch: Match[];
 
 	// float in 
 	@Column({default: 1000})
 	elo: number;
 	
     //~~ CHAT
-    @OneToMany(() => Chan, (target: Chan) => target.owner)
+    @OneToMany(() => Chan, channel => channel.owner)
     ownedChans: Chan[];
 
-    @OneToMany(() => RelationTable, (rel: RelationTable) => rel.user)
+    @OneToMany(() => RelationTable, relationTable => relationTable.user)
     relations: RelationTable[];
 
-    @OneToMany(() => Message, (target: Message) => target.author)
+    @OneToMany(() => Message, message => message.author)
     messages: Message[];
 	
     //~~ FRIENDS AND BLACKLIST
@@ -55,7 +58,7 @@ export class User {
 
 	@ManyToMany(() => User)
     @JoinTable()
-    friend_invites: User[];
+    friend_requests: User[];
 
     @ManyToMany(() => User)
     @JoinTable()

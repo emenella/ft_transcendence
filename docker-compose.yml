@@ -75,12 +75,7 @@ services:
 
 volumes:
   database:
-    # name: database
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: ./volumes/database
+    name: database
 
 networks:
   front-end:

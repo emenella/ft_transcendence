@@ -1,3 +1,5 @@
+import { User } from '../../../../utils/backend_interface';
+
 export interface General {
     id: string;
     ScoreWin: number;
@@ -67,13 +69,6 @@ export interface Bind {
     left: string;
     right: string;
     ready: string;
-}
-
-export interface User {
-    id: number;
-    username: string;
-    isProfileComplete: boolean;
-    elo: number;
 }
 
 export interface GameSettings {

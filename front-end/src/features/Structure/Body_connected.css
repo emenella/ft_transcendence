@@ -1,5 +1,6 @@
 .connected {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: stretch;
     padding-top: 10px;
@@ -27,29 +28,8 @@
 }
 
 .connectedCenter {
-    width: 80%;
     display: flex;
     flex-direction: column;
-}
-
-.userSidebar {
-    border-radius: 5px;
-    width: 10%;
-    border-style: solid;
-    border-color: #009688;
-    background-color:#DAF0EE;
-    margin-left: 5px;
-    margin-right: 1px;
-}
-
-.userSidebar>table {
-    text-align: left;
-    table-layout: fixed;
-    width: 100%;
-}
-
-.userSidebar>table>thead th:nth-child(1) {
-    width: 25%;
 }
 
 .friendStatus {

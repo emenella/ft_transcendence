@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import Matchmaking from '../components/Game/Matchmaking';
-import Profil from '../components/Profil';
-import AccountManagement from '../components/AccountManagement';
-import '../components/Body_connected.css'
-import { getToken, url } from '../api/Api'
+import Matchmaking from '../Game/Matchmaking';
+import Profile from '../Profile/Profile';
+import PongGame from '../Game/PongGame';
+import { Navigate } from 'react-router-dom';
+import AccountManagement from '../Profile/AccountManagement';
+import '../Structure/Body_connected.css'
+import { getToken, url } from '../../api/Api'
 import io, { Socket } from 'socket.io-client'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
 import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
-import { User } from '../utils/backend_interface';
+import { User } from '../../utils/backend_interface';
 import { msg } from './interfaceChat';
 
 let activeChan: string = '';
@@ -207,10 +209,12 @@ function Chat(props : {user: User | undefined}) {
 
       <div className="connectedCenter">
 				<div>
-					<Routes>
-						<Route path="/" element={<Matchmaking />} />
-						<Route path="/accountmanagement" element={<AccountManagement user={props.user!} />} />
-						<Route path="/profil/:id" element={<Profil id={props.user?.id!} />} />
+          <Routes>
+						<Route index element={<Matchmaking user={props.user!} />}></Route>
+							<Route path="profile/:id" element={<Profile me={props.user!} />} />
+							<Route path="accountmanagement" element={<AccountManagement user={props.user!} />} />
+							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={props.user!} handlefound={() => {}} />} />
+							<Route path="*" element={<Navigate to="/home" replace />} />
 					</Routes>
 				</div>
         <div className='chat'>

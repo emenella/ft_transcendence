@@ -5,6 +5,8 @@ import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
 
+
+
 @WebSocketGateway(81, {namespace: 'game', cors: true})
 export class GameGateway {
     @WebSocketServer()
@@ -17,7 +19,7 @@ export class GameGateway {
     }
 
     async handleConnection(@ConnectedSocket() client: Socket) {
-        const user = this.authentificate(client);
+        const user = await this.authentificate(client);
         if (!user) {
             client.disconnect();
         }
@@ -26,9 +28,13 @@ export class GameGateway {
     async handleDisconnect(@ConnectedSocket() client: Socket) {
         const user = await this.authentificate(client);
         if (user) {
-            let ret  = this.gameService.leavePlayer(user.id);
-            if (!ret) {
-                this.gameService.leaveSpectator(user.id);
+            const ret = this.gameService.isPlayer(client);
+            if (ret) {
+                if (ret.isPlayer) {
+                    this.gameService.leavePlayer(user.id);
+                } else {
+                    this.gameService.leaveSpectator(user.id);
+                }
             }
         }
         client.disconnect();
@@ -78,7 +84,7 @@ export class GameGateway {
     // @SubscribeMessage('game:setup')
     // async onGameSetup(@ConnectedSocket() client: Socket): Promise<any> {
     //     const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-    //     const user = await this.userService.getUserFromConnectionId(payload.connectionId);
+    //     const user = await this.userService.getUserByConnectionId(payload.connectionId);
     //     if (user) {
     //         let setup: Setup = this.gameService.getGameSetup(user.id);
     //         client.emit('game:setup', setup);
@@ -102,15 +108,21 @@ export class GameGateway {
         }
     }
 
-    async authentificate(client: Socket): Promise<User> {
+    async authentificate(client: Socket): Promise<User | null> {
         if (client.handshake.headers.authorization) {
-            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-            let user = await this.userService.getUserFromConnectionId(payload.connectionId);
-            if (user) {
-                return user;
+            try {
+                const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+                let user = await this.userService.getUserByConnectionId(payload.connectionId);
+                if (user) {
+                    return user;
+                }
+            } catch (e) {
+                client.disconnect();
+                return null;
             }
         }
         client.disconnect();
-        throw new Error('Unauthorized');
+        return null;
+        
     }
 }

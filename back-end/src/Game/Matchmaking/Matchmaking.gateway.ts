@@ -18,11 +18,10 @@ export class MatchmakingGateway{
     async handleConnection(@ConnectedSocket() client: Socket)
     {
         const user = await this.authentificate(client);
-        if (!user)
+        if (user)
         {
-            client.disconnect()
+            this.matchmakingService.addSocket(user, client);
         }
-        this.matchmakingService.addSocket(user, client);
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket)
@@ -42,9 +41,7 @@ export class MatchmakingGateway{
         const user = await this.authentificate(client);
         if (user)
         {
-            let ret = await this.matchmakingService.joinQueue(user);
-            console.log(ret);
-            this.server.emit('matchmaking:join', user.id);
+            await this.matchmakingService.joinQueue(user);
         }
     }
 
@@ -55,19 +52,23 @@ export class MatchmakingGateway{
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
-            this.server.emit('matchmaking:leave', user.id);
         }
     }
 
-    async authentificate(client: Socket): Promise<User> {
+    async authentificate(client: Socket): Promise<User | null> {
         if (client.handshake.headers.authorization) {
-            const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-            let user = await this.userService.getUserFromConnectionId(payload.connectionId);
-            if (user) {
-                return user;
+            try {
+                const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
+                let user = await this.userService.getUserByConnectionId(payload.connectionId);
+                if (user) {
+                    return user;
+                }
+            } catch (e) {
+                client.disconnect();
+                return null;
             }
         }
         client.disconnect();
-        throw new Error('Unauthorized');
+        return null;
     }
 }

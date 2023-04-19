@@ -12,7 +12,7 @@ import { Socket } from "socket.io";
 
 @Injectable()
 export class MatchmakingService {
-    private sockets: Map<number, Socket> = new Map();
+    private sockets: Map<number, Socket> = new Map<number, Socket>();
     private queue: Array<number> = new Array();
     private setup: general = {
         id: null,
@@ -44,7 +44,7 @@ export class MatchmakingService {
 
     async leaveQueue(user: User): Promise<boolean> {
         console.log("leave queue " + user.id + " " + this.queue.includes(user.id));
-        if (this.queue.includes(user.id))
+        if (!this.queue.includes(user.id))
             return false;
         this.queue.splice(this.queue.indexOf(user.id), 1);
         console.log(this.queue);
@@ -69,7 +69,7 @@ export class MatchmakingService {
             id: user.id,
             username: user.username,
             color: "red",
-            length: 100,
+            length: 150,
             width: 10,
             speedX: 0,
             speedY: 5
@@ -166,6 +166,7 @@ export class MatchmakingService {
             let socket0 = this.sockets.get(bestMatch.user0.id);
             let socket1 = this.sockets.get(bestMatch.user1.id);
             if (socket0 && socket1) {
+                console.log("emit found match");
                 socket0.emit("matchmaking:foundMatch", game.getSetup().general.id);
                 socket1.emit("matchmaking:foundMatch", game.getSetup().general.id);
             }
@@ -177,7 +178,7 @@ export class MatchmakingService {
     }
 
     public async handleEndGame(id: string): Promise<void> {
-        const game = await this.gameService.getGame(id);
+        const game = this.gameService.getGame(id);
         if (!game)
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();
@@ -203,7 +204,7 @@ export class MatchmakingService {
         this.gameService.deleteGame(id);
     }
 
-    private async createMatchHistory(id: string, winner: User, looser: User): Promise<void> {
+    private async createMatchHistory(id: string, winner: User, loser: User): Promise<void> {
         const game = await this.gameService.getGame(id);
         if (!game)
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
@@ -211,18 +212,28 @@ export class MatchmakingService {
         const ids: Array<number> = game.getPlayersId();
         const history: Match = new Match();
         history.winner = winner;
-        history.looser = looser;
-        history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === looser.id ? score[0] : score[1]];
+        history.loser = loser;
+        history.scores = [ids[0] === winner.id ? score[0] : score[1], ids[0] === loser.id ? score[0] : score[1]];
         history.date = new Date();
         await this.historyService.addMatch(history);
     }
 
     public addSocket(user: User, socket: Socket): void {
+        if (this.sockets.has(user.id))
+            this.sockets.delete(user.id);
         this.sockets.set(user.id, socket);
     }
 
     public removeSocket(user: User): void {
         this.sockets.delete(user.id);
+    }
+
+    public isConnect(user: User): boolean {
+        return this.sockets.has(user.id);
+    }
+
+    public getSocket(user: User): Socket {
+        return this.sockets.get(user.id) as Socket;
     }
 
 }

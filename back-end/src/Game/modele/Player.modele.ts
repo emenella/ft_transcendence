@@ -35,9 +35,9 @@ export class Player {
         }
     }
 
-    public playerDisconnect(isLive: boolean, opp: Player): boolean {
+    public playerDisconnect(): boolean {
         this.isConnected = false;
-        return this.unready(isLive, opp);
+        return false;
     }
 
     public ready(isLive: boolean, opp: Player): boolean {
@@ -51,14 +51,11 @@ export class Player {
         return isLive;
     }
 
-    public unready(isLive: boolean, opp: Player): boolean {
+    public unready(opp: Player): boolean {
         this.isReady = false;
         this.emitUnready();
         opp.emitPlayerUnReady(this.id);
-        if (isLive) {
-            isLive = false;
-        }
-        return isLive;
+        return false;
     }
 
     public press(direction: Direction) {
@@ -184,11 +181,15 @@ export class Player {
     }
 
     public goal(isLive: boolean, opp: Player): boolean {
-        isLive = opp.unready(isLive, this);
+        isLive = opp.unready(this);
         this.reset();
         opp.reset();
         this.increaseScore();
         return isLive;
+    }
+
+    public getSocketId() {
+        return this.socket.id;
     }
 
 }

@@ -110,7 +110,7 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            this.isLive = player.playerDisconnect(this.isLive, player.getId() == this.player0.getId() ? this.player1 : this.player0);
+            this.isLive = player.playerDisconnect();
             return true;
         }
         return false;
@@ -133,7 +133,7 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            player.unready(this.isLive, player.getId() == this.player0.getId() ? this.player1 : this.player0);
+            player.unready(player.getId() == this.player0.getId() ? this.player1 : this.player0);
             this.isLive = false;
             return true;
         }
@@ -151,6 +151,24 @@ export class Game {
             return this.player1;
         }
         return undefined;
+    }
+
+    public getSocketId(): Array<string>
+    {
+        const socketId: Array<string> = [];
+        socketId.push(this.player0.getSocketId());
+        socketId.push(this.player1.getSocketId());
+        for (const spectator of this.spectators)
+        {
+            socketId.push(spectator.getSocketId());
+        }
+        return socketId;
+
+    }
+
+    public isPlayer(client: Socket): boolean
+    {
+        return this.player0.getSocketId() == client.id || this.player1.getSocketId() == client.id;
     }
     
     public handleEvent(id: number, key: string): void

@@ -8,6 +8,7 @@ import { Socket } from "socket.io";
 export class GameService {
     private games: Map<string, Game> = new Map();
     private users: Map<number, Game> = new Map();
+    private spectators: Map<number, Game> = new Map();
 
     private default: Setup = {
         general: {
@@ -56,6 +57,7 @@ export class GameService {
     }
 
     public deleteGame(id: string): void {
+        this.handlerGameFinish(id);
         this.games.delete(id);
     }
 
@@ -112,6 +114,15 @@ export class GameService {
         return games;
     }
 
+    public findGamesId(id: string): string | undefined {
+        for (const game of this.games.values()) {
+            if (game.getSetup().general.id == id) {
+                return game.getSetup().general.id as string;
+            }
+        }
+        return undefined;
+    }
+
     public handleGameEvent(userId: number, event: string): void {
         let game = this.users.get(userId);
         if (game) {
@@ -139,8 +150,8 @@ export class GameService {
 
     public spectateGame(matchId: string, userId: number, socket: Socket): boolean {
         let game = this.games.get(matchId);
-        if (game && !this.users.has(userId)) {
-            this.users.set(userId, game);
+        if (game) {
+            this.spectators.set(userId, game);
             game.spectatorConnect(userId, socket);
             return true;
         }
@@ -150,10 +161,10 @@ export class GameService {
     }
 
     public leaveSpectator(userId: number): boolean {
-        let game = this.users.get(userId);
+        let game = this.spectators.get(userId);
         if (game) {
-            this.users.delete(userId);
             game.spectatorDisconnect(userId);
+            this.spectators.delete(userId);
             return true;
         }
         else {
@@ -166,7 +177,21 @@ export class GameService {
         let game = this.games.get(gameId);
         if (game)
         {
+            this.users.delete(game.getSetup().player0.id as number);
+            this.users.delete(game.getSetup().player1.id as number);
             this.games.delete(gameId);
         }
+    }
+
+    public isPlayer(client: Socket): {gameId: string, isPlayer:boolean} | undefined {
+        for (const game of this.users.values()) {
+            const ids = game.getSocketId();
+            for (const id of ids) {
+                if (id == client.id) {
+                    return {gameId: game.getSetup().general.id as string, isPlayer: game.isPlayer(client)};
+                }
+            }
+        }
+        return undefined;
     }
 }

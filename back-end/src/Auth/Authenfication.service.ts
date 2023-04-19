@@ -32,22 +32,16 @@ export class AuthenticationService {
         return "https://api.intra.42.fr/oauth/authorize?client_id=" + API.UID + "&redirect_uri=" + API.URL + "&response_type=code";
     }
     
-    async login(user: any) {
+    async login(student: any) {
         let connection;
         try {
-            connection = await this.connectionService.getConnectionById42(user.id);
+            connection = await this.connectionService.getConnectionById42(student.id);
         }
         catch (e) {
-            const newUser = new User();
-            let foundUser = await this.userService.createUser(newUser);
-            
+            let user = new User();
             connection = new Connection();
-            connection.user = foundUser;
-            connection.id42 = user.id;
-            connection = await this.connectionService.createConnection(connection);
-            
-            foundUser.connection = connection;
-            foundUser = await this.userService.updateUser(foundUser.id, foundUser);
+            user = await this.userService.createUser(user, connection);
+            connection = await this.connectionService.createConnection(connection, user, student.id);
         }
         const payload: IToken = { connectionId: connection.id, otp: !connection.otp };
             return {
@@ -61,6 +55,7 @@ export class AuthenticationService {
         const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!passPhrase.secret)
             throw new HttpException('Passphrase not set', 500);
+        console.log(connection);
         if (connection.otp) {
             throw new HttpException('OTP already set', 401);
         }
@@ -129,7 +124,9 @@ export class AuthenticationService {
         if (!decode) {
             throw new HttpException('Secret not found', 404);
         }
-        const updateConnection = await this.connectionService.updateConnection(connection.id, decode.secret, decode.iv);
+        connection.otp = decode.secret;
+        connection.iv = decode.iv;
+        const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
         this.secret.delete(connection.id);
         return await this.otp(updateConnection, code);
     }
@@ -185,7 +182,11 @@ export class AuthenticationService {
         if (!connection.otp) {
             throw new Error("User is not otp");
         }
-        await this.connectionService.updateConnection(connection.id, undefined, undefined);
+        console.log("delete secret");
+        connection.otp = null;
+        connection.iv = null;
+        const ret = await this.connectionService.updateConnection(connection.id, connection);
+        console.log(ret);
     }
 
     async verifyJWT(token: string): Promise<IToken> {

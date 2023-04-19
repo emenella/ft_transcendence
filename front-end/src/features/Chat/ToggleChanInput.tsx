@@ -29,12 +29,12 @@ export default function ToggleChanInput(props : {toggleChan: (value : string) =>
         <>
             <select
                 id="toggleChan"
-                onChange={(e) => {setValue(e.target.value), props.toggleChan(e.target.value)} }
+                onChange={(e) => {setValue(e.target.value); props.toggleChan(e.target.value)} }
             >
             {chanJoined.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <button onClick={() => props.toggleChan(value)}>Select Channel</button>
-            <button onClick={() => {props.leaveChan(value), setValue(chanJoined[0])}}>Leave Channel</button>
+            <button onClick={() => {props.leaveChan(value); setValue(chanJoined[0])}}>Leave Channel</button>
         </>
     )
 }

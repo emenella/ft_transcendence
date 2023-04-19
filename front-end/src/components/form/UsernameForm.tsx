@@ -1,46 +1,42 @@
-import React, { ChangeEvent } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import React, { ChangeEvent, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import "./Form.css";
-import { setUsername } from "../../api/User";
-import { UsernameFormProps, UsernameFormState } from "../../utils/interface";
+import { changeUsername, changeUserStatus } from "../../api/User";
+import { UserStatus } from "../../utils/backend_interface";
+import { NavigateFunction } from "react-router-dom";
 
-class UsernameForm extends React.Component<UsernameFormProps, UsernameFormState> {
-	state = {
-		username: ''
-	}
+function UsernameForm({ navigate }: { navigate: NavigateFunction } ) {
+    const [username, setUsername] = useState('');
 
-	constructor(props: any) {
-		super(props);
-		this.setUsername = this.setUsername.bind(this);
-		this.handleClick = this.handleClick.bind(this);
-
-	}
-
-	async handleClick() {
-		const req = await setUsername(this.state.username);
+	async function handleClick() {
+		const req = await changeUsername(username);
 		if (req?.status === 201) {
-			this.props.navigate("/");
+			changeUserStatus(UserStatus.Connected);
+			navigate("/");
 		}
 		else {
-			toast.error('Erreur : veuillez réessayez.');
+			setUsername('');
 		}
 	}
+	
+	async function handleKeyDown(event: any) {
+		if (event.key === 'Enter')
+			handleClick();
+	};
 
-	setUsername(e: ChangeEvent<HTMLInputElement>): void {
-		this.setState({ username: e.target.value });
-	}
+    const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) =>{
+        setUsername(e.target.value);
+    };
 
-	render() {
-		return (
-			<div className="parent">
-				<Toaster />
-				<div className="form">
-					<label>Veuillez vous choisir un pseudo : <input type="text" onChange={this.setUsername} /> </label>
-					<button onClick={this.handleClick}>Envoyer</button>
-				</div>
+	return (
+		<div className="parent">
+			<Toaster />
+			<div className="form">
+				<label>Pseudonyme : <input type="text" value={username} onChange={handleUsernameChange} onKeyDown={handleKeyDown}/> </label>
+				<button onClick={handleClick}>Envoyer</button>
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export default UsernameForm;

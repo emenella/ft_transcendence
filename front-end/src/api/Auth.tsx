@@ -21,13 +21,6 @@ export async function firstConnexion() {
 	}
 }
 
-export async function login(id: number): Promise<string> {
-	let json = { user: { id: id } };
-	let user = await axios.post('/api/auth/admin', json, { headers: { 'Content-Type': 'application/json' }});
-	const token = await user.data.access_token;
-	return token;
-}
-
 export async function getQRCode(access_token: string | null) {
 	try {
 		if (access_token == null) {
