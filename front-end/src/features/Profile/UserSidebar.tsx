@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 import './UserSidebar.css'
 import { getMe } from '../../api/User';
 import { User } from '../../utils/backend_interface';
-import { invite, accept, deny } from '../../utils/friends_blacklists_system';
+import { invite } from '../../utils/friends_blacklists_system';
 import Emoji from '../../components/Emoji';
 import UsernameLink from '../../components/UsernameLink';
 import { AcceptAndDenyFriendButtons } from '../../components/button/Buttons';
@@ -36,7 +36,7 @@ function UserSidebar() {
 	
     const listFriends = friends?.map((friend: User) => {
         return (
-            <div className='friend'>
+            <div className='friend' key={friend.id}>
                 <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <div>
                     <UsernameLink user={friend} />
@@ -54,7 +54,7 @@ function UserSidebar() {
 
     const listFriendsInvite = friendsInvites?.map((friend: User) => {
         return (
-            <div className='friend-invite'>
+            <div className='friend-invite' key={friend.id}>
                 <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
                 <UsernameLink user={friend} />
                 <div>
