@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { UserController } from "./User.controller";
 import { UserService } from "./service/User.service";
 import { User } from "./entity/User.entity";
@@ -9,12 +9,17 @@ import { MulterModule } from "@nestjs/platform-express";
 import { factory } from "./utils/multer.utils";
 import { HistoryService } from "./service/Match.service";
 import { Match } from "./entity/Match.entity";
-import { FrontGateway } from "./User.Gateway";
+import { UserGateway } from "../Gateway/User.gateway";
+import { AuthenticationModule } from "../Auth/Authenfication.module";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([User, Connection, Match]), MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]})],
+	imports: [
+		TypeOrmModule.forFeature([User, Connection, Match]),
+		MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}),
+        forwardRef(() => AuthenticationModule)
+	],
 	controllers: [UserController],
-	providers: [FrontGateway, UserService, ConnectionService, HistoryService],
+	providers: [UserService, ConnectionService, HistoryService, UserGateway],
 	exports: [UserService, ConnectionService, HistoryService]
 })
 export class UserModule {}

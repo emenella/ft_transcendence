@@ -203,16 +203,16 @@ export class UserService {
 		}
 	}
 
-	//~~ Game
-	async inviteGame(sender: User, receiver: User): Promise<void> {
-		//
-	}
+// 	//~~ Game
+// 	async inviteGame(sender: User, receiver: User): Promise<void> {
+// 		//
+// 	}
 	
-	async acceptGame(sender: User, receiver: User): Promise<void> {
-		//
-	}
+// 	async acceptGame(sender: User, receiver: User): Promise<void> {
+// 		//
+// 	}
 
-	async denyGame(receiver: User, sender: User): Promise<void> {
-		//
-	}
+// 	async denyGame(receiver: User, sender: User): Promise<void> {
+// 		//
+// 	}
 }
