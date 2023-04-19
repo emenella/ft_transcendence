@@ -12,11 +12,12 @@ export class MessageService {
         private messageRepository: Repository<Message>
     ) {}
 
-    async createMessage(author: User, chan: Chan, content: Message["content"]) {
+    async createMessage(author: User, authorName: string, chan: Chan, content: Message["content"]) {
         const message = await this.messageRepository.create();
 
         message.author = author;
         message.channel = chan;
+        message.authorName = authorName;
         message.content = content;
 
         return await this.messageRepository.save(message);

@@ -12,7 +12,7 @@ export class MessageControllers {
     async create(@Param("user") user: User,
                 @Param("chan") chan: Chan,
                 @Param("content") content: Message["content"]): Promise<Message> {
-        return this.messageService.createMessage(user, chan, content);
+        return this.messageService.createMessage(user, user.username, chan, content);
     }
 
     @Get(":id")

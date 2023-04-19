@@ -10,20 +10,37 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
             setValue(props.publicChans[0]);
         }
     }, [])
+
+    function resize(id: string, size: string) {
+        const location = document.getElementById(id);
+        if (location)
+            location.style.width = size;
+    }
+
+    useEffect(() => {
+        resize("selectJoin", "95%");
+        resize("inputJoin", "90%");
+        resize("inputPassJoin", "90%");
+    })
     
     return (
         <>
-            <select onChange={(e) =>setValue(e.target.value)}>
-            {props.publicChans.map(arrayChan => <option value={arrayChan}>{arrayChan}</option>)}
+            <select
+                id="selectJoin"
+                onChange={(e) =>setValue(e.target.value)}
+            >
+            {props.publicChans.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <input
+                id="inputJoin"
                 onChange={(e) => setValue(e.target.value)}
-                placeholder="select channel"
+                placeholder="channel to join"
                 value={value}
             />
             <input
+                id="inputPassJoin"
                 onChange={(e) => setPass(e.target.value)}
-                placeholder="password"
+                placeholder="password (optional)"
                 value={password}
             />
             <button onClick={() => props.joinChan(value, password)}>Join Channel</button>

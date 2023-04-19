@@ -1,0 +1,23 @@
+.ligne {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.header {
+    display: block;
+    white-space: nowrap;
+    margin-left: 1px;
+}
+
+.content {
+    background: #91D2CC;
+    border-radius: 5px;
+}
+
+.message {
+    white-space: pre-line;
+    height: 15vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

@@ -52,24 +52,7 @@ function ChatFront() {
 function BodyConnected({ user }: { user: User }) {
 	return (
 		<div className="connected">
-			<ChatSidebar />
-			<div className="connectedCenter">
-				<div>
-					<Routes>
-						<Route index element={<Matchmaking user={user} />}></Route>
-							<Route path="profile/:id" element={<Profile me={user} />} />
-							<Route path="accountmanagement" element={<AccountManagement user={user!} />} />
-							<Route path="spec/:id" element={<PongGame height={600} width={800} spec={null} isQueue={false} user={user} handlefound={() => {}} />} />
-							<Route path="*" element={<Navigate to="/home" replace />} />
-					</Routes>
-				</div>
-				<div>
-					<Routes>
-						<Route path="/" element={<Chat />} />
-					</Routes>
-				</div>
-				<ChatFront />
-			</div>
+			<Chat user={user}/>
 			<UserSidebar />
 		</div>
 	);
