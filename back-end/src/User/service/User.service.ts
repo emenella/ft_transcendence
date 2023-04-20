@@ -35,6 +35,7 @@ export class UserService {
 		if (updatedUser.elo) userToUpdate.elo = updatedUser.elo;
 		return await this.userRepository.save(userToUpdate);
 	}
+	
 	async deleteUser(id: number): Promise<void> {
 		await this.userRepository.delete(id);
 	}
@@ -47,6 +48,13 @@ export class UserService {
 	async changeStatus(user: User, newStatus: number): Promise<void> {
 		user.status = newStatus;
 		await this.userRepository.save(user);
+		console.log("PUTAIN");
+		user.friends.forEach(friend => {
+			if (friend.socket) {
+				console.log(friend.username)
+				friend.socket.emit('friendStatusChanged');			
+			}
+		});
 	}
 
 	async getUserByConnectionId(connectionId: number): Promise<User> {

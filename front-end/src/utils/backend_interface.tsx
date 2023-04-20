@@ -10,6 +10,7 @@ export interface Match {
 export interface User {
     socket: Socket;
     id: number;
+    socket: Socket;
     username: string;
 	avatarPath: string;
     is2FAActivated: boolean;

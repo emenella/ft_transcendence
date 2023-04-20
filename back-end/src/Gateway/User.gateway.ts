@@ -1,6 +1,7 @@
 import { Inject, forwardRef } from '@nestjs/common';
 import { WebSocketGateway, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SubscribeMessage } from '@nestjs/websockets';
 import { AuthenticationService } from '../Auth/Authenfication.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
@@ -45,5 +46,20 @@ export class UserGateway {
 			}
 		}
 		return (user ? user : null);
+	}
+
+	@SubscribeMessage('friendStatusChange')
+	async onFriendStatusChange(@ConnectedSocket() client: Socket, status: number) {
+        const user: User | null = await this.authentificate(client);
+		if (user) {
+			this.userService.changeStatus(user, status);
+			console.log("PUTAIN");
+			user.friends.forEach(friend => {
+				if (friend.socket) {
+					console.log(friend.username)
+					friend.socket.emit('friendStatusChanged');			
+				}
+			});
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext } from 'react';
+import React, { ChangeEvent, useContext, useEffect } from 'react';
 import './UserSidebar.css'
 import { getMe } from '../../api/User';
 import { User } from '../../utils/backend_interface';
@@ -22,13 +22,21 @@ function renderSwitch(num: number) {
 function UserSidebar() {
     const userContext = useContext(UserContext);
     const user = userContext?.user;
+    
+    async function friendStatusListener() {
+        userContext?.setUser( await getMe() )
+    }
 
-    const [friends, setFriends] = React.useState<User[]>();
-    React.useEffect(() => {
-		setFriends(user?.friends);
-    }, [user]);
+    useEffect(() => {
+        user?.socket?.on('friendStatusChanged', friendStatusListener);
+        return () => {
+            user?.socket?.off('friendStatusChanged', friendStatusListener);
+        }
+    }, [user?.socket])
 
-    const listFriends = friends?.map((friend: User) => {
+
+
+    const listFriends = user?.friends?.map((friend: User) => {
         return (
             <div className='friend' key={friend.id}>
                 <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
@@ -41,12 +49,7 @@ function UserSidebar() {
     }
     );
 
-    const [friendsInvites, setFriendsInvite] = React.useState<User[]>();
-    React.useEffect(() => {
-        setFriendsInvite(user?.friend_requests);
-    }, [user]);
-
-    const listFriendsInvite = friendsInvites?.map((friend: User) => {
+    const listFriendsInvite = user?.friend_requests?.map((friend: User) => {
         return (
             <div className='friend-invite' key={friend.id}>
                 <img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
