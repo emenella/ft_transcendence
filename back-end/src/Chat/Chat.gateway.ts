@@ -89,7 +89,9 @@ export class ChatGateway {
 
     if (user !== undefined) {
       if (data.chan[0] !== '#') {
-        const dmChan : Chan | undefined = await this.chanService.getDm(await this.userService.getUserById(user.id), await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number))
+        let user1 = await this.userService.getUserById(user.id);
+        let user2 = await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number);
+        const dmChan : Chan | undefined = await this.chanService.getDm(user1, user2);
         if (dmChan !== undefined) {
           let ret = await this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, dmChan, data.msg);
           let hour: number = (ret.date.getUTCHours() >= 22 ? ret.date.getUTCHours() - 22 : ret.date.getUTCHours() + 2 );
@@ -103,6 +105,8 @@ export class ChatGateway {
             chan: data.chan,
             msg: ret.content
           };
+          this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
+          newMessage.chan = user.username;
           this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
           return;
         }

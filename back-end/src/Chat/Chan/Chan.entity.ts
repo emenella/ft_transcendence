@@ -35,7 +35,7 @@ export class Chan {
 	@Column({default: false})
 	isDm : boolean;
 
-    @ManyToOne(() => User, (user: User) => user.ownedChans)
+    @ManyToOne(() => User, (user: User) => user.ownedChans, {eager: true, onDelete: 'CASCADE' })
     @JoinColumn()
     owner: User;
 
@@ -57,13 +57,16 @@ export class RelationTable
     @PrimaryGeneratedColumn('uuid')
     id: number;
 
-    @ManyToOne(() => Chan)
+    @ManyToOne(() => Chan, (chan: Chan) => chan.relations, {eager: true, onDelete: 'CASCADE' })
 	@JoinColumn()
 	chan: Chan;
 
-	@ManyToOne(() => User)
+	@ManyToOne(() => User, (user: User) => user.relations, {eager: true, onDelete: 'CASCADE' })
 	@JoinColumn()
 	user: User;
+
+    @RelationId((self: RelationTable) => self.user)
+    readonly userId: User['id'];
 
 	@Column({default: false})
 	isAdmin: boolean;

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { UserModule } from './User/User.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './ormconfig';
-import { AuthModule } from './Auth/Auth';
+import { AuthModule } from './Auth/Auth.module';
 import  { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './Auth/guard/jwt.guard';
 import { ServeStaticModule } from '@nestjs/serve-static';

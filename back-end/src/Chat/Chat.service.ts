@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { Socket, Server } from 'socket.io'
 import { User } from "../User/entity/User.entity";
 import { UserService } from "../User/service/User.service";
@@ -13,20 +13,21 @@ export class ChatService {
     private chatUsers : ChatUser[] = [];
 
     constructor(
-        private userService: UserService,
-        private authService: AuthService,
-        private chanService: ChanService
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => AuthService)) private authService: AuthService,
+        @Inject(forwardRef(() => ChanService)) private chanService: ChanService
     ) {}
 
     async connectUserFromSocket(socket: Socket): Promise<ChatUser | undefined> {
         if (socket.handshake.headers.authorization) {
             try {
                 const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
+                
                 if (connection === null || connection === undefined)
-                    return (undefined);
-        
+                return (undefined);
+                
                 const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
-        
+                
                 if (user === null || user === undefined)
                 {
                     socket.disconnect();
@@ -44,7 +45,6 @@ export class ChatService {
                 socket.disconnect();
                 return (undefined);
             }
-
         }
         else {
             socket.disconnect();
@@ -56,13 +56,12 @@ export class ChatService {
         if (socket.handshake.headers.authorization) {
             try {
                 const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
-
+                
                 if (connection === null || connection === undefined)
-                if (connection === null || connection === undefined)
-                    return (undefined);
-        
+                return (undefined);
+                
                 const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
-        
+                
                 if (user === null || user === undefined)
                 {
                     socket.disconnect();
@@ -133,6 +132,57 @@ export class ChatService {
         }
 	}
 
+    async createDMChan(userId1: number, userId2: number) : Promise<boolean | string> {
+        let user1 : User = await this.userService.getUserById(userId1);
+        let user2 : User = await this.userService.getUserById(userId2);
+        let chatUser1 : ChatUser | undefined = this.getUserFromID(userId1);
+        let chatUser2 : ChatUser | undefined = this.getUserFromID(userId2);
+
+        if (user1 === undefined || user2 === undefined) {
+            return ("error user(s) doesn't exist !");
+        }
+        if (chatUser1 === undefined || chatUser2 === undefined) {
+            return ("error user(s) not connected to Chat !");
+        }
+        let ret : Chan | string = await this.chanService.createChan(user1.username + user2.username, user1, false, false, undefined, true, user2);
+        if (typeof ret === 'string') {
+            return ("error during DM creation : " + ret);
+        }
+
+        chatUser1.socket.join(ret.id.toString());
+        chatUser1.socket.emit('createdChan', chatUser2.username);
+        chatUser2.socket.join(ret.id.toString());
+        chatUser2.socket.emit('createdChan', chatUser1.username);
+        return (true);
+    }
+
+    async leaveDM(userId1: number, userId2: number) : Promise<boolean | string> {
+        let user1 : User = await this.userService.getUserById(userId1);
+        let user2 : User = await this.userService.getUserById(userId2);
+        let chatUser1 : ChatUser | undefined = this.getUserFromID(userId1);
+        let chatUser2 : ChatUser | undefined = this.getUserFromID(userId2);
+
+        if (user1 === undefined || user2 === undefined) {
+            return ("error user(s) doesn't exist !");
+        }
+        if (chatUser1 === undefined || chatUser2 === undefined) {
+            return ("error user(s) not connected to Chat !");
+        }
+        let ret = await this.chanService.getDm(user1, user2);
+        if (ret === undefined) {
+            return ("error no such DM");
+        }
+        const leaved = await this.chanService.leaveDM(ret.id, userId1, userId2);
+        if (typeof leaved === 'string') {
+            return ("error leaving DM")
+        }
+        chatUser1.socket.leave(ret.id.toString());
+        chatUser1.socket.emit('leftChan', chatUser2.username);
+        chatUser2.socket.leave(ret.id.toString());
+        chatUser2.socket.emit('leftChan', chatUser1.username);
+        return true;    
+    }
+
     async handleCommand(server: Server, socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {
         const command: string[] = msg.split(" ");
         const isAdm: boolean = await this.chanService.isAdmin(chan.id, user.id);
@@ -159,7 +209,6 @@ export class ChatService {
                     return true;
                 }
 
-                console.log(invitedUser);
                 invitedUser.socket.emit('invited', ret.title);
                 return true;
             } 
@@ -357,6 +406,21 @@ export class ChatService {
                     }
                     socket.emit('error', 'Password disable.');
                 }
+                return true;
+            }
+            case "/help" : {
+                if (command.length != 1) {
+                    socket.emit('error', 'usage : /help');
+                    return true;
+                }
+                let newMessage : any = {
+                    date: "(command)",
+                    authorId: user.id,
+                    author: user.username,
+                    chan: chan.title,
+                    msg: "Owner/Admin commands :\n- /invite <username> to invite a user in this channel\n- /mute <username> <duration(minutes)> to mute a user for the duration (/unmute <username> to end the mute earlier)\n- /ban <username> <duration(minutes)> to ban a user for the duration (/unban <username> to end the ban earlier)\nOwner only commands :\n- /promote <username> to give a user the admin status (/demote <username> to revoke the status)\n- /password <newpassword> to change the chan password (activate password if chan didn't have one before, to clear password just send '/password'"
+                };
+                socket.emit('msgToClient', newMessage);
                 return true;
             }
             default : {

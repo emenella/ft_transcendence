@@ -10,13 +10,15 @@ import { factory } from "./utils/multer.utils";
 import { HistoryService } from "./service/Match.service";
 import { Match } from "./entity/Match.entity";
 import { SocketModule } from "../Socket/Socket.module";
-import { AuthModule } from "../Auth/Auth";
+import { AuthModule } from "../Auth/Auth.module";
+import { ChatModule } from "../Chat/Chat.module";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([User, Connection, Match]),
 		MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}),
 		forwardRef(() => AuthModule),
+		forwardRef(() => ChatModule),
         forwardRef(() => SocketModule)
 	],
 	controllers: [UserController],
