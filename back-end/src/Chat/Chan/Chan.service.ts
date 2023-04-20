@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chan, RelationTable } from "./Chan.entity";
@@ -17,9 +17,8 @@ export class ChanService {
         
 	    @InjectRepository(RelationTable)
 	    private chanRelRepo: Repository<RelationTable>,
-        
+	    @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
 	    private readonly passwordService: ChanPasswordService,
-	    private readonly userService: UserService,
 	    private readonly messageService: MessageService
     ) {}
 
@@ -100,20 +99,27 @@ export class ChanService {
 	}
 
 	async getDm(user1 : User, user2: User): Promise<Chan | undefined> {
-		const chansDm = await this.chanRepo.find({ where : { isDm: true } });
+		const chansDm : Chan[] = await this.chanRepo.find({ where : { isDm: true } });
 
-		for (let c of chansDm)
-		{
-			const resp = await this.chanRelRepo.find({ relations : ["user", "chan"],
-				        where: [ {chan: { id: c.id }, user: {id: user1.id}}, {chan: { id: c.id }, user: {id: user2.id} } ] })
-			if (resp.length === 2)
+		for (let c of chansDm) {
+			const resp = await this.chanRelRepo.find({	relations : ["user", "chan"],
+				        								where: [
+															{chan: { id: c.id }, user: {id: user1.id}},
+															{chan: { id: c.id }, user: {id: user2.id}}
+														] })
+
+			if (resp.length === 2) {
 				return c;
+			}
 		}
-
 		return undefined;
 	}
 
 	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string | undefined, isDm: boolean, user2: User) : Promise<string | Chan> {
+		let ret = title.split(" ");
+		if (ret.length > 1)
+			return "chan title must not contain white space"
+		title = ret[0];
 		if (isDm !== true && title[0] !== '#')
 			return "Chan title must begin by '#' !";
 		if (isDm !== true && await this.getChanByTitle(title))
@@ -121,11 +127,11 @@ export class ChanService {
 		if (isDm && user2 === undefined)
 			return "User doesn't exist";
 		if (isDm && await this.findDm(owner, user2))
-		return "DM chan already exists";
+			return "DM chan already exists";
 		if (title.length < 3 || title.length > 16)
-		return "Title length must be between 3 and 16";
+			return "Title length must be between 3 and 16";
 		if (password_key && (password_key.length < 3 || password_key.length > 16))
-		return "Password length must be between 3 and 16";
+			return "Password length must be between 3 and 16";
 		
 		let chan: Chan = new Chan();
 
@@ -144,19 +150,17 @@ export class ChanService {
 		chanRel.chan	= chan;
 		chanRel.user	= owner;
 		chanRel.isAdmin = true;
+		await this.chanRelRepo.save(chanRel);
 
 		if (isDm && owner.id !== user2.id)
 		{
-			let chanRel2	: RelationTable	= new RelationTable();
+			let chanRel2: RelationTable = new RelationTable();
 
 			chanRel2.chan	= chan;
 			chanRel2.user	= user2;
-			chanRel.isAdmin = false;
 			chanRel2.isAdmin = false;
 			await this.chanRelRepo.save(chanRel2);
 		}
-
-		await this.chanRelRepo.save(chanRel);
 
 		return chan;
 	}
@@ -178,6 +182,14 @@ export class ChanService {
             else
                 await this.uninviteUser(chan.id, user.id);
         }
+		let rel = await this.getRelOf(chan.id, user.id);
+
+		if (rel !== undefined)
+		{
+			if (rel.isInvite === true){
+				await this.uninviteUser(chan.id, user.id);
+			}
+		}
             
             
         let chanRel	: RelationTable	=  new RelationTable();
@@ -188,7 +200,7 @@ export class ChanService {
         await this.chanRelRepo.save(chanRel);
         
         return (chan);
-    }  
+    }
 
     async joinChanById(chanId: number, user: User, password_key: string | null) : Promise<string | Chan>  {
         const chan = await this.getChanById(chanId);
@@ -224,25 +236,28 @@ export class ChanService {
 		const chan = await this.getChanById(chanId);
 		
 		if (chan === undefined || chan === null)
-		return "No such chan !";
+			return "No such chan !";
 		if (chan.isDm === true)
 			return ("You can't leave dm chan !");
 			
-			const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
-			where : { chan: { id : chan.id }, user : { id : userId} } })
-			if (ret === undefined || ret === null)
-		    return ("your are not in chan");
-			
-			await this.chanRelRepo.remove(ret);
-		const rels = await this.chanRelRepo.find({ relations : ["chan"],
-			        where : { chan : { id : chan.id}, ban_expire: undefined }});
+		const ret = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
+					where : { chan: { id : chan.id }, user : { id : userId} } })
+		if (ret === undefined || ret === null)
+			return ("your are not in chan");
+		await this.chanRelRepo.remove(ret);
 
+		const query = this.chanRelRepo
+  			.createQueryBuilder('relation')
+  			.where('relation.chanId = :chanId', { chanId })
+  			.andWhere('relation.ban_expire IS NULL')
+  			.getMany();
+		const rels = await query;
 		if (rels.length === 0) {
-			// await this.chanRelRepo.createQueryBuilder()
-			// 	.relation("chan")
-			// 	.of({id: chan.id})
-			// 	.delete()
-			// 	.execute();
+			const banRels : RelationTable[] = await this.chanRelRepo.find({ relations : ["chan"],
+					where : { chan : { id : chan.id}}});
+			banRels.forEach(async (rel) => {
+				await this.chanRelRepo.remove(rel)
+			})
 			
 			const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
 			const messagesIds : number[] = [];
@@ -253,6 +268,7 @@ export class ChanService {
 				await this.messageService.deleteMessage(id);
 			})
 			await this.chanRepo.remove(chan);
+			return (undefined);
 		}
 		else if (userId === chan.ownerId) {
 			let newOwner : User;
@@ -278,7 +294,39 @@ export class ChanService {
 				}
 			}
 		}
-		return (undefined);
+		return (chan.ownerId);
+	}
+
+	async leaveDM(chanId: number, userId1: number, userId2: number) : Promise<undefined | string | number> {
+		const chan = await this.getChanById(chanId);
+		
+		if (chan === undefined || chan === null)
+			return "No such chan !";
+			
+		const ret1 = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
+					where : { chan: { id : chan.id }, user : { id : userId1} } })
+		if (ret1 === undefined || ret1 === null)
+			return ("your are not in chan");
+			
+		await this.chanRelRepo.remove(ret1);
+
+		const ret2 = await this.chanRelRepo.findOne({ relations : ["user", "chan"],
+					where : { chan: { id : chan.id }, user : { id : userId2} } })
+		if (ret2 === undefined || ret2 === null)
+			return ("your are not in chan");
+			
+		await this.chanRelRepo.remove(ret2);
+
+		const messages : Message[] = await this.messageService.getMessagesFromChanId(chan.id);
+		const messagesIds : number[] = [];
+		messages.forEach((message) => {
+			messagesIds.push(message.id);
+		})
+		await messagesIds.forEach(async (id) => {
+			await this.messageService.deleteMessage(id);
+		})
+		await this.chanRepo.remove(chan);
+		return (chan.ownerId);
 	}
 
     async checkBan(chanId: number, userId: number) : Promise<boolean> {

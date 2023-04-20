@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Matchmaking from '../Game/Matchmaking';
@@ -15,11 +15,15 @@ import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { msg } from './interfaceChat';
 import Spectate from '../../routes/Spec';
+import { UserContext } from '../../utils/UserContext';
 
 let activeChan: string = '';
-let channels : Map<string, msg[]> = new Map<string,msg[]>();
+let channels: Map<string, msg[]> = new Map<string, msg[]>();
 
 function Chat() {
+  const userContext = useContext(UserContext);
+	const user = userContext?.user;
+
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
@@ -58,7 +62,6 @@ function Chat() {
   useEffect(() => {
     const newSocket = io(WebChat, { extraHeaders: { Authorization: getToken() as string } });
     setSocket(newSocket);
-    console.log("useEffect Chat socket");
   }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
@@ -88,7 +91,11 @@ function Chat() {
   }
 
   const messageListener = (data: {date: string, authorId: number, author: string, chan: string, msg: string}) => {
-    console.log(data);
+    for (let usr of user!.blacklist) {
+      if (usr.username === data.author) {
+        return;
+      }
+    }
     let chanMessages : msg[] = channels.get(data.chan) as msg[];
     let message : msg = {date: data.date, authorId: data.authorId, author: data.author, content: data.msg};
     channels.set(data.chan, [...chanMessages, ...[message]]);
@@ -209,25 +216,16 @@ function Chat() {
       <div className="connectedCenter">
         <div>
           <Routes>
-            <Route index element={<Matchmaking />}></Route>
+            <Route index element={<Matchmaking/>}></Route>
             <Route path="profile/:id" element={<Profile />} />
             <Route path="accountmanagement" element={<AccountManagement />} />
             <Route path="spec/:id" element={<Spectate />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
 				</div>
-        <div className='chat'>
-          <div className='chanTitle'>{activeChan}</div>
-          <div className='messagesList'>
-            <Message messages = {msgs}/>
-          </div>
-          <div className='inputMessage'>
-            <MessageInput send={send} activeChan={activeChan}/>
-          </div>
-        </div>
 			</div>
-    </>
-  )
+		</>
+	)
 }
 
 export default Chat

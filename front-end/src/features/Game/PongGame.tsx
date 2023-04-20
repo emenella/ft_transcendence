@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
+
 
 const WebGame = url + '/game';
 const WebMatchmaking = url + '/matchmaking';
@@ -18,21 +19,25 @@ interface PongGameProps {
 
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const game = useRef<Game>();
+    const socketGame = useRef<Socket>();
+    const socketMatchmaking = useRef<Socket>();
     const userContext = useContext(UserContext);
     const user = userContext?.user;
-
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
-    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
-    let game: Game | null = null;
     
     useEffect(() => {
         console.log('componentDidMount Pong');
+        const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+        socketGame.current = newSocketGame;
+        const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
+        socketMatchmaking.current = newSocketMatchmaking;
         
         return () => {
             console.log('componentWillUnmount Pong');
-            game?.leaveQueue();
-            game?.leaveGame();
+            game.current?.leaveQueue();
+            socketGame.current?.disconnect();
+            socketMatchmaking.current?.disconnect();
         };
     }, []);
     
@@ -43,7 +48,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 console.log('no state game');
                 return;
             }
-            game.joinQueue();
+            game.current?.joinQueue();
         };
         
         const leaveQueue = () => {
@@ -51,7 +56,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 console.log('no state game');
                 return;
             }
-            game.leaveQueue();
+            game.current?.leaveQueue();
         };
         
         const searchGame = () => {
@@ -60,30 +65,32 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 return;
             }
             console.log('searching game');
-            game.searchGame();
+            game.current?.searchGame();
         };
         function setGame() {
             const ctx = canvasRef.current?.getContext('2d');
-            if (!game && user && ctx) {
+            if (!game.current && user && ctx) {
                 console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
-                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
-                game = newGame;
+                const newGame = new Game(socketGame.current!, socketMatchmaking.current!, user, ctx);
+                game.current = newGame;
             }
         }
         const handlefoundGame = () => {
+            console.log('handlefoundGame');
             props.handlefound();
         };
-        socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
-    
+        
         setGame();
+        console.log(game.current);
+        socketMatchmaking.current?.on('matchmaking:foundMatch', handlefoundGame);
         if (props.spec === null) searchGame();
         if (props.isQueue) joinQueue();
         else leaveQueue();
         
         if (props.spec) {
-            game?.spectateGame(props.spec);
+            game.current?.spectateGame(props.spec);
         }
-    }, [props.isQueue, props.spec]);
+    }, [props.isQueue, props.spec, props.height, props.width]);
     
     
 
@@ -93,7 +100,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 ref={canvasRef}
                 width={props.width}
                 height={props.height}
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%'}}
             />
         </div>
         );

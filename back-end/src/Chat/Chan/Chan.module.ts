@@ -8,7 +8,10 @@ import { Message } from "../Message/Message.entity";
 import { MessageService } from "../Message/Message.service";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Chan, RelationTable, Message]), forwardRef(() => UserModule)],
+    imports: [
+        TypeOrmModule.forFeature([Chan, RelationTable, Message]),
+        forwardRef(() => UserModule)
+    ],
     providers: [ChanPasswordService, ChanService, MessageService],
     exports: [ChanService]
 })

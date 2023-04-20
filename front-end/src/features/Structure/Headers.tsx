@@ -3,6 +3,10 @@ import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 import { Link } from "react-router-dom";
 
+function HeaderBase() {
+	return 
+}
+
 export function HeaderConnected({ logout }: { logout: () => void }) {
 	const userContext = useContext(UserContext);
     const user = userContext?.user;

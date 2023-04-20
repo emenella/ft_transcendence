@@ -110,7 +110,7 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            this.isLive = player.playerDisconnect();
+            player.playerDisconnect();
             return true;
         }
         return false;
@@ -133,8 +133,8 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            
-            this.isLive = player.unready(this.isLive, player.getId() == this.player0.getId() ? this.player1 : this.player0);
+            player.unready(player.getId() == this.player0.getId() ? this.player1 : this.player0);
+            this.isLive = false;
             return true;
         }
         return false;
@@ -227,15 +227,6 @@ export class Game {
     public getSetup(): Setup
     {
         return this.setup;
-    }
-
-    public forceStart(): void
-    {
-        this.isLive = true;
-        this.player0.ready(this.isLive, this.player1);
-        this.player1.ready(this.isLive, this.player0);
-        this.sendGameInfo();
-        this.sendGameInfoToSpectators();
     }
     
     public sendGameInfo(): void

@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
 import { User } from "../User/entity/User.entity";
 import { player, ball, general } from "./interface/Game.interface";
-import { UserService } from "../User/service/User.service";
 import { SocketService } from "../Socket/Socket.service";
 
 @Injectable()
@@ -20,19 +19,18 @@ export class GameService {
             ScoreWin: 5,
             Overtime: true,
             OvertimeScore: 3,
-            height: 1000,
-            width: 1000,
+            height: 1080,
+            width: 1920,
     };
 
     private setupBall: ball = {
         color: "green",
         radius: 20,
-        speed: 10,
+        speed: 5,
         maxSpeed: 20
     };
 
-    constructor(private readonly userService: UserService,
-                private readonly socketService: SocketService) {
+    constructorprivate readonly socketService: SocketService) {
     }
 
     public getGame(id: string): Game | undefined {
@@ -194,19 +192,10 @@ export class GameService {
         return -1;
     }
 
-    public async acceptRequest(id: number, user: User): Promise<boolean> {
-        if (this.request[id] && this.request[id].to == user.id) {
-            const from = await this.userService.getUserById(this.request[id].from);
+    public async acceptRequest(id: number, from: User, user: User): Promise<boolean> {
+        if (this.request[id] && this.request[id].from == from.id) {
             const setup: Setup = await this.createSetup(from, user);
             this.createGame(setup, this.handlerGameFinish.bind(this));
-            this.request.splice(id, 1);
-            return true;
-        }
-        return false;
-    }
-
-    public async declineRequest(id: number, user: User): Promise<boolean> {
-        if (this.request[id] && this.request[id].to == user.id) {
             this.request.splice(id, 1);
             return true;
         }

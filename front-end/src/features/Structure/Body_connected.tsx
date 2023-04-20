@@ -29,7 +29,7 @@ function BodyConnected() {
 			const req = await acceptDuel(id);
 			if (req?.status === 200) {
 				toast.success('Invitation acceptée.');
-				navigate("");
+				navigate("/home");
 			} else
 				toast.error('Erreur. Veuillez réessayer.');
 		}
