@@ -89,8 +89,8 @@ export class Paddle
     {
         // Draw paddle
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.posX, this.posY, this.width, this.length/2);
-        ctx.fillRect(this.posX, this.posY, this.width, -this.length/2);
+        ctx.fillRect(this.posX, this.posY, this.width, this.length);
+        ctx.fillRect(this.posX, this.posY, this.width, -this.length);
     }
 
     public setPos(nPosX: number, nPosY: number)
