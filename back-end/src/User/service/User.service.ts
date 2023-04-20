@@ -147,8 +147,6 @@ export class UserService {
 		else if (!sender.friend_requests.some((f) => { return f.id === receiver.id }))
 			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
 		else {
-			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
-				throw new HttpException(`Couldn't create channel.`, 400)
 			sender.friend_requests.splice(sender.friends.indexOf(receiver), 1)
 			sender.friends.push(receiver);
 			sender.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
@@ -156,6 +154,8 @@ export class UserService {
 			receiver.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
+				throw new HttpException(`Couldn't create channel.`, 400);
 		}
 	}
 
@@ -177,6 +177,8 @@ export class UserService {
 			throw new HttpException(`User with ID ${friend.id} is not friend with User with ID ${user.id}.`, 400);
 		}
 		else {
+			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
+				throw new HttpException(`Couldn't create channel.`, 400);
 			user.friends.splice(friendIndex, 1);
 			friend.friends.splice(userIndex, 1);
 			await this.userRepository.save(user);

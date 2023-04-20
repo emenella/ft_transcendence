@@ -62,7 +62,6 @@ function Chat() {
   useEffect(() => {
     const newSocket = io(WebChat, { extraHeaders: { Authorization: getToken() as string } });
     setSocket(newSocket);
-    console.log("useEffect Chat socket");
   }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
@@ -92,7 +91,6 @@ function Chat() {
   }
 
   const messageListener = (data: {date: string, authorId: number, author: string, chan: string, msg: string}) => {
-    console.log(data);
     for (let usr of user!.blacklist) {
       if (usr.username === data.author) {
         return;

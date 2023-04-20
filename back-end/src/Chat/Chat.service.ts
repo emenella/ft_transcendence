@@ -159,14 +159,27 @@ export class ChatService {
     async leaveDM(userId1: number, userId2: number) : Promise<boolean | string> {
         let user1 : User = await this.userService.getUserById(userId1);
         let user2 : User = await this.userService.getUserById(userId2);
+        let chatUser1 : ChatUser | undefined = this.getUserFromID(userId1);
+        let chatUser2 : ChatUser | undefined = this.getUserFromID(userId2);
 
         if (user1 === undefined || user2 === undefined) {
             return ("error user(s) doesn't exist !");
+        }
+        if (chatUser1 === undefined || chatUser2 === undefined) {
+            return ("error user(s) not connected to Chat !");
         }
         let ret = await this.chanService.getDm(user1, user2);
         if (ret === undefined) {
             return ("error no such DM");
         }
+        const leaved = await this.chanService.leaveDM(ret.id, userId1, userId2);
+        if (typeof leaved === 'string') {
+            return ("error leaving DM")
+        }
+        chatUser1.socket.leave(ret.id.toString());
+        chatUser1.socket.emit('leftChan', chatUser2.username);
+        chatUser2.socket.leave(ret.id.toString());
+        chatUser2.socket.emit('leftChan', chatUser1.username);
         return true;    
     }
 
@@ -196,7 +209,6 @@ export class ChatService {
                     return true;
                 }
 
-                console.log(invitedUser);
                 invitedUser.socket.emit('invited', ret.title);
                 return true;
             } 
