@@ -150,7 +150,7 @@ export async function changeColorPaddle(color: string) {
 
 export async function requestDuel(id : number) {
     try {
-        return await axios.post('api/duel/request/?id=' + id, { headers: authHeader() });
+        return await axios.post('api/game/duel/request/?id=' + id, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -159,7 +159,7 @@ export async function requestDuel(id : number) {
 
 export async function acceptDuel(id : number) {
     try {
-        return await axios.post('api/duel/accept/?id=' + id, { headers: authHeader() });
+        return await axios.post('api/game/duel/accept/?id=' + id, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);
@@ -168,7 +168,7 @@ export async function acceptDuel(id : number) {
 
 export async function denyDuel(id : number) {
     try {
-        return await axios.post('api/duel/deny/?id=' + id, { headers: authHeader() });
+        return await axios.post('api/game/duel/deny/?id=' + id, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);

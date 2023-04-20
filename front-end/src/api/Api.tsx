@@ -24,7 +24,7 @@ export function authHeader(type?: string) {
 	}
 	return {
 		"Content-Type": type ? type : "application/json",
-		"Authorization": null
+		"Authorization": ""
 	};
 }
 

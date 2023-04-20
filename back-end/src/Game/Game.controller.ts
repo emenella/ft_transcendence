@@ -20,8 +20,8 @@ export class GameController {
     }
 
     //Duel
-    @Post('duel/request/:id')
-    async requestDuel(req: Request, @Query('id') id: number) {
+    @Post('duel/request')
+    async requestDuel(req: Request, @Query('id') id: any) {
         const to: User = await this.userService.getUserById(id);
         const user = req.user as User;
         if (user) {
@@ -33,9 +33,9 @@ export class GameController {
         return false;
     }
 
-    @Post('duel/accept/:id')
-    async acceptDuel(req: Request, @Query('id') id: number) {
-        console.log(req.params.id, req.user as User);
+    @Post('duel/accept')
+    async acceptDuel(req: Request, @Query('id') id: any) {
+        console.log(id, req.user as User);
         const user = req.user as User;
         if (user) {
             const ret = await this.gameService.acceptRequest(id, user);
@@ -46,8 +46,8 @@ export class GameController {
         return false;
     }
 
-    @Post('duel/decline/:id')
-    async declineDuel(req: Request, @Query('id') id: number) {
+    @Post('duel/decline')
+    async declineDuel(req: Request, @Query('id') id: any) {
         const user = req.user as User;
         if (user) {
             const ret = await this.gameService.declineRequest(id, user);

@@ -40,11 +40,6 @@ export class Game {
                 this.sendGameInfo();
                 this.sendGameInfoToSpectators();
             }
-            else
-            {
-                // wait 5 sec and force start
-                setTimeout(() => this.forceStart(), 5000);
-            }
             setTimeout(() => this.loop(), 1000/128);
         }
     }
