@@ -25,7 +25,7 @@ export default function MessageInput(props: {send:(value : string) => void, acti
             <input
                 id="messageInput"
                 onChange={(e) => setValue(e.target.value)}
-                placeholder={"Envoyer un message dans " + props.activeChan}
+                placeholder={"Send a message in " + props.activeChan + " (/help to get the list of commands)"}
                 value={value}
                 onKeyDown={handleKeyPressed}
                 width='120px'

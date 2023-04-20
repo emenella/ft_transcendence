@@ -121,11 +121,11 @@ export class ChanService {
 		if (isDm && user2 === undefined)
 			return "User doesn't exist";
 		if (isDm && await this.findDm(owner, user2))
-		return "DM chan already exists";
+			return "DM chan already exists";
 		if (title.length < 3 || title.length > 16)
-		return "Title length must be between 3 and 16";
+			return "Title length must be between 3 and 16";
 		if (password_key && (password_key.length < 3 || password_key.length > 16))
-		return "Password length must be between 3 and 16";
+			return "Password length must be between 3 and 16";
 		
 		let chan: Chan = new Chan();
 
