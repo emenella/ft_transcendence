@@ -178,6 +178,14 @@ export class ChanService {
             else
                 await this.uninviteUser(chan.id, user.id);
         }
+		let rel = await this.getRelOf(chan.id, user.id);
+
+		if (rel !== undefined)
+		{
+			if (rel.isInvite === true){
+				await this.uninviteUser(chan.id, user.id);
+			}
+		}
             
             
         let chanRel	: RelationTable	=  new RelationTable();
