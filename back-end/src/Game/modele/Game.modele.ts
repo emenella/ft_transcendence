@@ -110,7 +110,7 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            this.isLive = player.playerDisconnect();
+            player.playerDisconnect();
             return true;
         }
         return false;

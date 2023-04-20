@@ -110,4 +110,11 @@ export class Game {
             }
         }, 1000);
     }
+
+    public stop() {
+        if (this.pong) {
+            this.pong.stop();
+            this.pong = null;
+        }
+    }
 }

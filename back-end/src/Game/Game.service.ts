@@ -18,8 +18,8 @@ export class GameService {
             ScoreWin: 5,
             Overtime: true,
             OvertimeScore: 3,
-            height: 1000,
-            width: 1000,
+            height: 1080,
+            width: 1920,
     };
 
     private setupBall: ball = {

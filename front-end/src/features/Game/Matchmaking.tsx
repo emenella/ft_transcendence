@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
@@ -6,6 +6,8 @@ import PongGame from './PongGame';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
+  const [height, setHeight] = useState(window.innerHeight);
+  const [width, setWidth] = useState(window.innerWidth);
 
   const joinQueueHandler = () => {
     setIsSearching(true);
@@ -15,13 +17,22 @@ const Matchmaking = () => {
     setIsSearching(false);
   };
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setHeight(window.innerHeight);
+  //     setWidth(window.innerWidth);
+  //   };
+  //   window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
+
   return (
     <div className="matchmaking">
       <div className="main">
         <div className="logo">
           <PongGame
-            width={800}
-            height={600}
+            width={width}
+            height={height}
             isQueue={isSearching}
             spec={null}
             handlefound={leaveQueueHandler}

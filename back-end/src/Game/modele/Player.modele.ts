@@ -37,7 +37,7 @@ export class Player {
 
     public playerDisconnect(): boolean {
         this.isConnected = false;
-        return false;
+        return true;
     }
 
     public ready(isLive: boolean, opp: Player): boolean {

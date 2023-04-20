@@ -67,14 +67,14 @@ export class ft_pong {
             this.player0 = new PlayerRemote(this.setup.player0.id, new Paddle(this.setup.player0.color, this.setup.player0.width * this.ratioX, this.setup.player0.length * this.ratioY, 10, this.ctx.canvas.height / 2, this.setup.player0.speedX * this.ratioX, this.setup.player0.speedY * this.ratioY), this.socket, this.setup.player0.username);
             this.player1 = new PlayerRemote(this.setup.player1.id, new Paddle(this.setup.player1.color, this.setup.player1.width * this.ratioX, this.setup.player1.length * this.ratioY, this.ctx.canvas.width - 10 - this.setup.player1.width, this.ctx.canvas.height / 2, this.setup.player1.speedX * this.ratioX, this.setup.player1.speedY * this.ratioY), this.socket, this.setup.player1.username);
         }
-        else if (this.user.id == this.setup.player0.id)
+        else if (this.user.id === this.setup.player0.id)
         {
             console.log("player0");
             this.player0 = new PlayerClient(this.setup.player0.id, this.bind, new Paddle(this.setup.player0.color, this.setup.player0.width * this.ratioX, this.setup.player0.length * this.ratioY, 10, this.ctx.canvas.height / 2, this.setup.player0.speedX * this.ratioX, this.setup.player0.speedY * this.ratioY), this.socket, this.setup.player0.username);
             this.player0.setKeyBindings();
             this.player1 = new PlayerRemote(this.setup.player1.id, new Paddle(this.setup.player1.color, this.setup.player1.width * this.ratioX, this.setup.player1.length * this.ratioY, this.ctx.canvas.width - 10 - this.setup.player1.width, this.ctx.canvas.height / 2, this.setup.player1.speedX * this.ratioX, this.setup.player1.speedY * this.ratioY), this.socket, this.setup.player1.username);
         }
-        else if (this.user.id == this.setup.player1.id)
+        else if (this.user.id === this.setup.player1.id)
         {
             console.log("player1");
             this.player0 = new PlayerRemote(this.setup.player0.id, new Paddle(this.setup.player0.color, this.setup.player0.width * this.ratioX, this.setup.player0.length * this.ratioY, 10, this.ctx.canvas.height / 2, this.setup.player0.speedX * this.ratioX, this.setup.player0.speedY * this.ratioY), this.socket, this.setup.player0.username);
@@ -94,7 +94,7 @@ export class ft_pong {
         this.startGame();
     }
 
-    private draw(): void
+    public draw(): void
     {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
@@ -106,7 +106,7 @@ export class ft_pong {
         this.player1.paddle.draw(this.ctx);
         this.ctx.fillStyle = "white";
         this.ctx.font = "30px Arial";
-        if(!this.isLive && this.player0.isReady == this.player1.isReady && !this.isSpec)
+        if(!this.isLive && this.player0.isReady === this.player1.isReady && !this.isSpec)
         {
             this.ctx.fillText("Press space to start", this.width / 2 - 150, this.height / 2 - 150);
         }
@@ -139,7 +139,7 @@ export class ft_pong {
         this.ctx.fillStyle = "white";
         this.ctx.font = "30px Arial";
         this.ctx.fillText(this.player0.getName() + " : " + this.player0.getScore(), 10, 30);
-        this.ctx.fillText(this.player1.getName() + " : " + this.player1.getScore(), this.width - 150, 30);
+        this.ctx.fillText(this.player1.getName() + " : " + this.player1.getScore(), this.width - 300, 30);
     }
 
     public screenFinish(): void
@@ -173,7 +173,7 @@ export class ft_pong {
 
     private handlerUnready = (id: number): void => {
         this.isLive = false;
-        const player = this.player0.id == id ? this.player0 : this.player1;
+        const player = this.player0.id === id ? this.player0 : this.player1;
         player.isReady = false;
         this.draw();
     }
