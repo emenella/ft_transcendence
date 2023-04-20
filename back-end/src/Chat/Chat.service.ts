@@ -15,7 +15,7 @@ export class ChatService {
     constructor(
         @Inject(forwardRef(() => UserService)) private userService: UserService,
         @Inject(forwardRef(() => AuthService)) private authService: AuthService,
-        private chanService: ChanService
+        @Inject(forwardRef(() => ChanService)) private chanService: ChanService
     ) {}
 
     async connectUserFromSocket(socket: Socket): Promise<ChatUser | undefined> {
@@ -144,10 +144,11 @@ export class ChatService {
         if (chatUser1 === undefined || chatUser2 === undefined) {
             return ("error user(s) not connected to Chat !");
         }
-        let ret = await this.chanService.createChan("DMCHAN", user1, false, false, undefined, true, user2);
+        let ret : Chan | string = await this.chanService.createChan(user1.username + user2.username, user1, false, false, undefined, true, user2);
         if (typeof ret === 'string') {
             return ("error during DM creation : " + ret);
         }
+
         chatUser1.socket.join(ret.id.toString());
         chatUser1.socket.emit('createdChan', chatUser2.username);
         chatUser2.socket.join(ret.id.toString());
@@ -166,7 +167,7 @@ export class ChatService {
         if (ret === undefined) {
             return ("error no such DM");
         }
-        return true;
+        return true;    
     }
 
     async handleCommand(server: Server, socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {
