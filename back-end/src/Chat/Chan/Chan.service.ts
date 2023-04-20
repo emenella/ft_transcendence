@@ -244,14 +244,15 @@ export class ChanService {
 					where : { chan: { id : chan.id }, user : { id : userId} } })
 		if (ret === undefined || ret === null)
 			return ("your are not in chan");
-			
 		await this.chanRelRepo.remove(ret);
 
-		const rels = await this.chanRelRepo.find({ relations : ["chan"],
-			        where : { chan : { id : chan.id}, ban_expire: undefined }});
-		console.log(rels);
+		const query = this.chanRelRepo
+  			.createQueryBuilder('relation')
+  			.where('relation.chanId = :chanId', { chanId })
+  			.andWhere('relation.ban_expire IS NULL')
+  			.getMany();
+		const rels = await query;
 		if (rels.length === 0) {
-			console.log("bah ca marche pourtant");
 			const banRels : RelationTable[] = await this.chanRelRepo.find({ relations : ["chan"],
 					where : { chan : { id : chan.id}}});
 			banRels.forEach((rel) => {
