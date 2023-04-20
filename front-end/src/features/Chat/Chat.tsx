@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Matchmaking from '../Game/Matchmaking';
@@ -15,11 +15,15 @@ import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { msg } from './interfaceChat';
 import Spectate from '../../routes/Spec';
+import { UserContext } from '../../utils/UserContext';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
 
 function Chat() {
+  const userContext = useContext(UserContext);
+	const user = userContext?.user;
+
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
@@ -89,7 +93,7 @@ function Chat() {
 
   const messageListener = (data: {date: string, authorId: number, author: string, chan: string, msg: string}) => {
     console.log(data);
-    for (let usr of props.user.blacklist) {
+    for (let usr of user!.blacklist) {
       if (usr.username === data.author) {
         return;
       }

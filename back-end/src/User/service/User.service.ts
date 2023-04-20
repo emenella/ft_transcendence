@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from "@nestjs/common";
+import { Injectable, Inject, forwardRef, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
@@ -6,6 +6,7 @@ import { Match } from '../entity/Match.entity';
 import { Connection } from "../entity/Connection.entity";
 import { HistoryService } from "./Match.service";
 import { SocketService } from "../../Socket/Socket.service";
+import { ChatService } from "../../Chat/Chat.service";
 
 export const enum UserStatus {
 	Disconnected,
@@ -21,7 +22,8 @@ const UsernameMaxLength: number = 16;
 export class UserService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
 				private readonly historyService: HistoryService,
-				private readonly socketService: SocketService) {}
+				private readonly socketService: SocketService,
+				@Inject(forwardRef(() => ChatService)) private readonly chatService: ChatService) {}
 
 	async createUser(user: User, connection: Connection): Promise<User> {
 		user.connection = connection;
@@ -145,6 +147,8 @@ export class UserService {
 		else if (!sender.friend_requests.some((f) => { return f.id === receiver.id }))
 			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
 		else {
+			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
+				throw new HttpException(`Couldn't create channel.`, 400)
 			sender.friend_requests.splice(sender.friends.indexOf(receiver), 1)
 			sender.friends.push(receiver);
 			sender.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
@@ -154,6 +158,8 @@ export class UserService {
 			await this.userRepository.save(receiver);
 		}
 	}
+
+
 
 	async denyFriend(receiver: User, sender: User): Promise<void> {
 		if (!receiver.friend_requests.some((f) => { return f.id === sender.id }))
@@ -195,10 +201,12 @@ export class UserService {
 				userToBlock.friends.splice(userIndexF, 1);
 			}
 			else {
-				if (userIndexR != -1)
+				if (userIndexR != -1) {
 					userToBlock.friend_requests.splice(userIndexR, 1);
-				if (userToBlockIndexR != -1)
+				}
+				if (userToBlockIndexR != -1) {
 					user.friend_requests.splice(userToBlockIndexR, 1);
+				}
 			}
 			await this.userRepository.save(user);
 			await this.userRepository.save(userToBlock);
