@@ -89,6 +89,11 @@ function Chat() {
 
   const messageListener = (data: {date: string, authorId: number, author: string, chan: string, msg: string}) => {
     console.log(data);
+    for (let usr of props.user.blacklist) {
+      if (usr.username === data.author) {
+        return;
+      }
+    }
     let chanMessages : msg[] = channels.get(data.chan) as msg[];
     let message : msg = {date: data.date, authorId: data.authorId, author: data.author, content: data.msg};
     channels.set(data.chan, [...chanMessages, ...[message]]);
