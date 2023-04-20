@@ -114,6 +114,10 @@ export class ChanService {
 	}
 
 	async createChan(title: string, owner: User, isPrivate: boolean, isProtected: boolean, password_key: string | undefined, isDm: boolean, user2: User) : Promise<string | Chan> {
+		let ret = title.split(" ");
+		if (ret.length > 1)
+			return "chan title must not contain white space"
+		title = ret[0];
 		if (isDm !== true && title[0] !== '#')
 			return "Chan title must begin by '#' !";
 		if (isDm !== true && await this.getChanByTitle(title))

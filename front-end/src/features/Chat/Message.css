@@ -20,6 +20,8 @@
     height: 15vh;
     overflow-x: hidden;
     overflow-y: auto;
+    overflow-wrap: break-word;
+    max-width: 600px;
 }
 
 .button {
@@ -27,4 +29,8 @@
     border-style: solid;
     border-color: #009688;
     background: #B6E1DD;
+}
+
+.nowrap {
+    white-space: nowrap;
 }

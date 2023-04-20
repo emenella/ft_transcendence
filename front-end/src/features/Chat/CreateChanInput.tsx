@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./Message.css"
 
 export default function CreateChanInput({createChan}:{createChan:(title: string, isPrivate: boolean, password: string | undefined) => void}) {
     const [value, setValue] = useState("");
@@ -19,12 +20,14 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
     return (
         <>
             <input
+                className="nowrap"
                 id="titleCreate"
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="title"
                 value={value}
             />
             <input
+                type="password"
                 id="passCreate"
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="password (optional)"

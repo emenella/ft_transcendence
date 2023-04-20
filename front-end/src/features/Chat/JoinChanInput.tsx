@@ -1,4 +1,5 @@
 import React, { useEffect , useState } from "react";
+import "./Message.css"
 
 export default function JoinChanInput(props: {joinChan: (value : string, password : string | null) => void, publicChans: string[]}) {
     const [value, setValue] = useState("");
@@ -26,18 +27,21 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
     return (
         <>
             <select
+                className="nowrap"
                 id="selectJoin"
                 onChange={(e) =>setValue(e.target.value)}
             >
             {props.publicChans.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <input
+                className="nowrap"
                 id="inputJoin"
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="channel to join"
                 value={value}
             />
             <input
+                type="password"
                 id="inputPassJoin"
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="password (optional)"
