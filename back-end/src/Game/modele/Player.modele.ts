@@ -51,11 +51,15 @@ export class Player {
         return isLive;
     }
 
-    public unready(opp: Player): boolean {
+    public unready(islive: boolean,opp: Player): boolean {
         this.isReady = false;
-        this.emitUnready();
-        opp.emitPlayerUnReady(this.id);
-        return false;
+        if (islive && !this.isReady && !opp.getReady())
+        {
+            islive = false;
+            this.emitUnready();
+            opp.emitUnready();
+        }
+        return islive;
     }
 
     public press(direction: Direction) {
@@ -110,11 +114,6 @@ export class Player {
     private emitUnready() {
         if (this.isConnected)
             this.socket.emit("game:unready", this.id);
-    }
-
-    private emitPlayerUnReady(id: number) {
-        if (this.isConnected)
-            this.socket.emit("game:unready", id);
     }
 
     public emitGameInfo(info: GameInfo) {
@@ -181,11 +180,11 @@ export class Player {
     }
 
     public goal(isLive: boolean, opp: Player): boolean {
-        isLive = opp.unready(this);
+        const ret = opp.unready(isLive, this);
         this.reset();
         opp.reset();
         this.increaseScore();
-        return isLive;
+        return ret;
     }
 
     public getSocketId() {

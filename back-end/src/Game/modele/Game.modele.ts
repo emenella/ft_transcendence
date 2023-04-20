@@ -40,6 +40,11 @@ export class Game {
                 this.sendGameInfo();
                 this.sendGameInfoToSpectators();
             }
+            else
+            {
+                // wait 5 sec and force start
+                setTimeout(() => this.forceStart(), 5000);
+            }
             setTimeout(() => this.loop(), 1000/128);
         }
     }
@@ -133,8 +138,8 @@ export class Game {
         const player = this.getPlayer(id);
         if (player != null)
         {
-            player.unready(player.getId() == this.player0.getId() ? this.player1 : this.player0);
-            this.isLive = false;
+            
+            this.isLive = player.unready(this.isLive, player.getId() == this.player0.getId() ? this.player1 : this.player0);
             return true;
         }
         return false;
@@ -227,6 +232,15 @@ export class Game {
     public getSetup(): Setup
     {
         return this.setup;
+    }
+
+    public forceStart(): void
+    {
+        this.isLive = true;
+        this.player0.ready(this.isLive, this.player1);
+        this.player1.ready(this.isLive, this.player0);
+        this.sendGameInfo();
+        this.sendGameInfoToSpectators();
     }
     
     public sendGameInfo(): void
