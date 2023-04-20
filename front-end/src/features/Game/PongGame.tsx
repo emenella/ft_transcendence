@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
 import { io } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
-import { User } from '../../utils/backend_interface';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 

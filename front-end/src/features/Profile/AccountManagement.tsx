@@ -5,7 +5,6 @@ import './AccountManagement.css'
 import Emoji from '../../components/Emoji';
 import { Enable2FA, Disable2FA } from '../../components/button/Buttons';
 import { changeUsername, uploadAvatar, delete2FA, changeColorPaddle } from '../../api/User';
-import { User } from '../../utils/backend_interface';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 

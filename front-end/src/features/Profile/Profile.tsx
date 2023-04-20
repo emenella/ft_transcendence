@@ -7,21 +7,30 @@ import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, Blackl
 import { User, Match } from '../../utils/backend_interface';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
+import { UserStatus } from '../../utils/backend_interface';
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	return (
 		<div className='player-interaction'>
 			{
 				me?.friends.some((friend: User) => { return friend.id === user?.id })
-				? <RemoveFriendButton username={ user?.username } />
-				: <AddFriendButton username={ user?.username } />
+					? <RemoveFriendButton username={user?.username} />
+					: <AddFriendButton username={user?.username} />
 			}
-			<DuelButton />
-			<SpectateButton />
 			{
-			me?.blacklist.some((friend: User) => { return friend.id === user?.id })
-				? <UnblacklistButton username={ user?.username } />
-				: <BlacklistButton username={ user?.username } />
+				(user?.status === UserStatus.Connected)
+					? <DuelButton id={user?.id} />
+					: <></>
+			}
+			{
+				(user?.status === UserStatus.InGame)
+					? <SpectateButton id={user?.id} />
+					: <></>
+			}
+			{
+				me?.blacklist.some((friend: User) => { return friend.id === user?.id })
+					? <UnblacklistButton username={user?.username} />
+					: <BlacklistButton username={user?.username} />
 			}
 		</div>
 	);
@@ -73,7 +82,7 @@ function Profile() {
 			const match = await getMatchs(user!.id).catch((err) => {
 				setError(err);
 			});
-			setMatchs(match!);
+			setMatchs(match);
 		};
 		getUserMatchs();
 	}, [user]);
@@ -100,7 +109,9 @@ function Profile() {
 
 	return (
 		<div>
-			<Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
+			<Link to={"/"} style={linkStyle}>
+				<Emoji label="arrow_left" symbol="⬅️" /> Retour au matchmaking
+			</Link>
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>

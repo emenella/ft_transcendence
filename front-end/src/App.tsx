@@ -10,7 +10,7 @@ import { getMe, changeUserStatus } from './api/User';
 import { firstConnexion } from './api/Auth';
 import { User, UserStatus } from './utils/backend_interface';
 import logo from './assets/black_logo.png';
-import { UserContext, UserContextType } from './utils/UserContext';
+import { UserContext } from './utils/UserContext';
 
 function App() {
 	//~~ States

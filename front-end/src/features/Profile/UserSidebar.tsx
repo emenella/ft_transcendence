@@ -34,8 +34,6 @@ function UserSidebar() {
         }
     }, [user?.socket])
 
-
-
     const listFriends = user?.friends?.map((friend: User) => {
         return (
             <div className='friend' key={friend.id}>
