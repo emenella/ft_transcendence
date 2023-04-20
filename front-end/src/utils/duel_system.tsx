@@ -41,10 +41,10 @@ export function receiveDuel(sender: User) {
 export function duelConfirmed(link : string) {
     const navigate = useNavigate();
 
-    toast("Votre adverse a accepté le duel.");
+    toast("Votre adversaire a accepté le duel.");
     navigate("");
 }
 
 export function duelUnconfirmed() {
-    toast("Votre adverse a refusé le duel.");
+    toast("Votre adversaire a refusé le duel.");
 }

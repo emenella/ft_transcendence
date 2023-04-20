@@ -10,8 +10,7 @@ function BodyNotConnected() {
 	return (
 		<div className='notconnected'>
 			<h2>
-				Bienvenue sur votre site préféré de pong codé par vos plus dévoués
-				développeurs.
+				Bienvenue sur le pong codé par vos plus dévoués développeurs.
 			</h2>
 			<img src={logo} alt="Logo du site" />
 			<h4>Venez vous mesurer aux meilleurs joueurs de tout 42Lyon !</h4>
@@ -22,35 +21,31 @@ function BodyNotConnected() {
 			<h4>Comment jouer ?</h4>
 			<p>
 				Rien de compliqué, il vous suffit de jouer avec les flèches
-				directionnelles de votre clavier.
+				directionnelles haut et bas de votre clavier.
 			</p>
 			<h4>Amusez-vous bien !</h4>
-
+            <br />
 			<h2>Vos dévoués développeurs.</h2>
             <div className='flexbox'>
                 <div>
                     <h4>Erwan Menella</h4>
                     <img src={emenella} alt="Erwan" className='profilPhoto' />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
+                    <p><strong>One man army</strong>.</p>
                 </div>
                 <div>
                     <h4>Emil Bellon</h4>
                     <img src={ebellon} alt="Emil" className='profilPhoto' />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
+                    <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
                 <div>
                     <h4>Pierre Thomas</h4>
                     <img src={pthomas} alt="Pierre" className='profilPhoto' />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
+                    <p>Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
                 </div>
                 <div>
                     <h4>Manon Berne</h4>
                     <img src={mberne} alt="Manon" className='profilPhoto' />
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque id sem orci.
-                        Sed congue, odio sed fringilla dictum, nunc quam blandit tellus, quis semper justo nisi non ligula.</p>
+                    <p>Spécialiste du &#60;strong&#62;frontend&#60;/strong&#62;.</p>
                 </div>
             </div>
 		</div>

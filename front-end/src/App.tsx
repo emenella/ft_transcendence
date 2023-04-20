@@ -86,7 +86,7 @@ function App() {
 					<img src={logo} alt='Logo du site' />
 				</div>
 				<div>
-					<h1>Le meilleur jeu de pong de tout 42</h1>
+					<h1>Pong Game</h1>
 				</div>
 				<div>
 					{	hasToken ?
