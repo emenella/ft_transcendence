@@ -1,6 +1,8 @@
 import { Paddle } from "./Paddle";
 import { PlayerClient } from "./playerClient";
 import { Socket } from "socket.io-client";
+import { Bind } from "./interfaces/ft_pong.interface";
+
 
 export class PlayerRemote extends PlayerClient
 {

@@ -209,7 +209,7 @@ function Chat() {
       <div className="connectedCenter">
         <div>
           <Routes>
-            <Route index element={<Matchmaking />}></Route>
+            <Route index element={<Matchmaking/>}></Route>
             <Route path="profile/:id" element={<Profile />} />
             <Route path="accountmanagement" element={<AccountManagement />} />
             <Route path="spec/:id" element={<Spectate />} />

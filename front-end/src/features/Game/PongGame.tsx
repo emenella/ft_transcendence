@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { getToken, url } from '../../api/Api';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
@@ -18,16 +18,19 @@ interface PongGameProps {
 
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    let game: Game | null = null;
+    const socketGame = useRef<Socket>();
+    const socketMatchmaking = useRef<Socket>();
     const userContext = useContext(UserContext);
     const user = userContext?.user;
-
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
-    const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
-    let game: Game | null = null;
     
     useEffect(() => {
         console.log('componentDidMount Pong');
+        const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+        socketGame.current = newSocketGame;
+        const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
+        socketMatchmaking.current = newSocketMatchmaking;
         
         return () => {
             console.log('componentWillUnmount Pong');
@@ -66,14 +69,14 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
             const ctx = canvasRef.current?.getContext('2d');
             if (!game && user && ctx) {
                 console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
-                const newGame = new Game(socketGame, socketMatchmaking, user, ctx);
+                const newGame = new Game(socketGame.current!, socketMatchmaking.current!, user, ctx);
                 game = newGame;
             }
         }
         const handlefoundGame = () => {
             props.handlefound();
         };
-        socketMatchmaking.on('matchmaking:foundMatch', handlefoundGame);
+        socketMatchmaking.current?.on('foundGame', handlefoundGame);
     
         setGame();
         if (props.spec === null) searchGame();

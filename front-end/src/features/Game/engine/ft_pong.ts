@@ -1,3 +1,4 @@
+import { Player } from "./player";
 import { Ball } from "./Ball";
 import { Paddle } from "./Paddle";
 import { Socket } from "socket.io-client";
