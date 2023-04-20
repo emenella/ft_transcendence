@@ -159,7 +159,6 @@ export class ChatService {
                     return true;
                 }
 
-                console.log(invitedUser);
                 invitedUser.socket.emit('invited', ret.title);
                 return true;
             } 

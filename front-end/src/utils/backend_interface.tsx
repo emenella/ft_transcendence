@@ -9,7 +9,6 @@ export interface Match {
 
 export interface User {
     id: number;
-    socket: Socket;
     username: string;
 	avatarPath: string;
     isProfileComplete: boolean;

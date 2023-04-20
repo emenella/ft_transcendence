@@ -33,7 +33,6 @@ export class Paddle
         this.dx = 0;
         this.dy = 0;
         this.general = _general;
-        console.log("Paddle created: " + this.posX + " " + this.posY + " " + this.width + " " + this.length + " " + this.veloX + " " + this.veloY);
     }
 
     public keyDownUp(): void

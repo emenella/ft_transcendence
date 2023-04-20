@@ -24,7 +24,7 @@ function BodyConnected() {
 		setSocket(newSocket);
 	}, [])
 
-	async function duelRequestListener(sender: any) {
+	async function duelRequestReceivedListener(sender: any) {
 		async function accept(id : number) {
 			const req = await acceptDuel(id);
 			if (req?.status === 200) {
@@ -57,9 +57,9 @@ function BodyConnected() {
 	}
 
 	useEffect(() => {
-		socket?.on('duelRequestSent', duelRequestListener);
+		socket?.on('duelRequestReceived', duelRequestReceivedListener);
 		return () => {
-			socket?.off('duelRequestSent', duelRequestListener);
+			socket?.off('duelRequestReceived', duelRequestReceivedListener);
 		}
 	}, [socket])
 

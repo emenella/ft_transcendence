@@ -21,6 +21,7 @@ export class SocketService {
 	}
 
 	getUserById(id: number): User | undefined {
+		console.log(Object.values(this.users).find(user => user.id === id));
 		return Object.values(this.users).find(user => user.id === id);
 	}
 

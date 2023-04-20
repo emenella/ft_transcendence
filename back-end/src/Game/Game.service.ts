@@ -183,14 +183,11 @@ export class GameService {
     }
 
     public async requestGametoUser(from: User, to: User): Promise<number> {
-        console.log("condition: " + (this.request.find((req) => req.from == from.id && req.to == to.id)));
         if (this.request.find((req) => req.from == from.id && req.to == to.id)) {
             this.request.push({ from: from.id, to: to.id });
-            console.log(this.request.length - 1);
             let socket = this.socketService.getUserById(to.id)?.socket;
             if (socket) {
                 socket.emit('duelRequestSent', { user: from });
-                console.log("duelRequestSent emitted")
             }
             return this.request.length - 1;
         }
@@ -201,7 +198,6 @@ export class GameService {
         if (this.request[id] && this.request[id].to == user.id) {
             const from = await this.userService.getUserById(this.request[id].from);
             const setup: Setup = await this.createSetup(from, user);
-            console.log(setup);
             this.createGame(setup, this.handlerGameFinish.bind(this));
             this.request.splice(id, 1);
             return true;

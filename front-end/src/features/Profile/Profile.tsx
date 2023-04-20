@@ -8,8 +8,11 @@ import { User, Match } from '../../utils/backend_interface';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 import { UserStatus } from '../../utils/backend_interface';
+import { SocketContext } from '../../utils/SocketContext';
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
+	const socket = useContext(SocketContext);
+
 	return (
 		<div className='player-interaction'>
 			{
@@ -19,7 +22,7 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 			}
 			{
 				(user?.status === UserStatus.Connected)
-					? <DuelButton id={user?.id} />
+					? <DuelButton socket={socket} receiverId={user?.id} />
 					: <></>
 			}
 			{
