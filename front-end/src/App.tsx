@@ -11,6 +11,7 @@ import { firstConnexion } from './api/Auth';
 import { User, UserStatus } from './utils/backend_interface';
 import logo from './assets/black_logo.png';
 import { UserContext } from './utils/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
 	//~~ States
@@ -19,6 +20,7 @@ function App() {
 	const [url, setUrl] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<any>(null);
+	const navigate = useNavigate();
 
 	//~~ Functions
 	function handleLogout() {
@@ -70,6 +72,9 @@ function App() {
 	if (error) {
 		return <p>Erreur : {error.message}</p>;
 	}
+
+	if (!user?.isProfileComplete)
+		navigate("/set-username");
 
 	return (
 		<div>

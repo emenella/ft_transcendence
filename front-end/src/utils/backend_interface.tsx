@@ -12,6 +12,7 @@ export interface User {
     socket: Socket;
     username: string;
 	avatarPath: string;
+    isProfileComplete: boolean;
     is2FAActivated: boolean;
     elo: number;
     winMatch: Match[];
