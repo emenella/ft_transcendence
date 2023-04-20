@@ -28,6 +28,7 @@ function App() {
 		// Supprimer cookie
 		localStorage.removeItem('token');
 		setHasToken(false);
+		navigate("/home");
 	}
 
 	async function fetchUser() {
