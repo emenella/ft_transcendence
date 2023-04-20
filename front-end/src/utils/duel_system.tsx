@@ -30,6 +30,6 @@ export function receiveDuel(sender: User) {
                 Refuser <Emoji label="cross_mark" symbol="❌" />
             </button>
         </span>), {
-        duration: 10000,
+        duration: 30000,
     });
 }
