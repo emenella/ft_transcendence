@@ -135,7 +135,7 @@ export class ChatService {
     async createDMChan(userId1: number, userId2: number) : Promise<boolean | string> {
         let user1 : User = await this.userService.getUserById(userId1);
         let user2 : User = await this.userService.getUserById(userId2);
-        let chatUser1 : ChatUser | undefined = this.getUserFromID(userId2);
+        let chatUser1 : ChatUser | undefined = this.getUserFromID(userId1);
         let chatUser2 : ChatUser | undefined = this.getUserFromID(userId2);
 
         if (user1 === undefined || user2 === undefined) {
@@ -153,6 +153,20 @@ export class ChatService {
         chatUser2.socket.join(ret.id.toString());
         chatUser2.socket.emit('createdChan', chatUser1.username);
         return (true);
+    }
+
+    async leaveDM(userId1: number, userId2: number) : Promise<boolean | string> {
+        let user1 : User = await this.userService.getUserById(userId1);
+        let user2 : User = await this.userService.getUserById(userId2);
+
+        if (user1 === undefined || user2 === undefined) {
+            return ("error user(s) doesn't exist !");
+        }
+        let ret = await this.chanService.getDm(user1, user2);
+        if (ret === undefined) {
+            return ("error no such DM");
+        }
+        return true;
     }
 
     async handleCommand(server: Server, socket: Socket, user: ChatUser, chan: Chan, msg: string) : Promise<Boolean> {
