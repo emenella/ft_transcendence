@@ -74,7 +74,7 @@ function App() {
 		return <p>Erreur : {error.message}</p>;
 	}
 
-	if (!user?.isProfileComplete)
+	if (user && !user.isProfileComplete)
 		navigate("/set-username");
 
 	return (

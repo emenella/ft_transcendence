@@ -15,7 +15,8 @@
 }
 
 .friend>img {
-    object-fit: contain;
+    object-fit: cover;
+    width: 25%;
 }
 
 

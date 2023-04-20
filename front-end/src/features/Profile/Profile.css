@@ -11,8 +11,9 @@
 
 .player-profil>img {
     border-radius: 50%;
+    object-fit: cover;
     width: 200px;
-    height: auto;
+    height: 200px;
 }
 
 .player-interaction {

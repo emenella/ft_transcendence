@@ -2,12 +2,16 @@ import { toast } from "react-hot-toast";
 import { User } from "./backend_interface";
 import Emoji from "../components/Emoji";
 import { acceptDuel, denyDuel } from "../api/User";
+import { useNavigate } from "react-router-dom";
 
 export function receiveDuel(sender: User) {
+    const navigate = useNavigate();
+
     async function accept(id : number) {
         const req = await acceptDuel(id);
         if (req?.status === 200) {
-            {/* add redirection */}
+            toast.success('Invitation acceptée.');
+            navigate("");
         } else
             toast.error('Erreur. Veuillez réessayer.');
     }
@@ -32,4 +36,15 @@ export function receiveDuel(sender: User) {
         </span>), {
         duration: 30000,
     });
+}
+
+export function duelConfirmed(link : string) {
+    const navigate = useNavigate();
+
+    toast("Votre adverse a accepté le duel.");
+    navigate("");
+}
+
+export function duelUnconfirmed() {
+    toast("Votre adverse a refusé le duel.");
 }
