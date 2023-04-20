@@ -1,6 +1,6 @@
 import {WebSocketGateway, WebSocketServer, SubscribeMessage, ConnectedSocket} from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
-import { AuthenticationService } from '../../Auth/Authenfication.service';
+import { AuthService } from '../../Auth/Auth.service';
 import { UserService } from '../../User/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
 import { User } from '../../User/entity/User.entity';
@@ -11,7 +11,7 @@ export class MatchmakingGateway{
     server: Server;
 
     constructor(private readonly matchmakingService: MatchmakingService,
-        private readonly authService: AuthenticationService,
+        private readonly authService: AuthService,
         private readonly userService: UserService)
     {}
 

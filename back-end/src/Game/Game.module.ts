@@ -1,12 +1,11 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
 import { GameGateway } from "./Game.Gateway";
 import { GameService } from "./Game.service";
-import { AuthenticationModule } from "../Auth/Authenfication.module";
+import { AuthModule } from "../Auth/Auth";
 import { UserModule } from "../User/User.module";
 
-
 @Module({
-    imports: [AuthenticationModule, UserModule],
+    imports: [forwardRef(() => UserModule), forwardRef(() => AuthModule)],
     controllers: [],
     providers: [GameGateway, GameService],
     exports: [GameService]
