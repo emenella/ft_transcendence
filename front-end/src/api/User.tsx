@@ -130,15 +130,6 @@ export async function removeFromBlacklist(username : string) {
     }
 }
 
-export async function changeUserStatus(status : number) {
-    try {
-        return await axios.post('api/users/status/?status=' + status, { headers: authHeader() });
-    }
-    catch (e) {
-        console.log(e);
-    }
-}
-
 export async function changeColorPaddle(color: string) {
     try {
         return await axios.post('api/users/color', { color: color }, { headers: authHeader() });
@@ -150,7 +141,7 @@ export async function changeColorPaddle(color: string) {
 
 export async function requestDuel(id : number) {
     try {
-        return await axios.post('api/game/duel/request/?id=' + id, { headers: authHeader() });
+        return await axios.post('api/game/duel/request', { id: id }, { headers: authHeader() });
     }
     catch (e) {
         console.log(e);

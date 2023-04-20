@@ -51,12 +51,6 @@ export class UserController {
 		return await this.userService.uploadAvatar(user.id, file);
 	}
 
-	@Post("/status")
-	async updateStatus(@Req() req: Request, @Query('status') status: number): Promise<void> {
-		const user: User = await this.getMe(req);
-		this.userService.changeStatus(user, status);
-	}
-
 	@Post("/color")
 	async updateColor(@Req() req: Request, @Query('color') color: string): Promise<void> {
 		const user: User = req.user as User;

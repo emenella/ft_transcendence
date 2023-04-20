@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query } from "@nestjs/common";
+import { Controller, Get, Post, Req, Query, Body } from "@nestjs/common";
 import { GameService } from "./Game.service";
 import { Request } from "express";
 import { UserService } from "../User/service/User.service";
@@ -6,7 +6,8 @@ import { User } from "../User/entity/User.entity";
 
 @Controller('game')
 export class GameController {
-    constructor(private readonly gameService: GameService, private readonly userService: UserService) {}
+    constructor(private readonly gameService: GameService,
+                private readonly userService: UserService) {}
 
     @Get()
     getGames() {
@@ -20,10 +21,10 @@ export class GameController {
     }
 
     //Duel
-    @Post('duel/request')
-    async requestDuel(req: Request, @Query('id') id: any) {
-        const to: User = await this.userService.getUserById(id);
+    @Post('/duel/request')
+    async requestDuel(@Req() req: Request, @Body("id") id: any) {
         const user = req.user as User;
+        const to: User = await this.userService.getUserById(id);
         if (user) {
             const ret = await this.gameService.requestGametoUser(user, to);
             if (ret) {
@@ -34,8 +35,7 @@ export class GameController {
     }
 
     @Post('duel/accept')
-    async acceptDuel(req: Request, @Query('id') id: any) {
-        console.log(id, req.user as User);
+    async acceptDuel(@Req() req: Request, @Query('id') id: any) {
         const user = req.user as User;
         if (user) {
             const ret = await this.gameService.acceptRequest(id, user);
@@ -47,7 +47,7 @@ export class GameController {
     }
 
     @Post('duel/decline')
-    async declineDuel(req: Request, @Query('id') id: any) {
+    async declineDuel(@Req() req: Request, @Query('id') id: any) {
         const user = req.user as User;
         if (user) {
             const ret = await this.gameService.declineRequest(id, user);

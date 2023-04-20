@@ -6,7 +6,7 @@ import BodyNotConnected from './features/Structure/Body_not_connected';
 import BodyConnected from './features/Structure/Body_connected';
 import Footer from './features/Structure/Footer';
 import { getToken } from './api/Api';
-import { getMe, changeUserStatus } from './api/User';
+import { getMe } from './api/User';
 import { firstConnexion } from './api/Auth';
 import { User, UserStatus } from './utils/backend_interface';
 import logo from './assets/black_logo.png';
@@ -24,7 +24,6 @@ function App() {
 
 	//~~ Functions
 	function handleLogout() {
-		changeUserStatus(UserStatus.Disconnected);
 		// Supprimer cookie
 		localStorage.removeItem('token');
 		setHasToken(false);

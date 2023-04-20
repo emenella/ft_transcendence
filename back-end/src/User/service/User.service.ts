@@ -49,13 +49,11 @@ export class UserService {
 	}
 
 	async changeStatus(user: User, newStatus: number): Promise<void> {
-		console.log("User:" + user.username + "NewStatus:" + newStatus);
 		user.status = newStatus;
 		await this.userRepository.save(user);
 		user.friends.forEach(friend => {
 			let socket = this.socketService.getUserById(friend.id)?.socket;
 			if (socket) {
-				console.log("Friend:" + friend.username)
 				socket.emit('friendStatusChanged');			
 			}
 		});

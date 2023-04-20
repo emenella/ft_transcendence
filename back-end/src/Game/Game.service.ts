@@ -6,6 +6,7 @@ import { Socket } from "socket.io";
 import { User } from "../User/entity/User.entity";
 import { player, ball, general } from "./interface/Game.interface";
 import { UserService } from "../User/service/User.service";
+import { SocketService } from "../Socket/Socket.service";
 
 @Injectable()
 export class GameService {
@@ -30,7 +31,8 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructor(private readonly userService: UserService) {
+    constructor(private readonly userService: UserService,
+                private readonly socketService: SocketService) {
     }
 
     public getGame(id: string): Game | undefined {
@@ -181,10 +183,16 @@ export class GameService {
     }
 
     public async requestGametoUser(from: User, to: User): Promise<number> {
+        console.log("condition: " + (this.request.find((req) => req.from == from.id && req.to == to.id)));
         if (this.request.find((req) => req.from == from.id && req.to == to.id)) {
-        this.request.push({ from: from.id, to: to.id });
-        console.log(this.request.length - 1);
-        return this.request.length - 1;
+            this.request.push({ from: from.id, to: to.id });
+            console.log(this.request.length - 1);
+            let socket = this.socketService.getUserById(to.id)?.socket;
+            if (socket) {
+                socket.emit('duelRequestSent', { user: from });
+                console.log("duelRequestSent emitted")
+            }
+            return this.request.length - 1;
         }
         return -1;
     }

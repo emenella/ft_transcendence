@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import "./Form.css";
-import { changeUsername, changeUserStatus } from "../../api/User";
+import { changeUsername } from "../../api/User";
 import { UserStatus } from "../../utils/backend_interface";
 import { NavigateFunction } from "react-router-dom";
 
@@ -11,7 +11,6 @@ function UsernameForm({ navigate }: { navigate: NavigateFunction } ) {
 	async function handleClick() {
 		const req = await changeUsername(username);
 		if (req?.status === 201) {
-			changeUserStatus(UserStatus.Connected);
 			navigate("/");
 		}
 		else {
