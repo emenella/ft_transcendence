@@ -13,7 +13,7 @@ function BodyConnected() {
 	useEffect(() => {
 		const newSocket = io(url + '/user', { extraHeaders: { Authorization: getToken() as string } });
 		setSocket(newSocket);
-	}, [setSocket])
+	}, [])
 
 	return (
 		<div className="connected">
