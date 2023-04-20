@@ -4,7 +4,8 @@ import { UserContext } from '../../utils/UserContext';
 import { Link } from "react-router-dom";
 
 export function HeaderConnected({ logout }: { logout: () => void }) {
-	const user = useContext(UserContext);
+	const userContext = useContext(UserContext);
+    const user = userContext?.user;
 	
 	const linkStyle = {
 		color: "white",

@@ -18,7 +18,7 @@ function BodyConnected() {
 		const newSocket = io(url + '/user', { extraHeaders: { Authorization: getToken() as string } });
 		setSocket(newSocket);
 	}, [setSocket, url])
-	
+
 	return (
 		<div className="connected">
 			<Chat />

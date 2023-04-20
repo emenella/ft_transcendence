@@ -21,7 +21,8 @@ const socketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as st
 const socketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
 
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
-    const user = useContext(UserContext) as User;
+    const userContext = useContext(UserContext);
+    const user = userContext?.user;
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     let game: Game | null = null;

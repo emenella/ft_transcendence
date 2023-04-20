@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useContext } from 'react';
 import './UserSidebar.css'
 import { getMe } from '../../api/User';
 import { User } from '../../utils/backend_interface';
@@ -6,6 +6,7 @@ import { invite } from '../../utils/friends_blacklists_system';
 import Emoji from '../../components/Emoji';
 import UsernameLink from '../../components/UsernameLink';
 import { AcceptAndDenyFriendButtons } from '../../components/button/Buttons';
+import { UserContext } from '../../utils/UserContext';
 
 function renderSwitch(num: number) {
     switch (num) {
@@ -19,19 +20,14 @@ function renderSwitch(num: number) {
 };
 
 function UserSidebar() {
-    const [user, setUser] = React.useState<User>();
-    React.useEffect(() => {
-        const getUser = async () => {
-            setUser(await getMe());
-        };
-        getUser();
-    }, []);
+    const userContext = useContext(UserContext);
+    const user = userContext?.user;
 
     const [friends, setFriends] = React.useState<User[]>();
     React.useEffect(() => {
 		setFriends(user?.friends);
     }, [user]);
-	
+
     const listFriends = friends?.map((friend: User) => {
         return (
             <div className='friend' key={friend.id}>
@@ -64,9 +60,11 @@ function UserSidebar() {
     );
 
     const [friendToAdd, setFriendToAdd] = React.useState<string>();
+
     function setFriend(e: ChangeEvent<HTMLInputElement>) {
         setFriendToAdd(e.target.value);
     }
+
     function addFriend() {
         if (friendToAdd)
             invite(friendToAdd);
@@ -75,13 +73,13 @@ function UserSidebar() {
     return (
         <div className='userSidebar'>
             <h4>Amis</h4>
-            {listFriends?.length
+            {   listFriends?.length
                 ? <div>{listFriends}</div>
                 : <p>Aucun ami pour le moment</p>
             }
 
             <h4>Invitations d'amis</h4>
-            {listFriendsInvite?.length
+            {   listFriendsInvite?.length
                 ? <div>{listFriendsInvite}</div>
                 : <p>Aucune demande d'ami pour le moment</p>
             }

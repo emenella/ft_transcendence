@@ -26,5 +26,5 @@ export default function Spectate() {
             <Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
             <PongGame height={600} width={800} spec={spec} isQueue={false} handlefound={() => {}} />
         </div>
-		);
+	);
 }

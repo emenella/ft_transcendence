@@ -10,18 +10,19 @@ import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 
 function AccountManagement() {
-    const user = useContext(UserContext) as User;
+    const userContext = useContext(UserContext);
+    const user = userContext?.user;
 
     const [username, setUsername] = useState('');
     const [image, setImage] = useState<File>();
-    const [activated2FA, setActivated2FA] = useState(user.is2FAActivated);
+    const [activated2FA, setActivated2FA] = useState(user!.is2FAActivated);
     const [color, setColor] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (username !== '') {
             await changeUsername(username);
-			user.username = username;
+			user!.username = username;
 			setUsername('');
         }
         if (image) {
@@ -78,7 +79,7 @@ function AccountManagement() {
                 <h2>Gestion du compte</h2>
                 <form onSubmit={handleSubmit}>
                     <label>Pseudonyme : </label>{' '}
-                    <input type="text" placeholder={user.username} value={username} onChange={handleUsernameChange}></input>
+                    <input type="text" placeholder={user!.username} value={username} onChange={handleUsernameChange}></input>
                     <br />
                     <br />
                     <label>Avatar : </label>{' '}
