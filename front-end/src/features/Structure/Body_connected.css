@@ -9,7 +9,7 @@
 
 .chatSidebar {
     border-radius: 5px;
-    width: 10%;
+    width: 15%;
     border-style: solid;
     border-color: #009688;
     background-color:#DAF0EE;
@@ -20,6 +20,7 @@
 .connectedCenter {
     display: flex;
     flex-direction: column;
+    max-width: 70%; 
 }
 
 .friendStatus {
