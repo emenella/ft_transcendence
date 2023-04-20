@@ -3,7 +3,7 @@ import { Socket, Server } from 'socket.io'
 import { User } from "../User/entity/User.entity";
 import { UserService } from "../User/service/User.service";
 import { ChatUser } from "./Dto/chatDto";
-import { AuthenticationService } from "../Auth/Authenfication.service";
+import { AuthService } from "../Auth/Auth.service";
 import { Chan } from "./Chan/Chan.entity";
 import { ChanService } from "./Chan/Chan.service";
 
@@ -14,7 +14,7 @@ export class ChatService {
 
     constructor(
         private userService: UserService,
-        private authService: AuthenticationService,
+        private authService: AuthService,
         private chanService: ChanService
     ) {}
 

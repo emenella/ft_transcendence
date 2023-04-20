@@ -9,7 +9,7 @@ import { Socket } from 'socket.io';
 
 @Entity()
 export class User {
-    socket: Socket | null = null;
+    socket: Socket | undefined = undefined;
 
 	//~~ INFO
     @PrimaryGeneratedColumn()

@@ -1,7 +1,7 @@
 import {WebSocketGateway, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket} from '@nestjs/websockets';
 import {Server, Socket} from 'socket.io';
 import {GameService} from './Game.service';
-import { AuthenticationService } from '../Auth/Authenfication.service';
+import { AuthService } from '../Auth/Auth.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
 
@@ -12,7 +12,7 @@ export class GameGateway {
     @WebSocketServer()
     server: Server;
 
-    constructor(private readonly gameService: GameService, private readonly authService: AuthenticationService, private readonly userService: UserService) {}
+    constructor(private readonly gameService: GameService, private readonly authService: AuthService, private readonly userService: UserService) {}
 
     afterInit() {
     }

@@ -79,13 +79,13 @@ function Profile() {
 	
 	React.useEffect(() => {
 		const getUserMatchs = async () => {
-			const match = await getMatchs(user!.id).catch((err) => {
+			const match = await getMatchs(id).catch((err) => {
 				setError(err);
 			});
 			setMatchs(match);
 		};
 		getUserMatchs();
-	}, [user]);
+	}, [id]);
 
 	//~~ Body
 	if (error) {

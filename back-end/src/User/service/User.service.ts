@@ -5,6 +5,7 @@ import { User } from "../entity/User.entity";
 import { Match } from '../entity/Match.entity';
 import { Connection } from "../entity/Connection.entity";
 import { HistoryService } from "./Match.service";
+import { SocketService } from "../../Socket/Socket.service";
 
 export const enum UserStatus {
 	Disconnected,
@@ -18,7 +19,9 @@ const UsernameMaxLength: number = 16;
 
 @Injectable()
 export class UserService {
-	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly historyService: HistoryService) {}
+	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
+				private readonly historyService: HistoryService,
+				private readonly socketService: SocketService) {}
 
 	async createUser(user: User, connection: Connection): Promise<User> {
 		user.connection = connection;
@@ -46,13 +49,14 @@ export class UserService {
 	}
 
 	async changeStatus(user: User, newStatus: number): Promise<void> {
+		console.log("User:" + user.username + "NewStatus:" + newStatus);
 		user.status = newStatus;
 		await this.userRepository.save(user);
-		console.log("PUTAIN");
 		user.friends.forEach(friend => {
-			if (friend.socket) {
-				console.log(friend.username)
-				friend.socket.emit('friendStatusChanged');			
+			let socket = this.socketService.getUserById(friend.id)?.socket;
+			if (socket) {
+				console.log("Friend:" + friend.username)
+				socket.emit('friendStatusChanged');			
 			}
 		});
 	}

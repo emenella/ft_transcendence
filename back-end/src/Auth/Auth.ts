@@ -1,10 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AuthenticationService } from './Authenfication.service';
-import { AuthenticationController } from './Authenfication.controller';
+import { AuthService } from './Auth.service';
+import { AuthController } from './Auth.controller';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './Authenfication.constants';
+import { jwtConstants } from './Auth.constants';
 import { FortyTwoStrategy } from './strategy/42.strategy';
 import { UserModule } from '../User/User.module';
 
@@ -17,8 +17,8 @@ import { UserModule } from '../User/User.module';
         }),
         forwardRef(() => UserModule)
     ],
-    providers: [AuthenticationService, JwtStrategy, FortyTwoStrategy],
-    controllers: [AuthenticationController],
-    exports: [AuthenticationService],
+    providers: [AuthService, JwtStrategy, FortyTwoStrategy],
+    controllers: [AuthController],
+    exports: [AuthService],
 })
-export class AuthenticationModule {}
+export class AuthModule {}

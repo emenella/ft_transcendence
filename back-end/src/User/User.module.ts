@@ -9,17 +9,18 @@ import { MulterModule } from "@nestjs/platform-express";
 import { factory } from "./utils/multer.utils";
 import { HistoryService } from "./service/Match.service";
 import { Match } from "./entity/Match.entity";
-import { UserGateway } from "../Gateway/User.gateway";
-import { AuthenticationModule } from "../Auth/Authenfication.module";
+import { SocketModule } from "../Socket/Socket.module";
+import { AuthModule } from "../Auth/Auth";
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([User, Connection, Match]),
 		MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}),
-        forwardRef(() => AuthenticationModule)
+		forwardRef(() => AuthModule),
+        forwardRef(() => SocketModule)
 	],
 	controllers: [UserController],
-	providers: [UserService, ConnectionService, HistoryService, UserGateway],
+	providers: [UserService, ConnectionService, HistoryService],
 	exports: [UserService, ConnectionService, HistoryService]
 })
 export class UserModule {}

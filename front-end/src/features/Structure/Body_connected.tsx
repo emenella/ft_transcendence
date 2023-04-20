@@ -5,6 +5,7 @@ import Chat from '../Chat/Chat';
 import io, { Socket } from 'socket.io-client'
 import { url } from '../../api/Api';
 import { getToken } from '../../api/Api';
+import { SocketContext } from '../../utils/SocketContext';
 
 function BodyConnected() {
 	const [socket, setSocket] = useState<Socket>();
@@ -16,8 +17,10 @@ function BodyConnected() {
 
 	return (
 		<div className="connected">
+			<SocketContext.Provider value={socket}>
 			<Chat />
 			<UserSidebar />
+			</SocketContext.Provider>
 		</div>
 	);
 }

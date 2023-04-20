@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { MatchmakingGateway } from "./Matchmaking.gateway";
 import { MatchmakingService } from "./Matchmaking.service";
-import { AuthenticationModule } from "../../Auth/Authenfication.module";
+import { AuthModule } from "../../Auth/Auth";
 import { GameModule } from "../Game.module";
 import { UserModule } from "../../User/User.module";
 
 @Module({
-    imports: [AuthenticationModule, UserModule, GameModule],
+    imports: [AuthModule, UserModule, GameModule],
     controllers: [],
     providers: [MatchmakingGateway, MatchmakingService],
     exports: [MatchmakingService]
