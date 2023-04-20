@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { UserModule } from '../User/User.module';
-import { AuthModule } from '../Auth/Auth';
+import { AuthModule } from '../Auth/Auth.module';
 import { ChatModule } from '../Chat/Chat.module';
 import { GameModule } from '../Game/Game.module';
 import { SocketService } from './Socket.service';

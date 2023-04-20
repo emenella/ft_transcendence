@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Inject, forwardRef } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Chan, RelationTable } from "./Chan.entity";
@@ -17,9 +17,8 @@ export class ChanService {
         
 	    @InjectRepository(RelationTable)
 	    private chanRelRepo: Repository<RelationTable>,
-        
+	    @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
 	    private readonly passwordService: ChanPasswordService,
-	    private readonly userService: UserService,
 	    private readonly messageService: MessageService
     ) {}
 

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { Socket, Server } from 'socket.io'
 import { User } from "../User/entity/User.entity";
 import { UserService } from "../User/service/User.service";
@@ -13,8 +13,8 @@ export class ChatService {
     private chatUsers : ChatUser[] = [];
 
     constructor(
-        private userService: UserService,
-        private authService: AuthService,
+        @Inject(forwardRef(() => UserService)) private userService: UserService,
+        @Inject(forwardRef(() => AuthService)) private authService: AuthService,
         private chanService: ChanService
     ) {}
 
@@ -144,7 +144,7 @@ export class ChatService {
         if (chatUser1 === undefined || chatUser2 === undefined) {
             return ("error user(s) not connected to Chat !");
         }
-        let ret = await this.chanService.createChan("DMCHAN", user1, true, false, undefined, true, user2);
+        let ret = await this.chanService.createChan("DMCHAN", user1, false, false, undefined, true, user2);
         if (typeof ret === 'string') {
             return ("error during DM creation : " + ret);
         }
