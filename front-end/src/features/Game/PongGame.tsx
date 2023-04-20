@@ -76,9 +76,9 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         const handlefoundGame = () => {
             props.handlefound();
         };
-        socketMatchmaking.current?.on('foundGame', handlefoundGame);
-    
+        
         setGame();
+        socketMatchmaking.current?.on('foundGame', handlefoundGame);
         if (props.spec === null) searchGame();
         if (props.isQueue) joinQueue();
         else leaveQueue();

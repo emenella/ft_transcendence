@@ -58,9 +58,10 @@ export class UserController {
 	}
 
 	@Post("/color")
-	async updateColor(@Req() req: Request, @Query('color') color: string): Promise<void> {
+	async updateColor(@Req() req: Request, @Body('color') color: string): Promise<void> {
 		const user: User = req.user as User;
-		this.userService.changeColor(user, color);
+		console.log(user, color);
+		return await this.userService.changeColor(user, color);
 	}
 
 	//~~FRIENDS

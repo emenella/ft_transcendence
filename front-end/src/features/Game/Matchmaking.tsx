@@ -3,7 +3,6 @@ import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { User } from '../../utils/backend_interface';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);

@@ -25,7 +25,7 @@ export class GameService {
     private setupBall: ball = {
         color: "green",
         radius: 20,
-        speed: 10,
+        speed: 5,
         maxSpeed: 20
     };
 
