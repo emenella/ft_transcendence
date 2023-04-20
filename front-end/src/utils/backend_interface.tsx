@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface Match {
     id: number;
     scores: number[];
@@ -7,6 +9,7 @@ export interface Match {
 
 export interface User {
     id: number;
+    socket: Socket;
     username: string;
 	avatarPath: string;
     is2FAActivated: boolean;

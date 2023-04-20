@@ -2,7 +2,7 @@
 // import { Socket, Server } from 'socket.io';
 // import { User } from "./entity/User.entity";
 // import { HttpException } from "@nestjs/common";
-// import { AuthenticationService } from "../Auth/Authenfication.service";
+// import { AuthService } from "../Auth/Auth.service";
 // import { UserService } from "./service/User.service";
 
 // @WebSocketGateway(81, { namespace: 'front', cors: true})
@@ -10,7 +10,7 @@
 //     @WebSocketServer()
 //     server: Server;
 
-//     constructor(private readonly authService: AuthenticationService, private readonly userService: UserService) {}
+//     constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
 //     async handleConnection(@ConnectedSocket() client: Socket) {
 //         const user : User = await this.authentificate(client);

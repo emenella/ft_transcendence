@@ -3,9 +3,8 @@ import './Matchmaking.css';
 import SearchButton from './button/SearchMatch';
 import LeaveButton from './button/Leave';
 import PongGame from './PongGame';
-import { User } from '../../utils/backend_interface';
 
-const Matchmaking = ({user} : {user: User} ) => {
+const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   const joinQueueHandler = () => {
@@ -25,7 +24,6 @@ const Matchmaking = ({user} : {user: User} ) => {
             height={600}
             isQueue={isSearching}
             spec={null}
-            user={user}
             handlefound={leaveQueueHandler}
           />
         </div>

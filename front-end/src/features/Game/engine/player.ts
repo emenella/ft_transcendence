@@ -1,4 +1,3 @@
-import { Socket } from "socket.io-client";
 import { Paddle } from "./Paddle";
 import { Bind } from "./interfaces/ft_pong.interface";
 

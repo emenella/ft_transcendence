@@ -1,8 +1,12 @@
 import React from 'react';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/UserContext';
 import { Link } from "react-router-dom";
-import { User } from '../../utils/backend_interface';
 
-export function HeaderConnected({ logout, user }: { logout: () => void, user: User }) {
+export function HeaderConnected({ logout }: { logout: () => void }) {
+	const userContext = useContext(UserContext);
+    const user = userContext?.user;
+	
 	const linkStyle = {
 		color: "white",
 	}

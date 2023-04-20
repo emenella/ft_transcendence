@@ -10,6 +10,7 @@ import { getMe, changeUserStatus } from './api/User';
 import { firstConnexion } from './api/Auth';
 import { User, UserStatus } from './utils/backend_interface';
 import logo from './assets/black_logo.png';
+import { UserContext } from './utils/UserContext';
 
 function App() {
 	//~~ States
@@ -72,6 +73,7 @@ function App() {
 
 	return (
 		<div>
+			<UserContext.Provider value={{ user, setUser }}>
 			<Toaster />
 			<div className='flex-container'>
 				<div>
@@ -82,16 +84,17 @@ function App() {
 				</div>
 				<div>
 					{	hasToken ?
-						<HeaderConnected logout={handleLogout} user={user!} /> :
+						<HeaderConnected logout={handleLogout} /> :
 						<HeaderNotConnected url={url!} />
 					}
 				</div>
 			</div>
 			{	hasToken ?
-				<BodyConnected user={user!} /> :
+				<BodyConnected /> :
 				<BodyNotConnected />
 			}
 			<Footer />
+			</UserContext.Provider>
 		</div>
 	);
 }

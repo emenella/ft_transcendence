@@ -138,3 +138,39 @@ export async function changeUserStatus(status : number) {
         console.log(e);
     }
 }
+
+export async function changeColorPaddle(color: string) {
+    try {
+        return await axios.post('api/users/color', { color: color }, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function requestDuel(id : number) {
+    try {
+        return await axios.post('api/duel/request/?id=' + id, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function acceptDuel(id : number) {
+    try {
+        return await axios.post('api/duel/accept/?id=' + id, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+
+export async function denyDuel(id : number) {
+    try {
+        return await axios.post('api/duel/deny/?id=' + id, { headers: authHeader() });
+    }
+    catch (e) {
+        console.log(e);
+    }
+}

@@ -1,14 +1,14 @@
 import { Injectable, Inject, HttpException, forwardRef } from '@nestjs/common';
 import { UserService } from '../User/service/User.service';
 import { JwtService } from '@nestjs/jwt';
-import { API } from './Authenfication.constants';
+import { API } from './Auth.constants';
 import * as speakeasy from 'speakeasy';
 import * as qrcode from 'qrcode';
 import { ConnectionService } from '../User/service/Connection.service';
 import { User } from '../User/entity/User.entity';
 import { Connection } from '../User/entity/Connection.entity';
 import * as crypto from 'crypto-js';
-import { passPhrase } from './Authenfication.constants';
+import { passPhrase } from './Auth.constants';
 
 
 interface IToken {
@@ -22,7 +22,7 @@ interface secretEncrypted {
 }
 
 @Injectable()
-export class AuthenticationService {
+export class AuthService {
     
     private secret: Map<number, secretEncrypted> = new Map<number, secretEncrypted>();
     

@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { AuthenticationModule } from '../Auth/Authenfication.module';
+import { Module, forwardRef } from '@nestjs/common';
+import { AuthModule } from '../Auth/Auth';
 import { ChanModule } from './Chan/Chan.module';
 import { UserModule } from '../User/User.module';
 import { MessageModule } from './Message/Message.module';
@@ -8,10 +8,10 @@ import { ChatService } from './Chat.service';
 
 @Module({
 	imports: [
-		UserModule,
+		forwardRef(() => UserModule),
+		forwardRef(() => AuthModule),
 		MessageModule,
 		ChanModule,
-		AuthenticationModule,
 	],
 	providers: [ChatService, ChatGateway],
 	exports: [ChatService]

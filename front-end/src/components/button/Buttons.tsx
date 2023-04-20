@@ -1,7 +1,8 @@
 import React from "react";
-import Emoji from "../Emoji";
 import { useNavigate } from "react-router-dom";
+import Emoji from "../Emoji";
 import { invite, accept, deny, remove, blacklist, unblacklist } from '../../utils/friends_blacklists_system';
+import { requestDuel } from "../../api/User";
 
 export	function Disable2FA({ onClick }: { onClick: () => void }) {
     return (
@@ -43,20 +44,26 @@ export function RemoveFriendButton({ username }: { username: string | undefined 
 	);
 }
 
-export function DuelButton() {
+export function DuelButton({ id }: { id : number | undefined }) {
 	return (
 		<div>
 			<label>Proposer une partie </label>
-			<button onClick={() => { }}> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
+			<button onClick={ () => { requestDuel(id!); } }> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
 		</div>
 	);
 }
 
-export function SpectateButton() {
+export function SpectateButton({ id }: { id : number | undefined }) {
+	const navigate = useNavigate();
+
+    function move() {
+        navigate("/spec/" + id);
+    }
+
 	return (
 		<div>
-			<label>Proposer une partie </label>
-			<button onClick={() => { }}> <Emoji label="tv" symbol="📺" /> </button>
+			<label>Regarder une partie </label>
+			<button onClick={move}> <Emoji label="tv" symbol="📺" /> </button>
 		</div>
 	);
 }

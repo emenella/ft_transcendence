@@ -30,19 +30,12 @@
     gap: 10px 200px;
 }
 
-.history>table {
-    table-layout: fixed;
-    text-align: center;
-}
-
-.history>table>tbody>tr>td {
-    padding: 10px;
-}
-
 .win {
-    background-color: green;
+    padding: 5px;
+    background-color:#DAF0EE;
 }
 
 .lose {
-    background-color: red;
+    padding: 5px;
+    background-color: rgba(255,0,0,0.50);
 }

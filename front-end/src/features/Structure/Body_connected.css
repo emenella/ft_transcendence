@@ -17,16 +17,6 @@
     margin-right: 5px;
 }
 
-.chatSidebar>table {
-    table-layout: fixed;
-    text-align: left;
-    width: 100%;
-}
-
-.chatSidebar>table>thead th:nth-child(1) {
-    width: 90%;
-}
-
 .connectedCenter {
     display: flex;
     flex-direction: column;

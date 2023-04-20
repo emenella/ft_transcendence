@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Matchmaking from '../Game/Matchmaking';
 import Profile from '../Profile/Profile';
-import PongGame from '../Game/PongGame';
 import { Navigate } from 'react-router-dom';
 import AccountManagement from '../Profile/AccountManagement';
 import '../Structure/Body_connected.css'
@@ -14,14 +13,13 @@ import CreateChanInput from './CreateChanInput'
 import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
-import { User } from '../../utils/backend_interface';
 import { msg } from './interfaceChat';
 import Spectate from '../../routes/Spec';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
 
-function Chat(props : {user: User}) {
+function Chat() {
   const [socket, setSocket] = useState<Socket>();
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
@@ -214,14 +212,14 @@ function Chat(props : {user: User}) {
       </div>
 
       <div className="connectedCenter">
-				<div>
+        <div>
           <Routes>
-						<Route index element={<Matchmaking user={props.user!} />}></Route>
-						<Route path="profile/:id" element={<Profile me={props.user!} />} />
-						<Route path="accountmanagement" element={<AccountManagement user={props.user!} />} />
-						<Route path="spec/:id" element={<Spectate user={props.user!}/>} />
-						{/* <Route path="*" element={<Navigate to="/home" replace />} /> */}
-					</Routes>
+            <Route index element={<Matchmaking />}></Route>
+            <Route path="profile/:id" element={<Profile />} />
+            <Route path="accountmanagement" element={<AccountManagement />} />
+            <Route path="spec/:id" element={<Spectate />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
 				</div>
         <div className='chat'>
           <div className='chanTitle'>{activeChan}</div>

@@ -5,21 +5,32 @@ import { getMatchs, getUserById } from '../../api/User';
 import Emoji from '../../components/Emoji';
 import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from '../../components/button/Buttons';
 import { User, Match } from '../../utils/backend_interface';
+import { useContext } from 'react';
+import { UserContext } from '../../utils/UserContext';
+import { UserStatus } from '../../utils/backend_interface';
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	return (
 		<div className='player-interaction'>
 			{
 				me?.friends.some((friend: User) => { return friend.id === user?.id })
-				? <RemoveFriendButton username={ user?.username } />
-				: <AddFriendButton username={ user?.username } />
+					? <RemoveFriendButton username={user?.username} />
+					: <AddFriendButton username={user?.username} />
 			}
-			<DuelButton />
-			<SpectateButton />
 			{
-			me?.blacklist.some((friend: User) => { return friend.id === user?.id })
-				? <UnblacklistButton username={ user?.username } />
-				: <BlacklistButton username={ user?.username } />
+				(user?.status === UserStatus.Connected)
+					? <DuelButton id={user?.id} />
+					: <></>
+			}
+			{
+				(user?.status === UserStatus.InGame)
+					? <SpectateButton id={user?.id} />
+					: <></>
+			}
+			{
+				me?.blacklist.some((friend: User) => { return friend.id === user?.id })
+					? <UnblacklistButton username={user?.username} />
+					: <BlacklistButton username={user?.username} />
 			}
 		</div>
 	);
@@ -28,23 +39,24 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 function PrintMatch({ username, match }: { username: string | undefined, match: Match }) {
 	if (match.winner.username === username) {
 		return (
-			<div className="winner">
-				<p>{match.winner.username} VS {match.loser.username}</p>
-				<p>{match.scores[0]} - {match.scores[1]}</p>
+			<div className="win">
+				<p>{match.winner.username} VS {match.loser.username} | {match.scores[0]} - {match.scores[1]}</p>
 			</div>
 		);
 	}
 	else {
 		return (
-			<div className="loser">
-				<p>{match.loser.username} VS {match.winner.username}</p>
-				<p>{match.scores[1]} - {match.scores[0]}</p>
+			<div className="lose">
+				<p>{match.loser.username} VS {match.winner.username} | {match.scores[1]} - {match.scores[0]}</p>
 			</div>
 		);
 	}
 }
 
-function Profile({ me }: { me: User }) {
+function Profile() {
+	const userContext = useContext(UserContext);
+    const me = userContext?.user;
+
 	let id = parseInt(useParams().id!);
 	
 	//~~ States
@@ -67,13 +79,13 @@ function Profile({ me }: { me: User }) {
 	
 	React.useEffect(() => {
 		const getUserMatchs = async () => {
-			const match = await getMatchs(user!.id).catch((err) => {
+			const match = await getMatchs(id).catch((err) => {
 				setError(err);
 			});
-			setMatchs(match!);
+			setMatchs(match);
 		};
 		getUserMatchs();
-	}, [user]);
+	}, [id]);
 
 	//~~ Body
 	if (error) {
@@ -97,14 +109,16 @@ function Profile({ me }: { me: User }) {
 
 	return (
 		<div>
-			<Link to={"/"} style={linkStyle}><Emoji label="arrow_left" symbol="⬅️" />Retour au matchmaking</Link>
+			<Link to={"/"} style={linkStyle}>
+				<Emoji label="arrow_left" symbol="⬅️" /> Retour au matchmaking
+			</Link>
 			<div className='profil'>
 				<h2>Profil</h2>
 				<div className='player-profil'>
 					<img src={"../../" + user?.avatarPath} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
-				{ (me.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
+				{ (me?.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
 				<div className='player-info'>
 					<div className='statistics'>
 						<h3>Statistiques</h3>
