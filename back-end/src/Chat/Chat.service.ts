@@ -22,12 +22,20 @@ export class ChatService {
         if (socket.handshake.headers.authorization) {
             try {
                 const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
+<<<<<<< HEAD
                 
                 if (connection === null || connection === undefined)
                 return (undefined);
                 
                 const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
                 
+=======
+                if (connection === null || connection === undefined)
+                    return (undefined);
+        
+                const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
+        
+>>>>>>> master
                 if (user === null || user === undefined)
                 {
                     socket.disconnect();
@@ -39,12 +47,20 @@ export class ChatService {
                     username: await this.getUsernameFromID(user.id),
                     id: user.id
                 })
+<<<<<<< HEAD
                 
+=======
+            
+>>>>>>> master
                 return this.chatUsers[idx - 1];
             } catch (error) {
                 socket.disconnect();
                 return (undefined);
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
         }
         else {
             socket.disconnect();
@@ -56,12 +72,22 @@ export class ChatService {
         if (socket.handshake.headers.authorization) {
             try {
                 const connection: any = await this.authService.verifyJWT(socket.handshake.headers.authorization);
+<<<<<<< HEAD
                 
                 if (connection === null || connection === undefined)
                 return (undefined);
                 
                 const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
                 
+=======
+
+                if (connection === null || connection === undefined)
+                if (connection === null || connection === undefined)
+                    return (undefined);
+        
+                const user : User = await this.userService.getUserByConnectionId(connection.connectionId);
+        
+>>>>>>> master
                 if (user === null || user === undefined)
                 {
                     socket.disconnect();

@@ -21,7 +21,7 @@ root.render(
 			<Route path="/2fa" element={<Activate2FA />} />
 			<Route path="/secret" element={<Connection />} />
 			<Route path="/set-username" element={<SetUsername />} />
-			<Route path="/spec/:spec" element={<Spectate />} />
+			{/* <Route path="/spec/:spec" element={<Spectate />} /> */}
 			<Route path="/error" element={<Error />} />
 			<Route path="*" element={<Navigate to="/home" replace />} />
 		</Routes>

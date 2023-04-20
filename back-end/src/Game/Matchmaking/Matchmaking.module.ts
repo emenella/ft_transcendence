@@ -8,7 +8,6 @@ import { UserModule } from "../../User/User.module";
 @Module({
     imports: [AuthenticationModule, UserModule, GameModule],
     controllers: [],
-    // providers: [MatchmakingService],
     providers: [MatchmakingGateway, MatchmakingService],
     exports: [MatchmakingService]
 })

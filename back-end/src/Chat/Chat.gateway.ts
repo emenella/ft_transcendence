@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer, ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessageService } from './Message/Message.service';
@@ -28,7 +27,6 @@ export class ChatGateway {
     private readonly chatService: ChatService
   ) {}
 
-  private logger: Logger = new Logger('ChatGateway');
   private chans: string[] = [];
 
   async afterInit() {
@@ -37,7 +35,6 @@ export class ChatGateway {
     publicChans.forEach((chan) => {
       this.chans.push(chan.title);
     })
-    console.log('Chat initialized');
   }
 
   async handleConnection(@ConnectedSocket() client: Socket) {
@@ -70,7 +67,6 @@ export class ChatGateway {
         client.emit('joinedChan', data);
       })
       client.emit('listOfChan', this.chans);
-      this.logger.log(`Client connected: ${client.id}`);
     }
   }
 
@@ -84,7 +80,6 @@ export class ChatGateway {
         client.leave(chan.id.toString());
       })
       this.chatService.disconnectClient(client);
-      this.logger.log(`Client disconnected: ${client.id}`);
     }
   }
 
@@ -219,7 +214,6 @@ export class ChatGateway {
           this.server.to(chanToLeave.id.toString()).emit('msgToClient', {author: user.username, chan: chanToLeave.title, msg: ' leaved the channel !'});
         }
         
-        console.log("chan to leave : "+ chanToLeave.title);
         client.leave(chanToLeave.id.toString());
         client.emit('leftChan', chan);
       }

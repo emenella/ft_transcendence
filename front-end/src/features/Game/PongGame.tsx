@@ -30,8 +30,6 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
             console.log('componentWillUnmount Pong');
             game?.leaveQueue();
             game?.leaveGame();
-            socketGame.disconnect();
-            socketMatchmaking.disconnect();
         };
     }, []);
     
@@ -58,6 +56,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
                 console.log('no state game');
                 return;
             }
+            console.log('searching game');
             game.searchGame();
         };
         function setGame() {

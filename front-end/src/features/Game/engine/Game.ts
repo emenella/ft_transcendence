@@ -106,6 +106,7 @@ export class Game {
             if (this.pong) {
                 this.pong.stop();
                 this.pong = null;
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
             }
         }, 1000);
     }

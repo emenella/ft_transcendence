@@ -10,7 +10,6 @@ export const enum UserStatus {
 	Disconnected,
 	Connected,
 	InGame,
-	Inactive
 }
 
 const UserRelations: string[] = ["connection", "winMatch", "loseMatch", "ownedChans", "relations", "messages", "friends", "friend_requests", "blacklist"]
@@ -201,5 +200,10 @@ export class UserService {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);
 			await this.userRepository.save(user);
 		}
+	}
+
+	async changeColor(user: User, color: string): Promise<void> {
+		user.color = color;
+		await this.userRepository.save(user);
 	}
 }

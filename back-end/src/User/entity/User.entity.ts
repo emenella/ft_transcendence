@@ -5,9 +5,12 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany
 import { Match } from './Match.entity';
 import { Connection } from './Connection.entity';
 import { UserStatus } from '../service/User.service';
+import { Socket } from 'socket.io';
 
 @Entity()
 export class User {
+    socket: Socket | null = null;
+
 	//~~ INFO
     @PrimaryGeneratedColumn()
     id: number;
@@ -29,6 +32,9 @@ export class User {
 
 	@Column({default: UserStatus.Disconnected})
     status: number;
+
+    @Column({default: "white"})
+    color: string;
 
     //~~ GAME AND STATS
     @OneToMany(() => Match, match => match.winner, {cascade: true})
