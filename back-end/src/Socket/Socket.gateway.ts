@@ -25,7 +25,7 @@ export class SocketGateway {
 		const user = await this.authentificate(client);
 		if (user) {
 			this.socketService.addUser(client, user)
-			if (!!this.gameService.findGamesIdWithPlayer(user.id))
+			if (this.gameService.findGamesIdWithPlayer(user.id).length)
 				this.userService.changeStatus(user, UserStatus.InGame);
 			else
 				this.userService.changeStatus(user, UserStatus.Connected);
