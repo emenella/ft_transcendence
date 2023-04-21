@@ -61,21 +61,30 @@ export class SocketGateway {
 		return (user ? user : null);
 	}
 
-	@SubscribeMessage("duelRequestSent")
-	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+    @SubscribeMessage("duelRequestSent")
+    async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         const sender: User | null = await this.authentificate(client);
-		const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
-		if (sender && receiverSocket) {
-			receiverSocket.emit("duelRequestReceived", sender);
-		}
-	}
+        const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
+        if (sender && receiverSocket) {
+			console.log("jemite le sender");
+            receiverSocket.emit("duelRequestReceived", sender);
+        }
+    }
 
-	@SubscribeMessage("duelRequestAccepted")
-	async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+    @SubscribeMessage("duelRequestAccepted")
+    async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         const receiver: User | null = await this.authentificate(client);
-		const sender = await this.userService.getUserById(data.senderID);
-		if (receiver && sender) {
-			this.matchmakingService.createGame(sender, receiver);
-		}
-	}
+        const sender = await this.userService.getUserById(data.senderId);
+        const senderSocket = this.socketService.getUserById(data.senderId)?.socket;
+        if (receiver && sender && senderSocket) {
+            if (!this.gameService.findGamesIdWithPlayer(receiver.id).length
+            && !this.gameService.findGamesIdWithPlayer(sender.id).length)
+            {
+                await this.matchmakingService.createGame(sender, receiver);
+                client.emit("duelLaunched");
+                senderSocket.emit("duelLaunched");
+
+            }
+        }
+    }
 }

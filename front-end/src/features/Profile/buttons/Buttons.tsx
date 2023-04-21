@@ -53,21 +53,6 @@ export function DuelButton({ socket, receiverId }: { socket: Socket | undefined,
 	);
 }
 
-export function SpectateButton({ id }: { id : number | undefined }) {
-	const navigate = useNavigate();
-
-    function move() {
-        navigate("/spec/" + id);
-    }
-
-	return (
-		<div>
-			<label>Regarder une partie </label>
-			<button onClick={move}> <Emoji label="tv" symbol="📺" /> </button>
-		</div>
-	);
-}
-
 export function BlacklistButton({ username }: { username: string | undefined }) {
 	return (
 		<div>

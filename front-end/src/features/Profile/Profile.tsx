@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 import { getMatchs, getUserById } from "../../api/User";
 import Emoji from "../../components/Emoji";
-import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from "./buttons/Buttons";
+import { AddFriendButton, RemoveFriendButton, DuelButton, BlacklistButton, UnblacklistButton } from "./buttons/Buttons";
 import { User, Match } from "../../utils/backendInterface";
 import { useContext } from "react";
 import { UserContext } from "../../utils/UserContext";
@@ -23,11 +23,6 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 			{
 				(user?.status === UserStatus.Connected)
 					? <DuelButton socket={socket} receiverId={user?.id} />
-					: <></>
-			}
-			{
-				(user?.status === UserStatus.InGame)
-					? <SpectateButton id={user?.id} />
 					: <></>
 			}
 			{
