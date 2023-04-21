@@ -66,8 +66,5 @@ export class SocketGateway {
 		if (user && receiverSocket) {
 			receiverSocket.emit("duelRequestReceived", user);
 		}
-		else {
-			console.log("One of the user is disconnected");
-		}
 	}
 }

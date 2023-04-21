@@ -36,7 +36,6 @@ export class GameController {
 
     @Post('duel/accept/:id')
     async acceptDuel(req: Request, @Query('id') id: number) {
-        console.log(req.params.id, req.user as User);
         const from = await this.userService.getUserById(id);
         const user = req.user as User;
         if (user) {

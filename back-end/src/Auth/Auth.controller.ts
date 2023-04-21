@@ -1,18 +1,16 @@
-import { Controller, Inject, forwardRef, Get, Post, Delete, UseGuards, Req, Res, HttpException } from "@nestjs/common";
+import { Controller, Get, Post, Delete, UseGuards, Req, Res, HttpException } from "@nestjs/common";
 import { Request, Response } from "express";
 import { AuthService } from "./Auth.service";
 import { serverOptions } from "./Auth.constants";
 import { FortyTwoGuard } from "./guard/42.guard";
 import { Public } from "./decorators/public.decoration";
 import { User } from "../User/entity/User.entity";
-import { UserService } from "../User/service/User.service";
 import { ConnectionService } from "../User/service/Connection.service";
 
 @Controller("auth")
 export class AuthController {
 
 	constructor(private readonly AuthService: AuthService,
-				@Inject(forwardRef(() => UserService)) private readonly userService: UserService,
 				private readonly connectionService: ConnectionService,) {}
 	
 	@Public()
@@ -52,13 +50,11 @@ export class AuthController {
 
 	@Post("/2fa/save")
 	async saveSecret(@Req() req: Request) {
-		this.userService.change2FA(req.user as User, true);
 		return await this.AuthService.saveSecret(req.user as User, req.body.code);
 	}
 
 	@Delete("/2fa/delete")
 	async deleteSecret(@Req() req: Request) {
-		await this.userService.change2FA(req.user as User, false);
 		return await this.AuthService.deleteSecret(req.user as User);
 	}
 
