@@ -133,6 +133,8 @@ export class UserService {
 			throw new HttpException(`${receiver.username} already have a pending friend request from you.`, 400);
 		else if (receiver.blacklist.some((f) => { return f.id === sender.id }))
 			throw new HttpException(`${receiver.username} blocked you.`, 400);
+		else if (sender.blacklist.some((f) => { return f.id === receiver.id }))
+			throw new HttpException(`You blocked ${receiver.username}.`, 400);
 		else if (sender.friendRequests.some((f) => { return f.id === receiver.id }))
 			this.acceptFriend(sender, receiver);
 		else {
@@ -213,6 +215,8 @@ export class UserService {
 			}
 			await this.userRepository.save(user);
 			await this.userRepository.save(userToBlock);
+			this.emitFriendListChangement(user.id);
+			this.emitFriendListChangement(userToBlock.id);
 		}
 	}
 
