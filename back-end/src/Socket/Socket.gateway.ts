@@ -6,6 +6,7 @@ import { User } from "../User/entity/User.entity";
 import { UserService } from "../User/service/User.service";
 import { UserStatus } from "../User/service/User.service";
 import { AuthService } from "../Auth/Auth.service";
+import { GameService } from "../Game/Game.service";
 
 @WebSocketGateway(81, {namespace: "user", cors: true})
 export class SocketGateway {
@@ -17,13 +18,17 @@ export class SocketGateway {
 
 	constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,
 				@Inject(forwardRef(() => AuthService)) private authService: AuthService,
+				@Inject(forwardRef(() => GameService)) private gameService: GameService,
 				@Inject(forwardRef(() => SocketService)) private socketService: SocketService) {}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
 		if (user) {
 			this.socketService.addUser(client, user)
-			this.userService.changeStatus(user, UserStatus.Connected);
+			if (this.gameService.findGamesIdWithPlayer(user.id).length)
+				this.userService.changeStatus(user, UserStatus.InGame);
+			else
+				this.userService.changeStatus(user, UserStatus.Connected);
 			this.logger.log(`Client connected: ${user.username}`);
 		}
 		else {
