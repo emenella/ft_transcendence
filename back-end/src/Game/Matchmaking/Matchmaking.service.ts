@@ -6,7 +6,7 @@ import { User } from "../../User/entity/User.entity";
 import { Setup, general, ball, player } from "../interface/Game.interface";
 import { updateElo, checkMatch, Result } from "./utils/elo.utils";
 import { Match } from "../../User/entity/Match.entity";
-import { HistoryService } from "../../User/service/Match.service";
+import { MatchService } from "../../User/service/Match.service";
 import { Socket } from "socket.io";
 
 
@@ -31,7 +31,7 @@ export class MatchmakingService {
     };
 
     constructor(private readonly gameService: GameService, private readonly userService: UserService,
-        private readonly historyService: HistoryService) { }
+        private readonly historyService: MatchService) { }
 
     async joinQueue(user: User): Promise<boolean> {
         if (this.queue.includes(user.id) || await this.isInGame(user.id))

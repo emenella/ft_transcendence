@@ -6,7 +6,7 @@ import { User } from "../entity/User.entity";
 
 @Injectable()
 export class ConnectionService {
-	constructor( @InjectRepository(Connection) private readonly connectionRepository: Repository<Connection> ) {}
+	constructor(@InjectRepository(Connection) private readonly connectionRepository: Repository<Connection>) {}
 	
 	async createConnection(connection: Connection, user: User, id42: number): Promise<Connection> {
 		connection.user = user;
@@ -21,6 +21,7 @@ export class ConnectionService {
 		const connection = { ...connectionToUpdate, ...updatedConnection };
 		return await this.connectionRepository.save(connection);
 	}
+
 	async getConnectionById(id: number): Promise<Connection> {
 		const connection = await this.connectionRepository.findOneBy({ id: id });
 		if (!connection)
@@ -29,14 +30,14 @@ export class ConnectionService {
 	}
 
 	async getConnectionByUserId(id: number): Promise<Connection> {
-		const connection = await this.connectionRepository.findOne({ relations: ["user"], where : { user: { id: id } } });
+		const connection = await this.connectionRepository.findOne({ where : { user: { id: id } }, relations: ["user"] });
 		if (!connection)
 			throw new HttpException(`Connection with user ID ${id} not found.`, 404);
 		return connection;
 	}
 
 	async getConnectionById42(id: number): Promise<Connection> {
-		const connection = await this.connectionRepository.findOne({ relations: ["user"],  where : { id42: id } });
+		const connection = await this.connectionRepository.findOne({ where : { id42: id }, relations: ["user"] });
 		if (!connection)
 			throw new HttpException(`Connection with 42 ID ${id} not found.`, 404);
 		return connection;

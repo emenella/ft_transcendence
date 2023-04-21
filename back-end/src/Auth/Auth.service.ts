@@ -1,14 +1,14 @@
-import { Injectable, Inject, HttpException, forwardRef } from '@nestjs/common';
-import { UserService } from '../User/service/User.service';
-import { JwtService } from '@nestjs/jwt';
-import { API } from './Auth.constants';
-import * as speakeasy from 'speakeasy';
-import * as qrcode from 'qrcode';
-import { ConnectionService } from '../User/service/Connection.service';
-import { User } from '../User/entity/User.entity';
-import { Connection } from '../User/entity/Connection.entity';
-import * as crypto from 'crypto-js';
-import { passPhrase } from './Auth.constants';
+import { Injectable, Inject, HttpException, forwardRef } from "@nestjs/common";
+import { UserService } from "../User/service/User.service";
+import { JwtService } from "@nestjs/jwt";
+import { API } from "./Auth.constants";
+import * as speakeasy from "speakeasy";
+import * as qrcode from "qrcode";
+import { ConnectionService } from "../User/service/Connection.service";
+import { User } from "../User/entity/User.entity";
+import { Connection } from "../User/entity/Connection.entity";
+import * as crypto from "crypto-js";
+import { passPhrase } from "./Auth.constants";
 
 
 interface IToken {
@@ -56,9 +56,9 @@ export class AuthService {
 
         const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!passPhrase.secret)
-            throw new HttpException('Passphrase not set', 500);
+            throw new HttpException("Passphrase not set", 500);
         if (connection.otp) {
-            throw new HttpException('OTP already set', 401);
+            throw new HttpException("OTP already set", 401);
         }
         if (!this.secret.get(connection.id)) {
             const iv = crypto.lib.WordArray.random(32);
@@ -68,13 +68,13 @@ export class AuthService {
         }
         const decode = this.secret.get(connection.id);
         if (!decode) {
-            throw new HttpException('Secret not found', 404);
+            throw new HttpException("Secret not found", 404);
         }
         const secret = await this.decodeSecret(decode.secret, decode.iv);
         if (!secret) {
-            throw new HttpException('Secret not found', 404);
+            throw new HttpException("Secret not found", 404);
         }
-        const url = speakeasy.otpauthURL({ secret: secret , encoding: 'base32', label: "ft_pong" });
+        const url = speakeasy.otpauthURL({ secret: secret , encoding: "base32", label: "ft_pong" });
         const qr = await qrcode.toDataURL(url);
         return qr;
     }
@@ -82,7 +82,7 @@ export class AuthService {
     async decodeSecret(secret: string, iv: string) {
         const encryptIv = crypto.enc.Hex.parse(iv);
         if (!passPhrase.secret)
-            throw new HttpException('Passphrase not set', 500);
+            throw new HttpException("Passphrase not set", 500);
         const res = crypto.AES.decrypt(secret, passPhrase.secret, { iv: encryptIv });
         return res.toString(crypto.enc.Utf8);
     }
@@ -90,21 +90,21 @@ export class AuthService {
     async verifyQR(connectionId: number, code: string) {
         const decode = this.secret.get(connectionId);
         if (!passPhrase.secret)
-            throw new HttpException('Passphrase not set', 500);
+            throw new HttpException("Passphrase not set", 500);
         if (!decode) {
-            throw new HttpException('Secret not found', 404);
+            throw new HttpException("Secret not found", 404);
         }
         const secret = await this.decodeSecret(decode.secret, decode.iv);
         if (!secret) {
-            throw new HttpException('Secret not decrypt', 500);
+            throw new HttpException("Secret not decrypt", 500);
         }
         const verified = speakeasy.totp.verify({
             secret: secret,
-            encoding: 'base32',
+            encoding: "base32",
             token: code,
         });
         if (!verified) {
-            throw new HttpException('Code not valid', 401);
+            throw new HttpException("Code not valid", 401);
         }
         return verified;
     }
@@ -123,7 +123,7 @@ export class AuthService {
         }
         let decode = this.secret.get(connection.id);
         if (!decode) {
-            throw new HttpException('Secret not found', 404);
+            throw new HttpException("Secret not found", 404);
         }
         connection.otp = decode.secret;
         connection.iv = decode.iv;
@@ -136,7 +136,7 @@ export class AuthService {
     {
         const connection = await this.connectionService.getConnectionById(connectionId);
         if (!passPhrase.secret)
-            throw new HttpException('Passphrase not set', 500);
+            throw new HttpException("Passphrase not set", 500);
         if (!connection) {
             throw new HttpException("Connection does not exist", 404);
         }
@@ -149,7 +149,7 @@ export class AuthService {
         const secret = await this.decodeSecret(connection.otp, connection.iv);
         const verified = speakeasy.totp.verify({
             secret: secret.toString(),
-            encoding: 'base32',
+            encoding: "base32",
             token: code,
         });
         if (!verified) {
@@ -191,7 +191,7 @@ export class AuthService {
     async verifyJWT(token: string): Promise<IToken> {
         let ret = this.jwtService.decode(token);
         if (!ret) {
-            throw new HttpException('Invalid token', 401);
+            throw new HttpException("Invalid token", 401);
         }
         return ret as IToken;
     }

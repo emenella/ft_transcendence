@@ -1,11 +1,10 @@
-import { Chan } from '../../Chat/Chan/Chan.entity';
-import { RelationTable } from '../../Chat/Chan/Chan.entity';
-import { Message } from '../../Chat/Message/Message.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { Match } from './Match.entity';
-import { Connection } from './Connection.entity';
-import { UserStatus } from '../service/User.service';
-import { Socket } from 'socket.io';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Socket } from "socket.io";
+import { UserStatus } from "../service/User.service";
+import { Connection } from "./Connection.entity";
+import { Match } from "./Match.entity";
+import { Chan, RelationTable } from "../../Chat/Chan/Chan.entity";
+import { Message } from "../../Chat/Message/Message.entity";
 
 @Entity()
 export class User {
@@ -15,36 +14,35 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({unique: true, nullable: true})
+    @Column({ unique: true, nullable: true })
     username: string;
 
 	@Column({ default: "avatars/stormtrooper.jpg" })
 	avatarPath: string;
 
-    @OneToOne(() => Connection, connection => connection.user, {cascade: true})
+    @OneToOne(() => Connection, connection => connection.user, { cascade: true })
     connection: Connection;
 
-    @Column({type: 'boolean', default: false})
+    @Column({ type: "boolean", default: false })
     isProfileComplete: boolean;
 
-	@Column({type: 'boolean', default: false})
+	@Column({ type: "boolean", default: false })
     is2FAActivated: boolean;
 
-	@Column({default: UserStatus.Disconnected})
+	@Column({ default: UserStatus.Disconnected })
     status: number;
 
-    @Column({default: "white"})
+    @Column({ default: "white" })
     color: string;
 
     //~~ GAME AND STATS
-    @OneToMany(() => Match, match => match.winner, {cascade: true})
-    winMatch: Match[];
+    @OneToMany(() => Match, match => match.winner, { cascade: true })
+    matchsWon: Match[];
 	
-    @OneToMany(() => Match, match => match.loser, {cascade: true})
-    loseMatch: Match[];
+    @OneToMany(() => Match, match => match.loser, { cascade: true })
+    matchsLost: Match[];
 
-	// float in 
-	@Column({default: 1000})
+	@Column({ default: 1000 })
 	elo: number;
 	
     //~~ CHAT
@@ -64,7 +62,7 @@ export class User {
 
 	@ManyToMany(() => User)
     @JoinTable()
-    friend_requests: User[];
+    friendRequests: User[];
 
     @ManyToMany(() => User)
     @JoinTable()

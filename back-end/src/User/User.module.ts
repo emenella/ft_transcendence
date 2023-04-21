@@ -1,13 +1,13 @@
 import { Module, forwardRef } from "@nestjs/common";
-import { UserController } from "./User.controller";
-import { UserService } from "./service/User.service";
-import { User } from "./entity/User.entity";
-import { Connection } from "./entity/Connection.entity";
-import { ConnectionService } from "./service/Connection.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { MulterModule } from "@nestjs/platform-express";
 import { factory } from "./utils/multer.utils";
-import { HistoryService } from "./service/Match.service";
+import { User } from "./entity/User.entity";
+import { UserController } from "./User.controller";
+import { UserService } from "./service/User.service";
+import { Connection } from "./entity/Connection.entity";
+import { ConnectionService } from "./service/Connection.service";
+import { MatchService } from "./service/Match.service";
 import { Match } from "./entity/Match.entity";
 import { SocketModule } from "../Socket/Socket.module";
 import { AuthModule } from "../Auth/Auth.module";
@@ -17,12 +17,12 @@ import { ChatModule } from "../Chat/Chat.module";
 	imports: [
 		TypeOrmModule.forFeature([User, Connection, Match]),
 		MulterModule.registerAsync({useFactory: factory, imports:[UserModule], inject: [UserService]}),
+        forwardRef(() => SocketModule),
 		forwardRef(() => AuthModule),
-		forwardRef(() => ChatModule),
-        forwardRef(() => SocketModule)
+		forwardRef(() => ChatModule)
 	],
 	controllers: [UserController],
-	providers: [UserService, ConnectionService, HistoryService],
-	exports: [UserService, ConnectionService, HistoryService]
+	providers: [UserService, ConnectionService, MatchService],
+	exports: [UserService, ConnectionService, MatchService]
 })
 export class UserModule {}

@@ -50,7 +50,7 @@ function UserSidebar() {
 	}
 	);
 
-	const listFriendsInvite = user?.friend_requests?.map((friend: User) => {
+	const listFriendsInvite = user?.friendRequests?.map((friend: User) => {
 		return (
 			<div className='friend-invite' key={friend.id}>
 				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />

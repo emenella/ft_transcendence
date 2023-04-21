@@ -30,7 +30,7 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructorprivate readonly socketService: SocketService) {
+    constructor(private readonly socketService: SocketService) {
     }
 
     public getGame(id: string): Game | undefined {

@@ -16,8 +16,8 @@ import { ChatModule } from './Chat/Chat.module';
 		UserModule,
 		AuthModule,
 		ChatModule,
-		GameModule,
 		MatchmakingModule,
+		GameModule,
 		ServeStaticModule.forRoot({ rootPath: __dirname + '/..' + '/avatars', serveRoot: '/avatars' })
 	],
 	providers: [{

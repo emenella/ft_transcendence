@@ -99,8 +99,8 @@ function Profile() {
 		return <p>Chargement en cours...</p>;
 	}
 
-	const wins = user!.winMatch.length;
-	const loses = user!.loseMatch.length;
+	const wins = user!.matchsWon.length;
+	const loses = user!.matchsLost.length;
 	const games = matchs.length;
 	const winrate = ((wins! / games!) * 100) || 0;
 

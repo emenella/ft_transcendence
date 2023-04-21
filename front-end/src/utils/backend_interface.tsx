@@ -14,10 +14,10 @@ export interface User {
     isProfileComplete: boolean;
     is2FAActivated: boolean;
     elo: number;
-    winMatch: Match[];
-    loseMatch: Match[];
+    matchsWon: Match[];
+    matchsLost: Match[];
     friends: User[];
-    friend_requests: User[];
+    friendRequests: User[];
     blacklist: User[];
     status: number;
 }

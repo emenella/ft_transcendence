@@ -1,16 +1,16 @@
-import { Inject, Logger, forwardRef } from '@nestjs/common';
-import { WebSocketGateway, WebSocketServer, ConnectedSocket, SubscribeMessage, MessageBody } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { User } from '../User/entity/User.entity';
-import { UserService } from '../User/service/User.service';
-import { UserStatus } from '../User/service/User.service';
-import { AuthService } from '../Auth/Auth.service';
-import { SocketService } from './Socket.service';
+import { Inject, Logger, forwardRef } from "@nestjs/common";
+import { WebSocketGateway, WebSocketServer, ConnectedSocket, SubscribeMessage, MessageBody } from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { SocketService } from "./Socket.service";
+import { User } from "../User/entity/User.entity";
+import { UserService } from "../User/service/User.service";
+import { UserStatus } from "../User/service/User.service";
+import { AuthService } from "../Auth/Auth.service";
 
-@WebSocketGateway(81, {namespace: 'user', cors: true})
+@WebSocketGateway(81, {namespace: "user", cors: true})
 export class SocketGateway {
 	
-	private logger: Logger = new Logger('ChatGateway');
+	private logger: Logger = new Logger("SocketGateway");
 
 	@WebSocketServer()
 	server: Server;
@@ -34,7 +34,7 @@ export class SocketGateway {
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
 		if (user) {
-			this.socketService.removeUser(client, user);
+			this.socketService.removeUser(client);
 			this.userService.changeStatus(user, UserStatus.Disconnected);
 			this.logger.log(`Client disconnected: ${user.username}`);
 		}
@@ -54,12 +54,10 @@ export class SocketGateway {
 		return (user ? user : null);
 	}
 
-	@SubscribeMessage('duelRequestSent')
+	@SubscribeMessage("duelRequestSent")
 	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         const user: User | null = await this.authentificate(client);
 		const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
-		this.logger.log(`Receiver ID: ${data.receiverId}`);
-		this.logger.log(`Receiver socket: ${receiverSocket}`);
 		if (user && receiverSocket) {
 			receiverSocket.emit("duelRequestReceived", user);
 		}
