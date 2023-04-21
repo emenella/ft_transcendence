@@ -73,7 +73,6 @@ function Profile() {
 	const [user, setUser] = useState<User>();
 	const [matchs, setMatchs] = useState<Match[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<any>(null);
 	const navigate = useNavigate();
 
 	//~~ Functions
@@ -99,9 +98,6 @@ function Profile() {
 	}, [user]);
 
 	//~~ Body
-	if (error)
-		return <p>Erreur : {error.message}</p>;
-
 	if (loading)
 		return <p>Chargement en cours...</p>;
 
