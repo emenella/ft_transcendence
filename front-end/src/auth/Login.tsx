@@ -16,10 +16,8 @@ function Login() {
 					navigate("/signUp");
 				}
 			});
-			navigate("/home");
 		}
-		else
-			navigate("/error");
+		navigate("/home");
 	}, [token, navigate]);
 
 	return (<h1>Wait a moment...</h1>);

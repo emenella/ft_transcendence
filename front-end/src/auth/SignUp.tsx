@@ -28,16 +28,13 @@ export default function SignUp() {
 		setUsername(e.target.value);
 	}
 
-	async function alreadySignUp() {
+	async function alreadySignUpOrUnauthorized() {
 		let user : User = await getMe();
-		if (user?.isProfileComplete)
+		if (user?.isProfileComplete || !token)
 			navigate("/home");
 	}
 
-	if (!token)
-		navigate("/error");
-
-	alreadySignUp();
+	alreadySignUpOrUnauthorized();
 
 	return (
 		<div className="parent">

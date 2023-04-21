@@ -41,16 +41,13 @@ export function Enable2FA() {
 		setSecret(e.target.value);
 	};
 
-	async function alreadyEnabled() {
+	async function alreadyEnabledOrUnauthorized() {
 		let user : User = await getMe();
-		if (user?.is2FAActivated === true)
+		if (user?.is2FAActivated === true || !token)
 			navigate("/home");
 	}
 
-	alreadyEnabled();
-
-	if (!token)
-		navigate("/error");
+	alreadyEnabledOrUnauthorized();
 
 	return (
 		<div className="parent">
@@ -95,10 +92,8 @@ export function Login2FA() {
 
 	async function notEnabledOrLoggedIn() {
 		let user : User = await getMe();
-		if (user?.is2FAActivated === false)
+		if (user?.is2FAActivated === false || !token)
 			navigate("/home");
-		else if (!token)
-			navigate("/error");
 	}
 
 	notEnabledOrLoggedIn();
