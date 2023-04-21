@@ -105,9 +105,11 @@ export class ChatGateway {
             chan: data.chan,
             msg: ret.content
           };
-          this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
+          client.emit('msgToClient', newMessage);
           newMessage.chan = user.username;
-          this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
+          let userChat2 = this.chatService.getUserFromID(user2.id);
+          userChat2?.socket.emit('msgToClient', newMessage);
+          // this.server.to(dmChan.id.toString()).emit('msgToClient', newMessage);
           return;
         }
         client.emit('error', 'No such DM');
