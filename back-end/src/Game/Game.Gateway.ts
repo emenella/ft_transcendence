@@ -80,16 +80,6 @@ export class GameGateway {
         }
     }
 
-    // @SubscribeMessage('game:setup')
-    // async onGameSetup(@ConnectedSocket() client: Socket): Promise<any> {
-    //     const payload: any = await this.authService.verifyJWT(client.handshake.headers.authorization);
-    //     const user = await this.userService.getUserByConnectionId(payload.connectionId);
-    //     if (user) {
-    //         let setup: Setup = this.gameService.getGameSetup(user.id);
-    //         client.emit('game:setup', setup);
-    //     }
-    // }
-
     @SubscribeMessage('game:info')
     async onGameInfo(@ConnectedSocket() client: Socket): Promise<any> {
         const user = await this.authentificate(client);

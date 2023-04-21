@@ -195,7 +195,7 @@ export class MatchmakingService {
         await this.userService.updateUser(user0.id, user0);
         await this.userService.updateUser(user1.id, user1);
         await this.createMatchHistory(id, score[0] > score[1] ? user0 : user1, score[0] < score[1] ? user0 : user1);
-        this.gameService.deleteGame(id);
+        this.gameService.handlerGameFinish(id);
     }
 
     private async createMatchHistory(id: string, winner: User, loser: User): Promise<void> {
