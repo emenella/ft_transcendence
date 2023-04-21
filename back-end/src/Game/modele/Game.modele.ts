@@ -156,8 +156,16 @@ export class Game {
     public getSocketId(): Array<string>
     {
         const socketId: Array<string> = [];
-        socketId.push(this.player0.getSocketId());
-        socketId.push(this.player1.getSocketId());
+        const player0Id = this.player0.getSocketId();
+        const player1Id = this.player1.getSocketId();
+        if (player0Id)
+        {
+            socketId.push(player0Id);
+        }
+        if (player1Id)
+        {
+            socketId.push(player1Id);
+        }
         for (const spectator of this.spectators)
         {
             socketId.push(spectator.getSocketId());

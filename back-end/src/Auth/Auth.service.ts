@@ -125,7 +125,6 @@ export class AuthService {
         }
         connection.otp = decode.secret;
         connection.iv = decode.iv;
-        console.log(connection);
         this.secret.delete(connection.id);
         await this.userService.change2FA(user, true);
         const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
@@ -185,8 +184,8 @@ export class AuthService {
         }
         connection.otp = null;
         connection.iv = null;
-        await this.connectionService.updateConnection(connection.id, connection);
-		this.userService.change2FA(user, true);
+		await this.userService.change2FA(user, false);
+        return await this.connectionService.updateConnection(connection.id, connection);
     }
 
     async verifyJWT(token: string): Promise<IToken> {

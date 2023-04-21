@@ -5,8 +5,6 @@ const protocol = process.env.REACT_APP_API_PROTOCOL
 const host = process.env.REACT_APP_API_HOST
 const port = process.env.REACT_APP_API_PORT
 
-console.log(process.env)
-
 export const url = `${protocol}://${host}:${port}`;
 
 export const ws = `${protocol}://${host}:81`

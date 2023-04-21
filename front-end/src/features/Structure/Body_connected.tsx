@@ -23,12 +23,10 @@ function BodyConnected() {
     
     useEffect(() => {
         function duelLaunched() {
-            console.log("socketemited bro")
             navigate("/home");
         }
                 
         async function duelRequestReceivedListener(sender: User) {
-			console.log(sender);
 
             function accept(id : number) {
                 socket?.emit("duelRequestAccepted", { senderId: sender.id });
@@ -57,7 +55,7 @@ function BodyConnected() {
             socket?.off("duelLaunched", duelLaunched);
             socket?.off("duelRequestReceived", duelRequestReceivedListener);
         }
-    }, [navigate])
+    }, [socket])
 
 	return (
 		<div className="connected">

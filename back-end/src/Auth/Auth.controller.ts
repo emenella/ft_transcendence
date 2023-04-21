@@ -6,14 +6,12 @@ import { FortyTwoGuard } from "./guard/42.guard";
 import { Public } from "./decorators/public.decoration";
 import { User } from "../User/entity/User.entity";
 import { ConnectionService } from "../User/service/Connection.service";
-import { UserService } from "../User/service/User.service";
 
 @Controller("auth")
 export class AuthController {
 
 	constructor(private readonly AuthService: AuthService,
-				private readonly connectionService: ConnectionService,
-				private readonly userService: UserService) {}
+				private readonly connectionService: ConnectionService) {}
 	
 	@Public()
 	@Get("/get42URL")
@@ -27,7 +25,6 @@ export class AuthController {
 	async postAuth(@Req() req: Request, @Res() res: Response) {
 		let token = await this.AuthService.login(req.user);
 		let payload = await this.AuthService.verifyJWT(token.access_token);
-		console.log(payload.otp);
 		if (!payload.otp)
 			return res.redirect(serverOptions.protocole + "://" + serverOptions.hostname + ":" + serverOptions.port + "/login2fa?token=" + token.access_token);
 		else
@@ -59,7 +56,6 @@ export class AuthController {
 	@Delete("/2fa/delete")
 	async deleteSecret(@Req() req: Request) {
 		try {
-			await this.userService.change2FA(req.user as User, false);
 			let ret = await this.AuthService.deleteSecret(req.user as User)
 			return ret;
 		}
