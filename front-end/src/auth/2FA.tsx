@@ -18,7 +18,7 @@ export function Enable2FA() {
 			setQRCode(tmp);
 		};
 		getQRCodeSrc();
-	}, []);
+	}, [token]);
 	
 	async function handleClick() {
 		const newToken = await saveQRCode(secret, token);
@@ -31,6 +31,11 @@ export function Enable2FA() {
 			toast.error("Error: Invalid code.");
 		}
 	}
+
+	async function handleKeyDown(event: any) {
+		if (event.key === "Enter")
+			handleClick();
+	};
 
 	const handleSetSecret = (e: ChangeEvent<HTMLInputElement>) => {
 		setSecret(e.target.value);
@@ -54,7 +59,7 @@ export function Enable2FA() {
 			<img src={QRCode} alt="QRCode" />
 			<br />
 			<div className="form">
-				<label>Veuillez entrer votre code secret correspondant : <input type="text" value={secret} onChange={handleSetSecret} /> </label>
+				<label>Veuillez entrer votre code secret correspondant : <input type="text" value={secret} onChange={handleSetSecret} onKeyDown={handleKeyDown}/> </label>
 				<button onClick={handleClick}>Envoyer</button>
 			</div>
 		</div>

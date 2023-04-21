@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom"
-import "../App.css";
+import "../../App.css";
 import PongGame from "./PongGame";
 import { getJwtCookie } from "../../api/JwtCookie";
 import { Link } from "react-router-dom";

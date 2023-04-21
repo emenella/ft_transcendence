@@ -18,7 +18,7 @@ root.render(
 			<Route path="/login" element={<Login />} />
 			<Route path="/enable2fa" element={<Enable2FA />} />
 			<Route path="/login2fa" element={<Login2FA />} />
-			<Route path="/signUp" element={<SignUp />} />
+			<Route path="/signup" element={<SignUp />} />
 			<Route path="/error" element={<Error />} />
 			<Route path="*" element={<Navigate to="/home" replace />} />
 		</Routes>
