@@ -125,14 +125,16 @@ export class AuthService {
         }
         connection.otp = decode.secret;
         connection.iv = decode.iv;
-        const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
+        console.log(connection);
         this.secret.delete(connection.id);
-        return await this.otp(updateConnection, code);
+        const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
+        const ret = await this.otp(updateConnection, code);
+        await this.userService.change2FA(user, true);
+        return ret;
     }
     
-    async verify(connectionId: number, code: string)
+    async verify(connection: Connection, code: string)
     {
-        const connection = await this.connectionService.getConnectionById(connectionId);
         if (!passPhrase.secret)
             throw new HttpException('Passphrase not set', 500);
         if (!connection) {
@@ -163,7 +165,7 @@ export class AuthService {
         if (!connection.otp) {
             throw new HttpException("Connection does not have a secret", 400);
         }
-        const verified = await this.verify(connection.id, code);
+        const verified = await this.verify(connection, code);
         if (!verified) {
             throw new HttpException("Code is not valid", 401);
         }
@@ -176,10 +178,10 @@ export class AuthService {
     async deleteSecret(user: User) {
         const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!connection) {
-            throw new Error("Connection does not exist");
+            throw new HttpException("Connection does not exist", 404);
         }
         if (!connection.otp) {
-            throw new Error("User is not otp");
+            throw new HttpException("User is not otp", 401);
         }
         console.log("delete secret");
         connection.otp = null;

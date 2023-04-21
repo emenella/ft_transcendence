@@ -27,6 +27,7 @@ export class AuthController {
 	async postAuth(@Req() req: Request, @Res() res: Response) {
 		let token = await this.AuthService.login(req.user);
 		let payload = await this.AuthService.verifyJWT(token.access_token);
+		console.log(payload.otp);
 		if (!payload.otp)
 			return res.redirect(serverOptions.protocole + "://" + serverOptions.hostname + ":" + serverOptions.port + "/login2fa?token=" + token.access_token);
 		else
@@ -52,14 +53,22 @@ export class AuthController {
 
 	@Post("/2fa/save")
 	async saveSecret(@Req() req: Request) {
-		this.userService.change2FA(req.user as User, true);
 		return await this.AuthService.saveSecret(req.user as User, req.body.code);
 	}
 
 	@Delete("/2fa/delete")
 	async deleteSecret(@Req() req: Request) {
-		await this.userService.change2FA(req.user as User, false);
-		return await this.AuthService.deleteSecret(req.user as User);
+		try {
+			await this.userService.change2FA(req.user as User, false);
+			let ret = await this.AuthService.deleteSecret(req.user as User)
+			return ret;
+		}
+		catch(e)
+		{
+			console.log(e)
+			return;
+		}
+
 	}
 
 }

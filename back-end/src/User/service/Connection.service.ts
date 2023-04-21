@@ -11,7 +11,7 @@ export class ConnectionService {
 	async createConnection(connection: Connection, user: User, id42: number): Promise<Connection> {
 		connection.user = user;
 		connection.id42 = id42;
-		return this.connectionRepository.save(connection);
+		return await this.connectionRepository.save(connection);
 	}
 	
 	async updateConnection(id: number, updatedConnection: Connection): Promise<Connection> {
