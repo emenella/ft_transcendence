@@ -189,7 +189,7 @@ export class Player {
     }
 
     public getSocketId() {
-        return this.socket.id;
+        return this.socket === undefined ? undefined : this.socket.id;
     }
 
 }

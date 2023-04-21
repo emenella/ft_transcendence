@@ -155,9 +155,18 @@ export class Game {
 
     public getSocketId(): Array<string>
     {
+        console.log(this.player0, this.player1);
         const socketId: Array<string> = [];
-        socketId.push(this.player0.getSocketId());
-        socketId.push(this.player1.getSocketId());
+        const player0Id = this.player0.getSocketId();
+        const player1Id = this.player1.getSocketId();
+        if (player0Id)
+        {
+            socketId.push(player0Id);
+        }
+        if (player1Id)
+        {
+            socketId.push(player1Id);
+        }
         for (const spectator of this.spectators)
         {
             socketId.push(spectator.getSocketId());
@@ -168,6 +177,7 @@ export class Game {
 
     public isPlayer(client: Socket): boolean
     {
+        console.log(this.player0.getSocketId(), this.player1.getSocketId(), " isPlayer")
         return this.player0.getSocketId() == client.id || this.player1.getSocketId() == client.id;
     }
     

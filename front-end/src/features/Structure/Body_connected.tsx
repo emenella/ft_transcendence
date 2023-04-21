@@ -57,7 +57,7 @@ function BodyConnected() {
             socket?.off("duelLaunched", duelLaunched);
             socket?.off("duelRequestReceived", duelRequestReceivedListener);
         }
-    }, [navigate])
+    }, [socket])
 
 	return (
 		<div className="connected">
