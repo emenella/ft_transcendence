@@ -2,9 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Emoji from "../../../components/Emoji";
 import { invite, accept, deny, remove, blacklist, unblacklist } from "../../../utils/friends_blacklists_system";
-import { requestDuel } from "../../../api/User";
 import { Socket } from "socket.io-client";
-import { User } from "../../../utils/backendInterface";
 
 export	function Disable2FA({ onClick }: { onClick: () => void }) {
     return (

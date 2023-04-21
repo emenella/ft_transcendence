@@ -6,6 +6,7 @@ import { toastError } from "../components/Error";
 
 export async function getMe(): Promise<any> {
     try {
+        console.log(authHeader());
         const res = await axios.get<User>("api/users/me", { headers: authHeader() });
         return res.data;
     }
@@ -52,6 +53,7 @@ export async function getUserById(id: number) {
     }
     catch (e) {
         console.log(e);
+        throw e;
     }
 }
 

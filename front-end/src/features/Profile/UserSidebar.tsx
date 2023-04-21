@@ -25,16 +25,18 @@ function UserSidebar() {
 	const user = userContext?.user;
 	const socket = useContext(SocketContext);
 	
-	async function friendListChangementListener() {
-		userContext?.setUser(await getMe())
-	}
+
 
 	useEffect(() => {
+		async function friendListChangementListener() {
+			userContext?.setUser(await getMe())
+		}
+
 		socket?.on("friendListChangement", friendListChangementListener);
 		return () => {
 			socket?.off("friendListChangement", friendListChangementListener);
 		}
-	}, [socket])
+	}, [socket, userContext])
 
 	const listFriends = user?.friends?.map((friend: User) => {
 		return (

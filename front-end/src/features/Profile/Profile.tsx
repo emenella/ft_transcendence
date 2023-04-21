@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./Profile.css";
 import { getMatchs, getUserById } from "../../api/User";
 import Emoji from "../../components/Emoji";
@@ -74,12 +74,13 @@ function Profile() {
 	const [matchs, setMatchs] = useState<Match[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<any>(null);
+	const navigate = useNavigate();
 
 	//~~ Functions
 	React.useEffect(() => {
-		const getUser = async () => {
+		async function getUser() {
 			const user = await getUserById(id).catch((err) => {
-				setError(err);
+				navigate("/error");
 			});
 			setUser(user!);
 			setLoading(false);
@@ -88,11 +89,11 @@ function Profile() {
 	}, [id]);
 	
 	React.useEffect(() => {
-		const getUserMatchs = async () => {
-			const match = await getMatchs(user!.id).catch((err) => {
-				setError(err);
-			});
-			setMatchs(match);
+		async function getUserMatchs() {
+			if (user) {
+				const match = await getMatchs(user.id);
+				setMatchs(match);
+			}
 		};
 		getUserMatchs();
 	}, [user]);
