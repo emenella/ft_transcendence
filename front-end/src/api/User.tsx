@@ -141,21 +141,3 @@ export async function changeColorPaddle(color: string) {
 		toastError(e as AxiosError);
 	}
 }
-
-export async function acceptDuel(id : number) {
-	try {
-		return await axios.post("api/game/duel/accept/?id=" + id, { headers: authHeader() });
-	}
-	catch (e) {
-		console.log(e);
-	}
-}
-
-export async function denyDuel(id : number) {
-	try {
-		return await axios.post("api/game/duel/deny/?id=" + id, { headers: authHeader() });
-	}
-	catch (e) {
-		console.log(e);
-	}
-}

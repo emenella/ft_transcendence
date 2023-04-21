@@ -7,6 +7,7 @@ import { UserService } from "../User/service/User.service";
 import { UserStatus } from "../User/service/User.service";
 import { AuthService } from "../Auth/Auth.service";
 import { GameService } from "../Game/Game.service";
+import { MatchmakingService } from "../Game/Matchmaking/Matchmaking.service";
 
 @WebSocketGateway(81, {namespace: "user", cors: true})
 export class SocketGateway {
@@ -19,6 +20,7 @@ export class SocketGateway {
 	constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,
 				@Inject(forwardRef(() => AuthService)) private authService: AuthService,
 				@Inject(forwardRef(() => GameService)) private gameService: GameService,
+				@Inject(forwardRef(() => MatchmakingService)) private matchmakingService: MatchmakingService,
 				@Inject(forwardRef(() => SocketService)) private socketService: SocketService) {}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
@@ -61,10 +63,19 @@ export class SocketGateway {
 
 	@SubscribeMessage("duelRequestSent")
 	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-        const user: User | null = await this.authentificate(client);
+        const sender: User | null = await this.authentificate(client);
 		const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
-		if (user && receiverSocket) {
-			receiverSocket.emit("duelRequestReceived", user);
+		if (sender && receiverSocket) {
+			receiverSocket.emit("duelRequestReceived", sender);
+		}
+	}
+
+	@SubscribeMessage("duelRequestAccepted")
+	async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+        const receiver: User | null = await this.authentificate(client);
+		const sender = await this.userService.getUserById(data.senderID);
+		if (receiver && sender) {
+			this.matchmakingService.createGame(sender, receiver);
 		}
 	}
 }
