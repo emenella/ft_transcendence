@@ -20,8 +20,8 @@ function BodyNotConnected() {
 			</p>
 			<h4>Comment jouer ?</h4>
 			<p>
-				Rien de compliqué, il vous suffit de jouer avec les flèches
-				directionnelles haut et bas de votre clavier.
+				Rien de compliqué : si vous voulez monter la barre, appuyez sur w et
+                si vous voulez la descendre, appuyez sur s.
 			</p>
 			<h4>Amusez-vous bien !</h4>
             <br />

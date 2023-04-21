@@ -6,8 +6,8 @@ import PongGame from './PongGame';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [height, setHeight] = useState(window.innerHeight);
-  const [width, setWidth] = useState(window.innerWidth);
+  const [height] = useState(1080);
+  const [width] = useState(1920);
 
   const joinQueueHandler = () => {
     setIsSearching(true);
@@ -16,15 +16,6 @@ const Matchmaking = () => {
   const leaveQueueHandler = () => {
     setIsSearching(false);
   };
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setHeight(window.innerHeight);
-  //     setWidth(window.innerWidth);
-  //   };
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
 
   return (
     <div className="matchmaking">
