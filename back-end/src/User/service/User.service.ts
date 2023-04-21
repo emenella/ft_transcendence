@@ -206,6 +206,7 @@ export class UserService {
 			if (userIndexF != -1 && userToBlockIndexF != -1) {
 				user.friends.splice(userToBlockIndexF, 1);
 				userToBlock.friends.splice(userIndexF, 1);
+				
 			}
 			else {
 				if (userIndexR != -1)
@@ -215,6 +216,8 @@ export class UserService {
 			}
 			await this.userRepository.save(user);
 			await this.userRepository.save(userToBlock);
+			if (userIndexF != -1 && userToBlockIndexF != -1 && await this.chatService.leaveDM(user.id, userToBlock.id) !== true)
+				throw new HttpException(`Couldn't create channel.`, 400);
 			this.emitFriendListChangement(user.id);
 			this.emitFriendListChangement(userToBlock.id);
 		}
