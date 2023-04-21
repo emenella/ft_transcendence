@@ -3,9 +3,6 @@ import { client as axios, authHeader } from "./JwtCookie"
 import  { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { toastError } from "../components/Error";
-import { useNavigate } from "react-router-dom";
-
-const navigate = useNavigate();
 
 export async function getMe(): Promise<any> {
     try {
@@ -13,7 +10,7 @@ export async function getMe(): Promise<any> {
         return res.data;
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -56,7 +53,7 @@ export async function getUserById(id: number) {
         return res.data;
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -66,7 +63,7 @@ export async function getUserByUsername(username: string) {
         return res.data;
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -76,7 +73,7 @@ export async function getMatchs(id: number) {
         return res.data;
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -85,7 +82,7 @@ export async function inviteFriend(username : string) {
         return await axios.post("api/users/friends/invite", { username: username }, { headers: authHeader() });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -94,7 +91,7 @@ export async function removeFriend(username : string) {
         return await axios.delete("api/users/friends/remove", { headers: authHeader(), data : { username: username } });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -103,7 +100,7 @@ export async function acceptFriend(username : string) {
         return await axios.post("api/users/friends/accept", { username: username }, { headers: authHeader() });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -112,7 +109,7 @@ export async function denyFriend(username : string) {
         return await axios.delete("api/users/friends/deny", { headers: authHeader(), data : { username: username } });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -121,7 +118,7 @@ export async function addFromBlacklist(username : string) {
         return await axios.post("api/users/blacklist/add", { username: username }, { headers: authHeader() });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -130,7 +127,7 @@ export async function removeFromBlacklist(username : string) {
         return await axios.delete("api/users/blacklist/remove", { headers: authHeader(), data : { username: username } });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -150,7 +147,7 @@ export async function acceptDuel(id : number) {
         return await axios.post("api/game/duel/accept/?id=" + id, { headers: authHeader() });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }
 
@@ -159,6 +156,6 @@ export async function denyDuel(id : number) {
         return await axios.post("api/game/duel/deny/?id=" + id, { headers: authHeader() });
     }
     catch (e) {
-        navigate("/error");
+        console.log(e);
     }
 }

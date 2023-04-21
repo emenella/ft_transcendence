@@ -1,7 +1,4 @@
 import { client as axios } from "./JwtCookie";
-import { useNavigate } from "react-router-dom";
-
-const navigate = useNavigate();
 
 export async function get42URL() {
 	try {
@@ -9,7 +6,7 @@ export async function get42URL() {
 		return req.data;
 	}
 	catch (e) {
-		navigate("/error");
+		console.log(e);
 	}
 }
 
@@ -19,7 +16,7 @@ export async function submitCode2FA(secret: string, access_token: string): Promi
 		return req.data.access_token;
 	}
 	catch (e) {
-		navigate("/error");
+		console.log(e);
 	}
 	return "";
 }
@@ -33,7 +30,7 @@ export async function getQRCode(access_token: string | null) {
 		return req.data as string;
 	}
 	catch (e) {
-		navigate("/error");
+		console.log(e);
 	}
 }
 
@@ -43,7 +40,7 @@ export async function saveQRCode(secret: string, access_token: string): Promise<
 		return req.data.access_token;
 	}
 	catch (e) {
-		navigate("/error");
+		console.log(e);
 	}
 	return "";
 }
