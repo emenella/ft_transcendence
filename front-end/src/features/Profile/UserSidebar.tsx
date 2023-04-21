@@ -25,15 +25,14 @@ function UserSidebar() {
 	const user = userContext?.user;
 	const socket = useContext(SocketContext);
 	
-	async function friendStatusListener() {
-		console.log("socket.on");
-		userContext?.setUser( await getMe() )
+	async function friendListChangementListener() {
+		userContext?.setUser(await getMe())
 	}
 
 	useEffect(() => {
-		socket?.on("friendStatusChanged", friendStatusListener);
+		socket?.on("friendListChangement", friendListChangementListener);
 		return () => {
-			socket?.off("friendStatusChanged", friendStatusListener);
+			socket?.off("friendListChangement", friendListChangementListener);
 		}
 	}, [socket])
 
@@ -82,10 +81,10 @@ function UserSidebar() {
 				: <p>Aucun ami pour le moment</p>
 			}
 
-			<h4>Invitations d"amis</h4>
+			<h4>Invitations d'amis</h4>
 			{   listFriendsInvite?.length
 				? <div>{listFriendsInvite}</div>
-				: <p>Aucune demande d"ami pour le moment</p>
+				: <p>Aucune demande d'ami pour le moment</p>
 			}
 
 			<h4>Ajouter un ami</h4>

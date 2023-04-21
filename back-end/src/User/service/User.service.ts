@@ -49,11 +49,7 @@ export class UserService {
 	async changeStatus(user: User, newStatus: number): Promise<void> {
 		user.status = newStatus;
 		await this.userRepository.save(user);
-		user.friends.forEach(friend => {
-			let socket = this.socketService.getUserById(friend.id)?.socket;
-			if (socket)
-				socket.emit("friendStatusChanged");			
-		});
+		user.friends.forEach(friend => { this.emitFriendListChangement(friend.id); });
 	}
 
 	async getUserByConnectionId(connectionId: number): Promise<User> {
@@ -127,6 +123,7 @@ export class UserService {
 			receiver.friendRequests.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			this.emitFriendListChangement(receiver.id);
 		}
 	}
 
@@ -143,6 +140,8 @@ export class UserService {
 			receiver.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			this.emitFriendListChangement(sender.id);
+			this.emitFriendListChangement(receiver.id);
 			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
 				throw new HttpException(`Couldn't create DM channel.`, 400);
 		}
@@ -167,6 +166,8 @@ export class UserService {
 			friend.friends.splice(userIndex, 1);
 			await this.userRepository.save(user);
 			await this.userRepository.save(friend);
+			this.emitFriendListChangement(user.id);
+			this.emitFriendListChangement(friend.id);
 			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
 				throw new HttpException(`Couldn't create channel.`, 400);
 		}
@@ -205,5 +206,11 @@ export class UserService {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);
 			await this.userRepository.save(user);
 		}
+	}
+
+	async emitFriendListChangement(id: number) {
+		let socket = this.socketService.getUserById(id)?.socket;
+		if (socket)
+			socket.emit("friendListChangement");
 	}
 }
