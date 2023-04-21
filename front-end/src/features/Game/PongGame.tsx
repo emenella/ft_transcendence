@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Game } from './engine/Game';
 import { io, Socket } from 'socket.io-client';
-import { getToken, url } from '../../api/Api';
+import { getJwtCookie, url } from '../../api/JwtCookie';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
 
@@ -28,9 +28,9 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     
     useEffect(() => {
         console.log('componentDidMount Pong');
-        const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getToken() as string } });
+        const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getJwtCookie() as string } });
         socketGame.current = newSocketGame;
-        const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getToken() as string } });
+        const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getJwtCookie() as string } });
         socketMatchmaking.current = newSocketMatchmaking;
         
         return () => {

@@ -1,5 +1,6 @@
 .parent {
-    background-image: url("../../assets/background_connexion.jpg");
+    background-image: url("../assets/background_connexion.jpg");
+    background-size: cover;
     position: absolute;
     height: 100%;
     width: 100%;

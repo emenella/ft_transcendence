@@ -18,10 +18,10 @@
 .message {
     white-space: pre-line;
     height: 15vh;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     overflow-y: auto;
     overflow-wrap: break-word;
-    max-width: 600px;
+    max-width: 1200px;
 }
 
 .button {

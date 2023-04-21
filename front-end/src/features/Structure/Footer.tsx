@@ -1,12 +1,12 @@
-import React from 'react';
-import './Footer.css';
+import React from "react";
+import "./Footer.css";
 
 function Footer() {
     return (
-        <div className='Copyright'>
+        <div className="Copyright">
             <p>
                 Copyright ©<br />
-                emenella ebellon pthomas mberne
+                emenella ebellon mberne pthomas
             </p>
         </div>
     );

@@ -2,9 +2,7 @@ import { Injectable, Inject, forwardRef, HttpException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "../entity/User.entity";
-import { Match } from '../entity/Match.entity';
 import { Connection } from "../entity/Connection.entity";
-import { HistoryService } from "./Match.service";
 import { SocketService } from "../../Socket/Socket.service";
 import { ChatService } from "../../Chat/Chat.service";
 
@@ -13,15 +11,13 @@ export const enum UserStatus {
 	Connected,
 	InGame,
 }
-
-const UserRelations: string[] = ["connection", "winMatch", "loseMatch", "ownedChans", "relations", "messages", "friends", "friend_requests", "blacklist"]
-
+const UserRelations: string[] = ["connection", "matchsWon", "matchsLost", "ownedChans", "relations", "messages", "friends", "friendRequests", "blacklist"]
 const UsernameMaxLength: number = 16;
+const UnsupportedCharset: string = "`~!@#$%^&*()-+={[}]\\|:;'\",<.>/?";
 
 @Injectable()
 export class UserService {
 	constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
-				private readonly historyService: HistoryService,
 				private readonly socketService: SocketService,
 				@Inject(forwardRef(() => ChatService)) private readonly chatService: ChatService) {}
 
@@ -51,16 +47,9 @@ export class UserService {
 	}
 
 	async changeStatus(user: User, newStatus: number): Promise<void> {
-		console.log("User:" + user.username + "NewStatus:" + newStatus);
 		user.status = newStatus;
 		await this.userRepository.save(user);
-		user.friends.forEach(friend => {
-			let socket = this.socketService.getUserById(friend.id)?.socket;
-			if (socket) {
-				console.log("Friend:" + friend.username)
-				socket.emit('friendStatusChanged');			
-			}
-		});
+		user.friends.forEach(friend => { this.emitFriendListChangement(friend.id); });
 	}
 
 	async getUserByConnectionId(connectionId: number): Promise<User> {
@@ -92,80 +81,77 @@ export class UserService {
 	}
 
 	//~~ SET INFO
-	async updateUsername(id: number, username: string): Promise<User> {
+	async updateUsername(user: User, username: string): Promise<User> {
 		if (!username)
 			throw new HttpException(`Username is empty.`, 400);
-		const userToUpdate = await this.userRepository.findOneBy({ id: id });
-		if (!userToUpdate)
-			throw new HttpException(`User with ID ${id} not found.`, 404);
 		if (await this.userRepository.findOneBy({ username: username }))
 			throw new HttpException(`Username already taken.`, 400);
 		if (username.length > UsernameMaxLength)
-			throw new HttpException(`Username too long (max_length=${UsernameMaxLength}).`, 400);
-		userToUpdate.username = username;
-		userToUpdate.isProfileComplete = true;
-		return await this.userRepository.save(userToUpdate);
+			throw new HttpException(`Username must not exceed ${UsernameMaxLength} characters.).`, 400);
+		if (username.includes(UnsupportedCharset))
+			throw new HttpException(`Username must not contain any of those characters: \"${UnsupportedCharset}\".).`, 400);
+		user.username = username;
+		user.isProfileComplete = true;
+		return await this.userRepository.save(user);
 	}
 
-	async uploadAvatar(id: number, file: Express.Multer.File): Promise<string> {
-		let user = await this.userRepository.findOne({ where: { id: id }, relations: UserRelations });
-		if (!user)
-			throw new HttpException(`User with ID ${id} not found.`, 404);
+	async uploadAvatar(user: User, file: Express.Multer.File): Promise<string> {
 		user.avatarPath = file.path;
 		await this.userRepository.save(user);
 		return file.path;
 	}
 
-	async getMatchHistory(user: User): Promise<Match[]> {
-		const matchHistory: Match[] = await this.historyService.getAllMatchesByUser(user.id);
-		return matchHistory;
+	async changeColor(user: User, color: string): Promise<void> {
+		user.color = color;
+		await this.userRepository.save(user);
 	}
 
 	//~~FRIENDS
 	async inviteFriend(sender: User, receiver: User): Promise<void> {
 		if (sender.id === receiver.id)
-			throw new HttpException(`You cannot send friend request to yourself, go touch grass.`, 400);
+			throw new HttpException(`You can not send a friend request to yourself, go touch some grass.`, 400);
 		else if (sender.friends.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`User with ID ${receiver.id} is already friend with User with ID ${sender.id}.`, 400);
-		else if (receiver.friend_requests.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`User with ID ${receiver.id} already has pending friend request from User with ID ${sender.id}.`, 400);
+			throw new HttpException(`You are already friend with ${sender.username}.`, 400);
+		else if (receiver.friendRequests.some((f) => { return f.id === sender.id }))
+			throw new HttpException(`${receiver.username} already have a pending friend request from you.`, 400);
 		else if (receiver.blacklist.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`User with ID ${receiver.id} has blocked User with ID ${sender.id}.`, 400);
-		else if (sender.friend_requests.some((f) => { return f.id === receiver.id }))
+			throw new HttpException(`${receiver.username} blocked you.`, 400);
+		else if (sender.friendRequests.some((f) => { return f.id === receiver.id }))
 			this.acceptFriend(sender, receiver);
 		else {
-			receiver.friend_requests.push(sender);
-			receiver.friend_requests.sort((a, b) => (a.username > b.username ? -1 : 1));
+			receiver.friendRequests.push(sender);
+			receiver.friendRequests.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			this.emitFriendListChangement(receiver.id);
 		}
 	}
 
 	async acceptFriend(sender: User, receiver: User): Promise<void> {
 		if (sender.friends.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`User with ID ${receiver.id} is already friend with User with ID ${sender.id}.`, 400);
-		else if (!sender.friend_requests.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
+			throw new HttpException(`You are already friend with ${receiver.username}.`, 400);
+		else if (!sender.friendRequests.some((f) => { return f.id === receiver.id }))
+			throw new HttpException(`You have no pending friend request from ${receiver.username}.`, 400);
 		else {
-			sender.friend_requests.splice(sender.friends.indexOf(receiver), 1)
+			sender.friendRequests.splice(sender.friends.indexOf(receiver), 1)
 			sender.friends.push(receiver);
 			sender.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
 			receiver.friends.push(sender);
 			receiver.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			this.emitFriendListChangement(sender.id);
+			this.emitFriendListChangement(receiver.id);
 			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
-				throw new HttpException(`Couldn't create channel.`, 400);
+				throw new HttpException(`Couldn't create DM channel.`, 400);
 		}
 	}
 
-
-
 	async denyFriend(receiver: User, sender: User): Promise<void> {
-		if (!receiver.friend_requests.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`User with ID ${receiver.id} have no pending friend request from User with ID ${sender.id}.`, 400);
+		if (!receiver.friendRequests.some((f) => { return f.id === sender.id }))
+			throw new HttpException(`You have no pending friend request from ${sender.username}.`, 400);
 		else {
-			receiver.friend_requests.splice(receiver.friends.indexOf(sender), 1);
+			receiver.friendRequests.splice(receiver.friends.indexOf(sender), 1);
 			await this.userRepository.save(receiver);
 		}
 	}
@@ -173,42 +159,40 @@ export class UserService {
 	async removeFriend(user: User, friend: User): Promise<void> {
 		const userIndex = friend.friends.findIndex((f) => { return f.id === user.id });
 		const friendIndex = user.friends.findIndex((f) => { return f.id === friend.id });
-		if (userIndex === -1 || friendIndex === -1) {
-			throw new HttpException(`User with ID ${friend.id} is not friend with User with ID ${user.id}.`, 400);
-		}
+		if (userIndex === -1 || friendIndex === -1)
+			throw new HttpException(`You are not friend with ${friend.username}.`, 400);
 		else {
-			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
-				throw new HttpException(`Couldn't create channel.`, 400);
 			user.friends.splice(friendIndex, 1);
 			friend.friends.splice(userIndex, 1);
 			await this.userRepository.save(user);
 			await this.userRepository.save(friend);
+			this.emitFriendListChangement(user.id);
+			this.emitFriendListChangement(friend.id);
+			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
+				throw new HttpException(`Couldn't create channel.`, 400);
 		}
 	}
 
 	//~~ BLACKLIST
 	async addBlacklist(user: User, userToBlock: User): Promise<void> {
 		if (user.blacklist.some((f) => { return f.id === userToBlock.id }))
-			throw new HttpException(`User with ID ${userToBlock.id} is already blocked by User with ID ${user.id}.`, 400);
+			throw new HttpException(`You have already blocked ${userToBlock.username}.`, 400);
 		else {
 			user.blacklist.push(userToBlock);
 			user.blacklist.sort();
 			const userIndexF = userToBlock.friends.findIndex((f) => { return f.id === user.id });
 			const userToBlockIndexF = user.friends.findIndex((f) => { return f.id === userToBlock.id });
-			const userIndexR = userToBlock.friend_requests.findIndex((f) => { return f.id === user.id });
-			const userToBlockIndexR = user.friend_requests.findIndex((f) => { return f.id === userToBlock.id });
-
+			const userIndexR = userToBlock.friendRequests.findIndex((f) => { return f.id === user.id });
+			const userToBlockIndexR = user.friendRequests.findIndex((f) => { return f.id === userToBlock.id });
 			if (userIndexF != -1 && userToBlockIndexF != -1) {
 				user.friends.splice(userToBlockIndexF, 1);
 				userToBlock.friends.splice(userIndexF, 1);
 			}
 			else {
-				if (userIndexR != -1) {
-					userToBlock.friend_requests.splice(userIndexR, 1);
-				}
-				if (userToBlockIndexR != -1) {
-					user.friend_requests.splice(userToBlockIndexR, 1);
-				}
+				if (userIndexR != -1)
+					userToBlock.friendRequests.splice(userIndexR, 1);
+				if (userToBlockIndexR != -1)
+					user.friendRequests.splice(userToBlockIndexR, 1);
 			}
 			await this.userRepository.save(user);
 			await this.userRepository.save(userToBlock);
@@ -217,15 +201,16 @@ export class UserService {
 
 	async removeBlacklist(user: User, blockedUser: User): Promise<void> {
 		if (!user.blacklist.some((f) => { return f.id === blockedUser.id }))
-			throw new HttpException(`User with ID ${blockedUser.id} is not blocked by User with ID ${user.id}.`, 400);
+			throw new HttpException(`You have not blocked ${blockedUser.username}.`, 400);
 		else {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);
 			await this.userRepository.save(user);
 		}
 	}
-	
-	async changeColor(user: User, color: string): Promise<void> {
-		user.color = color;
-		await this.userRepository.save(user);
+
+	async emitFriendListChangement(id: number) {
+		let socket = this.socketService.getUserById(id)?.socket;
+		if (socket)
+			socket.emit("friendListChangement");
 	}
 }

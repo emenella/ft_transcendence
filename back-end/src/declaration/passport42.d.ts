@@ -1,1 +1,1 @@
-declare module 'passport-42';
+declare module "passport-42";

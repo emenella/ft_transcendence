@@ -1,14 +1,14 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
-import '../App.css';
-import PongGame from "../features/Game/PongGame";
-import { getToken } from "../api/Api";
-import { Link } from 'react-router-dom';
-import Emoji from '../components/Emoji';
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom"
+import "../../App.css";
+import PongGame from "./PongGame";
+import { getJwtCookie } from "../../api/JwtCookie";
+import { Link } from "react-router-dom";
+import Emoji from "../../components/Emoji";
 
 export default function Spectate() {
     const navigate = useNavigate();
-    const token = getToken();
+    const token = getJwtCookie();
     const spec = useParams().id;
 
     if (!token || !spec) {

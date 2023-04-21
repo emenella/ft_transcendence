@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios from "axios";
+import Cookies from "universal-cookie";
 
 const protocol = process.env.REACT_APP_API_PROTOCOL
 const host = process.env.REACT_APP_API_HOST
@@ -13,7 +14,7 @@ export const client = axios.create({
 });
 
 export function authHeader(type?: string) {
-	let token = localStorage.getItem("token");
+	let token = getJwtCookie();
 
 	if (token) {
 		let access_token = token;
@@ -28,14 +29,18 @@ export function authHeader(type?: string) {
 	};
 }
 
-export function setToken(token: string) {
-	localStorage.setItem("token", token);
+export function setJwtCookie(token: string) {
+	const cookie = new Cookies();
+	cookie.set("jwtToken", token, { path: "/", maxAge: 3600 });
 	client.defaults.headers.common["Authorization"] = "Bearer " + token;
 }
 
-export function getToken() {
-	let token = localStorage.getItem("token")
-	if (token === null)
-		return null;
-	return token;
+export function getJwtCookie() {
+	const cookie = new Cookies();
+	return cookie.get("jwtToken");
+}
+
+export function removeJwtCookie() {
+	const cookie = new Cookies();
+	cookie.remove("jwtToken");
 }

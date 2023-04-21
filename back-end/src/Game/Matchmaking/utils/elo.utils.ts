@@ -31,7 +31,6 @@ function probabilityWin(user: number, opp: number): number {
 function updateElo(user: number, opp: number, resultat: Result): number {
     const k = 32;
     const prob = probabilityWin(user, opp);
-    console.log("elo: " + user + " prob: " + prob + " result: " + resultat);
     return user + k * (resultat - prob);
 }
 

@@ -6,7 +6,7 @@ import Profile from '../Profile/Profile';
 import { Navigate } from 'react-router-dom';
 import AccountManagement from '../Profile/AccountManagement';
 import '../Structure/Body_connected.css'
-import { getToken, url } from '../../api/Api'
+import { getJwtCookie, url } from '../../api/JwtCookie'
 import io, { Socket } from 'socket.io-client'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
@@ -14,7 +14,7 @@ import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { msg } from './interfaceChat';
-import Spectate from '../../routes/Spec';
+import Spectate from '../Game/Spec';
 import { UserContext } from '../../utils/UserContext';
 
 let activeChan: string = '';
@@ -60,7 +60,7 @@ function Chat() {
   }
 
   useEffect(() => {
-    const newSocket = io(WebChat, { extraHeaders: { Authorization: getToken() as string } });
+    const newSocket = io(WebChat, { extraHeaders: { Authorization: getJwtCookie() as string } });
     setSocket(newSocket);
   }, [setSocket, WebChat])
 
@@ -97,6 +97,8 @@ function Chat() {
       }
     }
     let chanMessages : msg[] = channels.get(data.chan) as msg[];
+    if (chanMessages === undefined)
+      chanMessages = [];
     let message : msg = {date: data.date, authorId: data.authorId, author: data.author, content: data.msg};
     channels.set(data.chan, [...chanMessages, ...[message]]);
     if (activeChan === data.chan) {

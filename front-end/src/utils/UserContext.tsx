@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { User } from "./backend_interface";
+import { User } from "./backendInterface";
 import { Dispatch, SetStateAction } from "react";
 
 export interface UserContextType {

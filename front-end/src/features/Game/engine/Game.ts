@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import { ft_pong } from "./ft_pong";
 import { GameSettings, Setup } from "./interfaces/ft_pong.interface";
-import { User } from "../../../utils/backend_interface";
+import { User } from "../../../utils/backendInterface";
 
 
 

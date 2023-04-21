@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Emoji from "../Emoji";
-import { invite, accept, deny, remove, blacklist, unblacklist } from '../../utils/friends_blacklists_system';
-import { requestDuel } from "../../api/User";
+import Emoji from "../../../components/Emoji";
+import { invite, accept, deny, remove, blacklist, unblacklist } from "../../../utils/friends_blacklists_system";
+import { Socket } from "socket.io-client";
 
 export	function Disable2FA({ onClick }: { onClick: () => void }) {
     return (
@@ -16,7 +16,7 @@ export	function Enable2FA() {
     const navigate = useNavigate();
 
     function move() {
-        navigate("/2fa");
+        navigate("/enable2fa");
     }
 
     return (
@@ -44,11 +44,11 @@ export function RemoveFriendButton({ username }: { username: string | undefined 
 	);
 }
 
-export function DuelButton({ id }: { id : number | undefined }) {
+export function DuelButton({ socket, receiverId }: { socket: Socket | undefined, receiverId: number }) {
 	return (
 		<div>
 			<label>Proposer une partie </label>
-			<button onClick={ () => { requestDuel(id!); } }> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
+			<button onClick={ () => { socket?.emit("duelRequestSent", { receiverId: receiverId } ); } }> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
 		</div>
 	);
 }

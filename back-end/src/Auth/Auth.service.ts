@@ -30,7 +30,7 @@ export class AuthService {
                 private readonly connectionService: ConnectionService,
                 private readonly jwtService: JwtService) {}
     
-    async getUrl42() {
+    async get42URL() {
         return "https://api.intra.42.fr/oauth/authorize?client_id=" + API.UID + "&redirect_uri=" + API.URL + "&response_type=code";
     }
     
@@ -46,9 +46,7 @@ export class AuthService {
             connection = await this.connectionService.createConnection(connection, user, student.id);
         }
         const payload: IToken = { connectionId: connection.id, otp: !connection.otp };
-            return {
-                access_token: this.jwtService.sign(payload),
-            };
+            return { access_token: this.jwtService.sign(payload), };
     }
     
     
@@ -57,7 +55,6 @@ export class AuthService {
         const connection = await this.connectionService.getConnectionByUserId(user.id);
         if (!passPhrase.secret)
             throw new HttpException('Passphrase not set', 500);
-        console.log(connection);
         if (connection.otp) {
             throw new HttpException('OTP already set', 401);
         }

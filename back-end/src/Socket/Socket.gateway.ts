@@ -1,31 +1,35 @@
-import { Inject, forwardRef } from '@nestjs/common';
-import { WebSocketGateway, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { User } from '../User/entity/User.entity';
-import { UserService } from '../User/service/User.service';
-import { UserStatus } from '../User/service/User.service';
-import { AuthService } from '../Auth/Auth.service';
-import { SocketService } from './Socket.service';
+import { Inject, Logger, forwardRef } from "@nestjs/common";
+import { WebSocketGateway, WebSocketServer, ConnectedSocket, SubscribeMessage, MessageBody } from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
+import { SocketService } from "./Socket.service";
+import { User } from "../User/entity/User.entity";
+import { UserService } from "../User/service/User.service";
+import { UserStatus } from "../User/service/User.service";
+import { AuthService } from "../Auth/Auth.service";
+import { GameService } from "../Game/Game.service";
 
-@WebSocketGateway(81, {namespace: 'user', cors: true})
+@WebSocketGateway(81, {namespace: "user", cors: true})
 export class SocketGateway {
 	
+	private logger: Logger = new Logger("SocketGateway");
+
 	@WebSocketServer()
 	server: Server;
 
 	constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,
 				@Inject(forwardRef(() => AuthService)) private authService: AuthService,
+				@Inject(forwardRef(() => GameService)) private gameService: GameService,
 				@Inject(forwardRef(() => SocketService)) private socketService: SocketService) {}
-
-	async afterInit() {
-		console.log("Socket Initialized.")
-	}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
 		if (user) {
 			this.socketService.addUser(client, user)
-			this.userService.changeStatus(user, UserStatus.Connected);
+			if (!!this.gameService.findGamesIdWithPlayer(user.id))
+				this.userService.changeStatus(user, UserStatus.InGame);
+			else
+				this.userService.changeStatus(user, UserStatus.Connected);
+			this.logger.log(`Client connected: ${user.username}`);
 		}
 		else {
 			client.disconnect();
@@ -35,8 +39,9 @@ export class SocketGateway {
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
 		if (user) {
-			this.socketService.removeUser(client, user);
+			this.socketService.removeUser(client);
 			this.userService.changeStatus(user, UserStatus.Disconnected);
+			this.logger.log(`Client disconnected: ${user.username}`);
 		}
 		client.disconnect();
 	}
@@ -54,11 +59,15 @@ export class SocketGateway {
 		return (user ? user : null);
 	}
 
-	// @SubscribeMessage('friendStatusChange')
-	// async onFriendStatusChange(@ConnectedSocket() client: Socket, status: number) {
-    //     const user: User | null = await this.authentificate(client);
-	// 	if (user) {
-	// 		this.userService.changeStatus(user, status);
-	// 	}
-	// }
+	@SubscribeMessage("duelRequestSent")
+	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+        const user: User | null = await this.authentificate(client);
+		const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
+		if (user && receiverSocket) {
+			receiverSocket.emit("duelRequestReceived", user);
+		}
+		else {
+			console.log("One of the user is disconnected");
+		}
+	}
 }

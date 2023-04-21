@@ -1,5 +1,5 @@
 .userSidebar {
-    width: 15%;
+    min-width: 15%;
     border-radius: 5px;
     border-style: solid;
     border-color: #009688;

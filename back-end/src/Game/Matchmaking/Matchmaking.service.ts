@@ -6,7 +6,7 @@ import { User } from "../../User/entity/User.entity";
 import { Setup, general, ball, player } from "../interface/Game.interface";
 import { updateElo, checkMatch, Result } from "./utils/elo.utils";
 import { Match } from "../../User/entity/Match.entity";
-import { HistoryService } from "../../User/service/Match.service";
+import { MatchService } from "../../User/service/Match.service";
 import { Socket } from "socket.io";
 
 
@@ -31,10 +31,9 @@ export class MatchmakingService {
     };
 
     constructor(private readonly gameService: GameService, private readonly userService: UserService,
-        private readonly historyService: HistoryService) { }
+        private readonly historyService: MatchService) { }
 
     async joinQueue(user: User): Promise<boolean> {
-        console.log("join queue " + user.id + " " + this.queue.includes(user.id));
         if (this.queue.includes(user.id) || await this.isInGame(user.id))
             return false;
         this.queue.push(user.id);
@@ -43,11 +42,9 @@ export class MatchmakingService {
     }
 
     async leaveQueue(user: User): Promise<boolean> {
-        console.log("leave queue " + user.id + " " + this.queue.includes(user.id));
         if (!this.queue.includes(user.id))
             return false;
         this.queue.splice(this.queue.indexOf(user.id), 1);
-        console.log(this.queue);
         await this.foundMatch().catch(err => console.log(err));
         return true;
     }
@@ -159,14 +156,11 @@ export class MatchmakingService {
                 users.push(user);
         }
         const bestMatch = checkMatch(users);
-        console.log("best match " + bestMatch);
         if (bestMatch) {
             const game: Game = await this.createGame(bestMatch.user0, bestMatch.user1);
-            console.log("found match " + bestMatch.user0.id + " " + bestMatch.user1.id);
             let socket0 = this.sockets.get(bestMatch.user0.id);
             let socket1 = this.sockets.get(bestMatch.user1.id);
             if (socket0 && socket1) {
-                console.log("emit found match");
                 socket0.emit("matchmaking:foundMatch", game.getSetup().general.id);
                 socket1.emit("matchmaking:foundMatch", game.getSetup().general.id);
             }
