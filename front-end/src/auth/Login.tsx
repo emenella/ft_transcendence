@@ -15,7 +15,7 @@ function Login() {
 			setJwtCookie(token);
 			getMe().then((user) => {
 				if (user?.username == null) {
-					navigate("/signUp");
+					navigate("/signup");
 				}
 			});
 		}
