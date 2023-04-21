@@ -114,6 +114,18 @@ function Chat() {
 
   const joinChanListener = (data : {chan: string, messages: msg[]}) => {
     activeChan = data.chan;
+    let filtredMessage : msg[] = [];
+    for (let msg of data.messages) {
+      let check : boolean = true;
+      for (let usr of user!.blacklist) {
+        if (usr.username === msg.author) {
+          check = false;
+        }
+      }
+      if (check)
+        filtredMessage.push(msg);
+    }
+    data.messages = filtredMessage;
 
     if (channels.get(data.chan) !== undefined) {
       setMsgs(channels.get(data.chan) as msg[]);

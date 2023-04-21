@@ -66,7 +66,6 @@ export class SocketGateway {
         const sender: User | null = await this.authentificate(client);
         const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
         if (sender && receiverSocket) {
-			console.log("jemite le sender");
             receiverSocket.emit("duelRequestReceived", sender);
         }
     }

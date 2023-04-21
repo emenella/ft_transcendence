@@ -155,7 +155,6 @@ export class Game {
 
     public getSocketId(): Array<string>
     {
-        console.log(this.player0, this.player1);
         const socketId: Array<string> = [];
         const player0Id = this.player0.getSocketId();
         const player1Id = this.player1.getSocketId();
@@ -177,7 +176,6 @@ export class Game {
 
     public isPlayer(client: Socket): boolean
     {
-        console.log(this.player0.getSocketId(), this.player1.getSocketId(), " isPlayer")
         return this.player0.getSocketId() == client.id || this.player1.getSocketId() == client.id;
     }
     

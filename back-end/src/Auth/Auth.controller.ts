@@ -25,7 +25,6 @@ export class AuthController {
 	async postAuth(@Req() req: Request, @Res() res: Response) {
 		let token = await this.AuthService.login(req.user);
 		let payload = await this.AuthService.verifyJWT(token.access_token);
-		console.log(payload.otp);
 		if (!payload.otp)
 			return res.redirect(serverOptions.protocole + "://" + serverOptions.hostname + ":" + serverOptions.port + "/login2fa?token=" + token.access_token);
 		else
