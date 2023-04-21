@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useContext, useEffect } from "react";
 import "./UserSidebar.css"
-import { User } from "../../utils/backend_interface";
+import { User } from "../../utils/backendInterface";
 import { invite } from "../../utils/friends_blacklists_system";
 import Emoji from "../../components/Emoji";
 import UsernameLink from "../../components/UsernameLink";
-import { AcceptAndDenyFriendButtons } from "../../components/button/Buttons";
+import { AcceptAndDenyFriendButtons } from "./buttons/Buttons";
 import { UserContext } from "../../utils/UserContext";
 import { SocketContext } from "../../utils/SocketContext";
 import { getMe } from "../../api/User";

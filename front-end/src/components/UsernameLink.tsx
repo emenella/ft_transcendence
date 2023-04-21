@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { User } from "../utils/backend_interface";
+import { User } from "../utils/backendInterface";
 
 function UsernameLink(props: { user : User }) {
     const linkStyle = {

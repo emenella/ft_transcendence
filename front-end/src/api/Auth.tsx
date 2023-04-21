@@ -1,5 +1,15 @@
 import { client as axios } from "./JwtCookie";
 
+export async function get42URL() {
+	try {
+		const req = await axios.get("/api/auth/get42URL");
+		return req.data;
+	}
+	catch (e) {
+		console.log(e);
+	}
+}
+
 export async function submitCode2FA(secret: string, access_token: string): Promise<string> {
 	try {
 		const req = await axios.post("/api/auth/2fa/login", { code: secret }, { headers: { Authorization: `Bearer ${access_token}` } });
@@ -9,16 +19,6 @@ export async function submitCode2FA(secret: string, access_token: string): Promi
 		console.log(e);
 	}
 	return "";
-}
-
-export async function firstConnexion() {
-	try {
-		const req = await axios.get("/api/auth");
-		return req.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
 }
 
 export async function getQRCode(access_token: string | null) {
@@ -37,6 +37,7 @@ export async function getQRCode(access_token: string | null) {
 export async function saveQRCode(secret: string, access_token: string): Promise<string> {
 	try {
 		const req = await axios.post("/api/auth/2fa/save", { code: secret }, { headers: { Authorization: `Bearer ${access_token}` } });
+		console.log(req);
 		return req.data.access_token;
 	}
 	catch (e) {

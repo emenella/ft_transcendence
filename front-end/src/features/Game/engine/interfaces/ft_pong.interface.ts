@@ -1,4 +1,4 @@
-import { User } from '../../../../utils/backend_interface';
+import { User } from '../../../../utils/backendInterface';
 
 export interface General {
     id: string;

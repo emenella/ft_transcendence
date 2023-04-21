@@ -31,7 +31,7 @@ export function authHeader(type?: string) {
 
 export function setJwtCookie(token: string) {
 	const cookie = new Cookies();
-	cookie.set("jwtToken", token, { path: "/", maxAge: 3600 });
+	cookie.set("jwtToken", token, { path: "/", maxAge: 3600, sameSite:"none" });
 	client.defaults.headers.common["Authorization"] = "Bearer " + token;
 }
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import "./AccountManagement.css"
 import Emoji from "../../components/Emoji";
-import { Enable2FA, Disable2FA } from "../../components/button/Buttons";
+import { Enable2FA, Disable2FA } from "./buttons/Buttons";
 import { changeUsername, uploadAvatar, delete2FA, changeColorPaddle } from "../../api/User";
 import { useContext } from "react";
 import { UserContext } from "../../utils/UserContext";

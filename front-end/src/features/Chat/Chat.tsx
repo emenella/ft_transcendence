@@ -14,7 +14,7 @@ import JoinChanInput from './JoinChanInput'
 import ToggleChanInput from './ToggleChanInput'
 import Message from './Message'
 import { msg } from './interfaceChat';
-import Spectate from '../../routes/Spec';
+import Spectate from '../Game/Spec';
 import { UserContext } from '../../utils/UserContext';
 
 let activeChan: string = '';

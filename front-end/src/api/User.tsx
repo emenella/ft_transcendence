@@ -1,4 +1,4 @@
-import { User } from "../utils/backend_interface";
+import { User } from "../utils/backendInterface";
 import { client as axios, authHeader } from "./JwtCookie"
 import  { AxiosError } from "axios";
 import toast from "react-hot-toast";

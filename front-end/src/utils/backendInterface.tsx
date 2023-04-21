@@ -1,12 +1,5 @@
 import { Socket } from "socket.io-client";
 
-export interface Match {
-    id: number;
-    scores: number[];
-    winner: User;
-    loser: User;
-}
-
 export interface User {
     id: number;
     username: string;
@@ -26,4 +19,11 @@ export const enum UserStatus {
     Disconnected,
     Connected,
     InGame,
+}
+
+export interface Match {
+    id: number;
+    scores: number[];
+    winner: User;
+    loser: User;
 }

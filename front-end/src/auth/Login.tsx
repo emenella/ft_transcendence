@@ -2,26 +2,27 @@ import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom"
 import { setJwtCookie } from "../api/JwtCookie";
 import { getMe } from "../api/User";
-import { UserStatus } from "../utils/backend_interface";
 
-function Auth() {
+function Login() {
 	const [searchParams] = useSearchParams();
-	const access_token = searchParams.get("token");
+	const token = searchParams.get("token");
 	const navigate = useNavigate();
 	
 	React.useEffect(() => {
-		if (access_token) {
-			setJwtCookie(access_token);
+		if (token) {
+			setJwtCookie(token);
 			getMe().then((user) => {
 				if (user.username == null) {
-					navigate("/set-username");
+					navigate("/signUp");
 				}
 			});
-			navigate("/");
+			navigate("/home");
 		}
-	}, [access_token, navigate]);
+		else
+			navigate("/error");
+	}, [token, navigate]);
 
 	return (<h1>Wait a moment...</h1>);
 }
 
-export default Auth;
+export default Login;

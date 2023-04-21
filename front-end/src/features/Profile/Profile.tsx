@@ -3,11 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import "./Profile.css";
 import { getMatchs, getUserById } from "../../api/User";
 import Emoji from "../../components/Emoji";
-import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from "../../components/button/Buttons";
-import { User, Match } from "../../utils/backend_interface";
+import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from "./buttons/Buttons";
+import { User, Match } from "../../utils/backendInterface";
 import { useContext } from "react";
 import { UserContext } from "../../utils/UserContext";
-import { UserStatus } from "../../utils/backend_interface";
+import { UserStatus } from "../../utils/backendInterface";
 import { SocketContext } from "../../utils/SocketContext";
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {

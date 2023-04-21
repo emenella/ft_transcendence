@@ -8,8 +8,8 @@ import BodyConnected from "./features/Structure/Body_connected";
 import Footer from "./features/Structure/Footer";
 import { getJwtCookie, removeJwtCookie } from "./api/JwtCookie";
 import { getMe } from "./api/User";
-import { firstConnexion } from "./api/Auth";
-import { User } from "./utils/backend_interface";
+import { get42URL } from "./api/Auth";
+import { User } from "./utils/backendInterface";
 import { UserContext } from "./utils/UserContext";
 import logo from "./assets/black_logo.png";
 
@@ -37,7 +37,7 @@ function App() {
 
 	async function fetchUrl() {
 		setLoading(true);
-		const url = await firstConnexion() as string;
+		const url = await get42URL() as string;
 		setUrl(url);
 		setLoading(false);
 	}
@@ -51,7 +51,7 @@ function App() {
 		return <p>Chargement en cours...</p>;
 
 	if (user && !user.isProfileComplete)
-		navigate("/set-username");
+		navigate("/signUp");
 
 	return (
 		<div>
