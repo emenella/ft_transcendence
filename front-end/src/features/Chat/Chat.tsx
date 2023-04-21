@@ -97,6 +97,8 @@ function Chat() {
       }
     }
     let chanMessages : msg[] = channels.get(data.chan) as msg[];
+    if (chanMessages === undefined)
+      chanMessages = [];
     let message : msg = {date: data.date, authorId: data.authorId, author: data.author, content: data.msg};
     channels.set(data.chan, [...chanMessages, ...[message]]);
     if (activeChan === data.chan) {
