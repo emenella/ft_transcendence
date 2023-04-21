@@ -185,8 +185,8 @@ export class AuthService {
         }
         connection.otp = null;
         connection.iv = null;
-        await this.connectionService.updateConnection(connection.id, connection);
-		this.userService.change2FA(user, true);
+		await this.userService.change2FA(user, false);
+        return await this.connectionService.updateConnection(connection.id, connection);
     }
 
     async verifyJWT(token: string): Promise<IToken> {

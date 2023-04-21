@@ -6,14 +6,12 @@ import { FortyTwoGuard } from "./guard/42.guard";
 import { Public } from "./decorators/public.decoration";
 import { User } from "../User/entity/User.entity";
 import { ConnectionService } from "../User/service/Connection.service";
-import { UserService } from "../User/service/User.service";
 
 @Controller("auth")
 export class AuthController {
 
 	constructor(private readonly AuthService: AuthService,
-				private readonly connectionService: ConnectionService,
-				private readonly userService: UserService) {}
+				private readonly connectionService: ConnectionService) {}
 	
 	@Public()
 	@Get("/get42URL")
@@ -59,7 +57,6 @@ export class AuthController {
 	@Delete("/2fa/delete")
 	async deleteSecret(@Req() req: Request) {
 		try {
-			await this.userService.change2FA(req.user as User, false);
 			let ret = await this.AuthService.deleteSecret(req.user as User)
 			return ret;
 		}
