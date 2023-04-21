@@ -10,10 +10,15 @@ export default function MessageInput(props: {send:(value : string) => void, acti
         }
     }
 
+    function handleSend() {
+        props.send(value);
+        setValue("");
+    }
+
     function resize() {
         const location = document.getElementById("messageInput");
         if (location)
-            location.style.width = '98%';
+            location.style.width = '90%';
     }
 
     useEffect(() => {
@@ -30,6 +35,7 @@ export default function MessageInput(props: {send:(value : string) => void, acti
                 onKeyDown={handleKeyPressed}
                 width='120px'
             />
+            <button className="button" onClick={handleSend}>Send</button>
         </>
     )
 }
