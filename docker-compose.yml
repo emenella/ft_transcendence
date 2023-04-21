@@ -6,8 +6,6 @@ services:
     container_name: database
     image: postgres:15.1
     env_file: .env
-    ports:
-      - "5432:5432"
     volumes:
       - database:/var/lib/postgresql/data
     networks:
@@ -24,8 +22,6 @@ services:
     ports:
       - "${PORT_HTTP}:80"
       - "${PORT_SSL}:443"
-    volumes:
-      - ./front-end/public:/usr/build
     configs:
       - source: nginx-config
         target: /etc/nginx/conf.d
@@ -46,8 +42,6 @@ services:
       context: ./back-end
     depends_on:
       - database
-    ports:
-      - "4200:4200"
     volumes:
       - ./back-end:/usr/back-end
     networks:
@@ -66,8 +60,6 @@ services:
       - REACT_APP_API_PROTOCOL=${PROTOCOL}
       - REACT_APP_API_HOST=${HOSTNAME}
       - REACT_APP_API_PORT=${PORT_SSL}
-    ports:
-      - "3000:3000"
     volumes:
      - ./front-end:/usr/front-end
     networks:

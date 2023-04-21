@@ -18,7 +18,7 @@ export class SocketGateway {
 
 	constructor(@Inject(forwardRef(() => UserService)) private userService: UserService,
 				@Inject(forwardRef(() => AuthService)) private authService: AuthService,
-				@Inject(forwardRef(() => GameService)) private gameService: GameService
+				@Inject(forwardRef(() => GameService)) private gameService: GameService,
 				@Inject(forwardRef(() => SocketService)) private socketService: SocketService) {}
 
 	async handleConnection(@ConnectedSocket() client: Socket) {
