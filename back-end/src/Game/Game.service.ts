@@ -55,22 +55,22 @@ export class GameService {
         setup.general.id = id;
         game = new Game(setup, handler);
         this.games.set(id, game);
-        const player0: User = await this.userService.getUserById(setup.player0.id);
-        const player1: User = await this.userService.getUserById(setup.player1.id);
-        await this.userService.changeStatus(player0, UserStatus.InGame);
-        await this.userService.changeStatus(player1, UserStatus.InGame);
         return game;
     }
 
-    public joinPlayer(gameId: string, userId: number, socket: Socket): boolean {
+    public async joinPlayer(gameId: string, userId: number, socket: Socket): Promise<boolean> {
         let game = this.games.get(gameId);
         if (game && !this.users.has(userId)) {
             this.users.set(userId, game);
-            return game.playerConnect(userId, socket);
+            const ret = game.playerConnect(userId, socket);
+            if (ret)
+            {
+                const player0: User = await this.userService.getUserById(userId);
+                await this.userService.changeStatus(player0, UserStatus.InGame);
+                return true;
+            }
         }
-        else {
-            return false
-        }
+        return false;
     }
 
     public setPlayerReady(userId: number): boolean {

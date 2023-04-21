@@ -58,8 +58,6 @@ services:
       - REACT_APP_API_PROTOCOL=${PROTOCOL}
       - REACT_APP_API_HOST=${HOSTNAME}
       - REACT_APP_API_PORT=${PORT_SSL}
-    volumes:
-     - ./front-end:/usr/front-end
     networks:
       - front-end
     restart: on-failure
