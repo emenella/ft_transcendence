@@ -7,7 +7,7 @@ dotenv.config();
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: "postgres",
-    host: "postgres",
+    host: "database",
     port: 5432,
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
