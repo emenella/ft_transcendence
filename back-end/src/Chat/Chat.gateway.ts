@@ -90,7 +90,7 @@ export class ChatGateway {
     if (user !== undefined) {
       if (data.chan[0] !== '#') {
         let user1 = await this.userService.getUserById(user.id);
-        let user2 = await this.userService.getUserById(this.chatService.getUserFromUsername(data.chan)?.id as number);
+        let user2 = await this.userService.getUserById((await this.userService.getUserByUsername(data.chan)).id as number);
         const dmChan : Chan | undefined = await this.chanService.getDm(user1, user2);
         if (dmChan !== undefined) {
           let ret = await this.messageService.createMessage(await this.userService.getUserById(user.id), user.username, dmChan, data.msg);
