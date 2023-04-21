@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Socket } from "socket.io";
 import { User } from "../User/entity/User.entity";
 import { player, ball, general } from "./interface/Game.interface";
+import { UserService, UserStatus } from "../User/service/User.service";
 
 @Injectable()
 export class GameService {
@@ -29,7 +30,7 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructor() {
+    constructor(private readonly userService: UserService) {
     }
 
     public getGame(id: string): Game | undefined {
@@ -45,7 +46,7 @@ export class GameService {
         this.games.delete(id);
     }
 
-    public createGame(setting: Setup, handleEnd?: (id: string) => Promise<void>): Game {
+    public async createGame(setting: Setup, handleEnd?: (id: string) => Promise<void>): Promise<Game> {
         let game: Game;
         const id = uuidv4();
         const setup: Setup = setting;
@@ -53,6 +54,10 @@ export class GameService {
         setup.general.id = id;
         game = new Game(setup, handler);
         this.games.set(id, game);
+        const player0: User = await this.userService.getUserById(setup.player0.id);
+        const player1: User = await this.userService.getUserById(setup.player1.id);
+        await this.userService.changeStatus(player0, UserStatus.InGame);
+        await this.userService.changeStatus(player1, UserStatus.InGame);
         return game;
     }
 
@@ -161,9 +166,14 @@ export class GameService {
         let game = this.games.get(gameId);
         if (game)
         {
-            this.users.delete(game.getSetup().player0.id as number);
-            this.users.delete(game.getSetup().player1.id as number);
+            const player0 = await this.userService.getUserById(game.getSetup().player0.id);
+            const player1 = await this.userService.getUserById(game.getSetup().player1.id);
+            await this.userService.changeStatus(player0, UserStatus.Connected);
+            await this.userService.changeStatus(player1, UserStatus.Connected);
+            this.users.delete(player0.id);
+            this.users.delete(player1.id);
             this.games.delete(gameId);
+            
         }
     }
 
@@ -192,7 +202,7 @@ export class GameService {
         if (this.request[id] && this.request[id].from == from.id) {
             const setup: Setup = await this.createSetup(from, user);
             console.log(setup);
-            this.createGame(setup, this.handlerGameFinish.bind(this));
+            await this.createGame(setup, this.handlerGameFinish.bind(this));
             this.request.splice(id, 1);
             return true;
         }
