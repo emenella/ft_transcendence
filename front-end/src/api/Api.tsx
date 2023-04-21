@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 const protocol = process.env.REACT_APP_API_PROTOCOL
 const host = process.env.REACT_APP_API_HOST

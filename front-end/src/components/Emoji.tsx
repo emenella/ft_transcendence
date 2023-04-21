@@ -1,5 +1,5 @@
-import React from 'react';
-import { emojiProps } from '../utils/interface';
+import React from "react";
+import { emojiProps } from "../utils/interface";
 
 function Emoji(props: emojiProps) {
     return (

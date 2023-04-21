@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import './App.css';
-import { HeaderConnected, HeaderNotConnected } from './features/Structure/Headers';
-import BodyNotConnected from './features/Structure/Body_not_connected';
-import BodyConnected from './features/Structure/Body_connected';
-import Footer from './features/Structure/Footer';
-import { getToken } from './api/Api';
-import { getMe } from './api/User';
-import { firstConnexion } from './api/Auth';
-import { User, UserStatus } from './utils/backend_interface';
-import logo from './assets/black_logo.png';
-import { UserContext } from './utils/UserContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import "./App.css";
+import { HeaderConnected, HeaderNotConnected } from "./features/Structure/Headers";
+import BodyNotConnected from "./features/Structure/Body_not_connected";
+import BodyConnected from "./features/Structure/Body_connected";
+import Footer from "./features/Structure/Footer";
+import { getToken } from "./api/Api";
+import { getMe } from "./api/User";
+import { firstConnexion } from "./api/Auth";
+import { User, UserStatus } from "./utils/backend_interface";
+import logo from "./assets/black_logo.png";
+import { UserContext } from "./utils/UserContext";
+import { useNavigate } from "react-router-dom";
 
 function App() {
 	//~~ States
@@ -25,7 +25,7 @@ function App() {
 	//~~ Functions
 	function handleLogout() {
 		// Supprimer cookie
-		localStorage.removeItem('token');
+		localStorage.removeItem("token");
 		setHasToken(false);
 		navigate("/home");
 	}
@@ -80,9 +80,9 @@ function App() {
 		<div>
 			<UserContext.Provider value={{ user, setUser }}>
 			<Toaster />
-			<div className='flex-container'>
+			<div className="flex-container">
 				<div>
-					<img src={logo} alt='Logo du site' />
+					<img src={logo} alt="Logo du site" />
 				</div>
 				<div>
 					<h1>Pong Game</h1>

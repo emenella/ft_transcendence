@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import './Profile.css';
-import { getMatchs, getUserById } from '../../api/User';
-import Emoji from '../../components/Emoji';
-import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from '../../components/button/Buttons';
-import { User, Match } from '../../utils/backend_interface';
-import { useContext } from 'react';
-import { UserContext } from '../../utils/UserContext';
-import { UserStatus } from '../../utils/backend_interface';
-import { SocketContext } from '../../utils/SocketContext';
+import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import "./Profile.css";
+import { getMatchs, getUserById } from "../../api/User";
+import Emoji from "../../components/Emoji";
+import { AddFriendButton, RemoveFriendButton, DuelButton, SpectateButton, BlacklistButton, UnblacklistButton } from "../../components/button/Buttons";
+import { User, Match } from "../../utils/backend_interface";
+import { useContext } from "react";
+import { UserContext } from "../../utils/UserContext";
+import { UserStatus } from "../../utils/backend_interface";
+import { SocketContext } from "../../utils/SocketContext";
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	const socket = useContext(SocketContext);
 
 	return (
-		<div className='player-interaction'>
+		<div className="player-interaction">
 			{
 				me?.friends.some((friend: User) => { return friend.id === user?.id })
 					? <RemoveFriendButton username={user?.username} />
@@ -115,15 +115,15 @@ function Profile() {
 			<Link to={"/"} style={linkStyle}>
 				<Emoji label="arrow_left" symbol="⬅️" /> Retour au matchmaking
 			</Link>
-			<div className='profil'>
+			<div className="profil">
 				<h2>Profil</h2>
-				<div className='player-profil'>
+				<div className="player-profil">
 					<img src={"../../" + user?.avatarPath} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
 				{ (me?.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
-				<div className='player-info'>
-					<div className='statistics'>
+				<div className="player-info">
+					<div className="statistics">
 						<h3>Statistiques</h3>
 						<p>Parties jouées : {games}</p>
 						<p>Parties gagnées : {wins}</p>
@@ -131,7 +131,7 @@ function Profile() {
 						<p>Ratio de victoire : {winrate}%</p>
 						<p>Elo : {user?.elo}</p>
 					</div>
-					<div className='history'>
+					<div className="history">
 						<h3>Historique</h3>
 						{ matchs?.map((match: Match) => { return (<PrintMatch username={user?.username} match={match} />); }) }
 					</div>

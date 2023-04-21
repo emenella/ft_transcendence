@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 import { getToken } from "../api/Api";
 import UsernameForm from "../components/form/UsernameForm";
 

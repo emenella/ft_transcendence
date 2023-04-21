@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Emoji from "../Emoji";
-import { invite, accept, deny, remove, blacklist, unblacklist } from '../../utils/friends_blacklists_system';
+import { invite, accept, deny, remove, blacklist, unblacklist } from "../../utils/friends_blacklists_system";
 import { requestDuel } from "../../api/User";
 import { Socket } from "socket.io-client";
 import { User } from "../../utils/backend_interface";

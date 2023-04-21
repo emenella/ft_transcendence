@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 import App from "./App";
 import Auth from "./routes/Auth";
 import { Activate2FA, Connection } from "./routes/2FA";
@@ -8,7 +8,7 @@ import SetUsername from "./routes/SetUsername";
 import { Error } from "./components/Error";
 
 const root = createRoot(
-	document.getElementById('root') as HTMLElement
+	document.getElementById("root") as HTMLElement
 );
 
 root.render(

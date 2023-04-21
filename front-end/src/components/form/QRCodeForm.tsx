@@ -27,7 +27,7 @@ class QRCodeForm extends React.Component<QRCodeFormProps, QRCodeFormState> {
 				this.props.navigate("/set-username");
 		}
 		else {
-			toast.error('Erreur : veuillez réessayez.');
+			toast.error("Erreur : veuillez réessayez.");
 		}
 	}
 

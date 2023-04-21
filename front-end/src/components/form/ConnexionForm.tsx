@@ -7,7 +7,7 @@ import { ConnexionProps } from "../../utils/interface";
 
 class Connexion extends React.Component<ConnexionProps, { secret: string }> {
 	state = {
-		secret: '',
+		secret: "",
 	}
 
 	constructor(props: any) {
@@ -23,7 +23,7 @@ class Connexion extends React.Component<ConnexionProps, { secret: string }> {
 			this.props.navigate("/");
 		}
 		else {
-			toast.error('Erreur : veuillez réessayez.');
+			toast.error("Erreur : veuillez réessayez.");
 		}
 	}
 

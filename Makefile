@@ -37,14 +37,14 @@ ps:
 			$(COMPOSE) ps --all
 # Execute bash in the container $(CONTAINER)
 exec:
-ifeq '$(CONTAINER)' ''
+ifeq "$(CONTAINER)" ""
 	@echo "Usage: CONTAINER=<CONTAINER_NAME> make exec"
 else
 	$(COMPOSE) exec $(CONTAINER) /bin/bash
 endif
 # View output from containers
 logs:
-ifeq '$(SERVICE)' ''
+ifeq "$(SERVICE)" ""
 	$(COMPOSE) logs -t -f
 else
 	$(COMPOSE) logs -t -f $(SERVICE)
@@ -79,7 +79,7 @@ certificate:
 			openssl req \
 			-newkey rsa:2048 -nodes -keyout "ssl_credentials/ssl.key" \
 			-x509 -days 365 \
-			-subj '/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr/CN=pong.42.fr' \
+			-subj "/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr/CN=pong.42.fr" \
 			-out "ssl_credentials/ssl.crt"
 
 #~~~~ Eugene ~~~~#

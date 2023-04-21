@@ -1,10 +1,10 @@
-import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
-import '../App.css';
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom"
+import "../App.css";
 import PongGame from "../features/Game/PongGame";
 import { getToken } from "../api/Api";
-import { Link } from 'react-router-dom';
-import Emoji from '../components/Emoji';
+import { Link } from "react-router-dom";
+import Emoji from "../components/Emoji";
 
 export default function Spectate() {
     const navigate = useNavigate();

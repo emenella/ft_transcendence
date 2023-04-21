@@ -6,7 +6,7 @@ import { UserStatus } from "../../utils/backend_interface";
 import { NavigateFunction } from "react-router-dom";
 
 function UsernameForm({ navigate }: { navigate: NavigateFunction } ) {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState("");
 
 	async function handleClick() {
 		const req = await changeUsername(username);
@@ -14,12 +14,12 @@ function UsernameForm({ navigate }: { navigate: NavigateFunction } ) {
 			navigate("/");
 		}
 		else {
-			setUsername('');
+			setUsername("");
 		}
 	}
 	
 	async function handleKeyDown(event: any) {
-		if (event.key === 'Enter')
+		if (event.key === "Enter")
 			handleClick();
 	};
 

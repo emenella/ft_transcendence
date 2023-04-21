@@ -113,7 +113,7 @@ export class UserService {
 	//~~FRIENDS
 	async inviteFriend(sender: User, receiver: User): Promise<void> {
 		if (sender.id === receiver.id)
-			throw new HttpException(`You can"t send a friend request to yourself, go touch some grass.`, 400);
+			throw new HttpException(`You can not send a friend request to yourself, go touch some grass.`, 400);
 		else if (sender.friends.some((f) => { return f.id === receiver.id }))
 			throw new HttpException(`You are already friend with ${sender.username}.`, 400);
 		else if (receiver.friendRequests.some((f) => { return f.id === sender.id }))
@@ -144,7 +144,7 @@ export class UserService {
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
 			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
-				throw new HttpException(`Couldn"t create DM channel.`, 400);
+				throw new HttpException(`Couldn't create DM channel.`, 400);
 		}
 	}
 
@@ -168,7 +168,7 @@ export class UserService {
 			await this.userRepository.save(user);
 			await this.userRepository.save(friend);
 			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
-				throw new HttpException(`Couldn"t create channel.`, 400);
+				throw new HttpException(`Couldn't create channel.`, 400);
 		}
 	}
 
@@ -200,7 +200,7 @@ export class UserService {
 
 	async removeBlacklist(user: User, blockedUser: User): Promise<void> {
 		if (!user.blacklist.some((f) => { return f.id === blockedUser.id }))
-			throw new HttpException(`You haven"t blocked ${blockedUser.username}.`, 400);
+			throw new HttpException(`You have not blocked ${blockedUser.username}.`, 400);
 		else {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);
 			await this.userRepository.save(user);

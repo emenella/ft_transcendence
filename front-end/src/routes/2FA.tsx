@@ -1,5 +1,5 @@
 import React from "react";
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from "react-router-dom"
 import Connexion from "../components/form/ConnexionForm";
 import QRCodeForm from "../components/form/QRCodeForm";
 import { getQRCode } from "../api/Auth";
@@ -7,14 +7,14 @@ import { getToken } from "../api/Api";
 
 export function Connection() {
     const [searchParams] = useSearchParams();
-    const access_token = searchParams.get('token');
+    const access_token = searchParams.get("token");
     const navigate = useNavigate();
 
     if (!access_token) {
         return (
             <div>
                 <h1>Erreur</h1>
-                <p>Vous n'avez pas accès à cette page</p>
+                <p>Vous n"avez pas accès à cette page</p>
             </div>
         );
     }

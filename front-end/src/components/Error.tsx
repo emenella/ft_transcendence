@@ -1,6 +1,6 @@
-import './Error.css';
-import toast from 'react-hot-toast';
-import  { AxiosError } from 'axios';
+import "./Error.css";
+import toast from "react-hot-toast";
+import  { AxiosError } from "axios";
 
 export function toastError(error: AxiosError) {
 	interface errorData {
@@ -10,7 +10,7 @@ export function toastError(error: AxiosError) {
 
 	const data = error.response?.data as errorData;
 	console.log(error);
-	toast.error('Erreur: ' + data.message);
+	toast.error("Erreur: " + data.message);
 }
 
 export function Error() {

@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import './Body_connected.css';
-import UserSidebar from '../Profile/UserSidebar';
-import Chat from '../Chat/Chat';
-import io, { Socket } from 'socket.io-client'
-import { url } from '../../api/Api';
-import { getToken } from '../../api/Api';
-import { SocketContext } from '../../utils/SocketContext';
-import { UserContext } from '../../utils/UserContext';
+import React, { useState, useEffect, useContext } from "react";
+import "./Body_connected.css";
+import UserSidebar from "../Profile/UserSidebar";
+import Chat from "../Chat/Chat";
+import io, { Socket } from "socket.io-client"
+import { url } from "../../api/Api";
+import { getToken } from "../../api/Api";
+import { SocketContext } from "../../utils/SocketContext";
+import { UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
 import { acceptDuel, denyDuel } from "../../api/User";
 import Emoji from "../../components/Emoji";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 
 function BodyConnected() {
@@ -20,7 +20,7 @@ function BodyConnected() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const newSocket = io(url + '/user', { extraHeaders: { Authorization: getToken() as string } });
+		const newSocket = io(url + "/user", { extraHeaders: { Authorization: getToken() as string } });
 		setSocket(newSocket);
 	}, [])
 
@@ -28,23 +28,23 @@ function BodyConnected() {
 		async function accept(id : number) {
 			const req = await acceptDuel(id);
 			if (req?.status === 200) {
-				toast.success('Invitation acceptée.');
+				toast.success("Invitation acceptée.");
 				navigate("/home");
 			} else
-				toast.error('Erreur. Veuillez réessayer.');
+				toast.error("Erreur. Veuillez réessayer.");
 		}
 	
 		async function deny(id : number) {
 			const req = await denyDuel(id);
 			if (req?.status === 200) {
-				toast.success('Invitation refusée.');
+				toast.success("Invitation refusée.");
 			} else
-				toast.error('Erreur. Veuillez réessayer.');
+				toast.error("Erreur. Veuillez réessayer.");
 		}
 	
 		toast((t) => (
 			<span>
-				<p>{sender.username} t'a invité à jouer !</p>
+				<p>{sender.username} t"a invité à jouer !</p>
 				<button onClick={() => { accept(sender.id); toast.dismiss(t.id); }}>
 					Accepter <Emoji label="check_mark" symbol="✔️" />
 				</button>
@@ -57,9 +57,9 @@ function BodyConnected() {
 	}
 
 	useEffect(() => {
-		socket?.on('duelRequestReceived', duelRequestReceivedListener);
+		socket?.on("duelRequestReceived", duelRequestReceivedListener);
 		return () => {
-			socket?.off('duelRequestReceived', duelRequestReceivedListener);
+			socket?.off("duelRequestReceived", duelRequestReceivedListener);
 		}
 	}, [socket])
 
