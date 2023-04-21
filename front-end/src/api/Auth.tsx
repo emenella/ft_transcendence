@@ -1,4 +1,4 @@
-import { client as axios } from "./Api";
+import { client as axios } from "./JwtCookie";
 
 export async function submitCode2FA(secret: string, access_token: string): Promise<string> {
 	try {

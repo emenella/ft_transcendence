@@ -1,6 +1,6 @@
 import React from "react";
 import { useSearchParams, useNavigate } from "react-router-dom"
-import { setToken } from "../api/Api";
+import { setJwtCookie } from "../api/JwtCookie";
 import { getMe } from "../api/User";
 import { UserStatus } from "../utils/backend_interface";
 
@@ -11,7 +11,7 @@ function Auth() {
 	
 	React.useEffect(() => {
 		if (access_token) {
-			setToken(access_token);
+			setJwtCookie(access_token);
 			getMe().then((user) => {
 				if (user.username == null) {
 					navigate("/set-username");

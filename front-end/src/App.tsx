@@ -1,77 +1,54 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
 import { HeaderConnected, HeaderNotConnected } from "./features/Structure/Headers";
 import BodyNotConnected from "./features/Structure/Body_not_connected";
 import BodyConnected from "./features/Structure/Body_connected";
 import Footer from "./features/Structure/Footer";
-import { getToken } from "./api/Api";
+import { getJwtCookie, removeJwtCookie } from "./api/JwtCookie";
 import { getMe } from "./api/User";
 import { firstConnexion } from "./api/Auth";
-import { User, UserStatus } from "./utils/backend_interface";
-import logo from "./assets/black_logo.png";
+import { User } from "./utils/backend_interface";
 import { UserContext } from "./utils/UserContext";
-import { useNavigate } from "react-router-dom";
+import logo from "./assets/black_logo.png";
 
 function App() {
 	//~~ States
-	const [hasToken, setHasToken] = useState(!!getToken());
+	const [hasToken, setHasToken] = useState(!!getJwtCookie());
 	const [user, setUser] = useState<User>();
 	const [url, setUrl] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<any>(null);
 	const navigate = useNavigate();
 
 	//~~ Functions
 	function handleLogout() {
-		// Supprimer cookie
-		localStorage.removeItem("token");
+		removeJwtCookie();
 		setHasToken(false);
 		navigate("/home");
 	}
 
 	async function fetchUser() {
-		try {
-			setLoading(true);
-			const user = await getMe();
-			setUser(user);
-			setLoading(false);
-		}
-		catch (error) {
-			setError(error);
-			setLoading(false);
-		}
+		setLoading(true);
+		const user = await getMe();
+		setUser(user);
+		setLoading(false);
 	}
 
 	async function fetchUrl() {
-		try {
-			setLoading(true);
-			const url = await firstConnexion() as string;
-			setUrl(url);
-			setLoading(false);
-		}
-		catch (error) {
-			setError(error);
-		}
+		setLoading(true);
+		const url = await firstConnexion() as string;
+		setUrl(url);
+		setLoading(false);
 	}
 
 	React.useEffect(() => {
-		if (hasToken) {
-			fetchUser();
-		}
-		else {
-			fetchUrl();
-		}
+		hasToken ? fetchUser() : fetchUrl();
 	}, [hasToken]);
 
 	//~~ Body
-	if (loading) {
+	if (loading)
 		return <p>Chargement en cours...</p>;
-	}
-	
-	if (error) {
-		return <p>Erreur : {error.message}</p>;
-	}
 
 	if (user && !user.isProfileComplete)
 		navigate("/set-username");

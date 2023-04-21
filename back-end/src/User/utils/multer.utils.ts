@@ -7,7 +7,7 @@ export const factory = async (): Promise<MulterModuleOptions> => {
 		storage: diskStorage({
 			filename: async (req , file, callback) => {
 				if (!req.user)
-					callback(new Error("User not found!"), "");
+					callback(new Error("User not found."), "");
 				const user: User = req.user as User;
 				const filename = `avatar-${user.id}`;
 				const extension = file.mimetype.split("/")[1];
@@ -19,7 +19,7 @@ export const factory = async (): Promise<MulterModuleOptions> => {
 			if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/))
 				callback(null, true);
 			else
-				callback(new Error("Only image files are allowed!"), false);
+				callback(new Error("Only image files are allowed. Allowed files: jpg|jpeg|png|gif."), false);
 		},
 	};
 }

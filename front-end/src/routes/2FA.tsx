@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom"
 import Connexion from "../components/form/ConnexionForm";
 import QRCodeForm from "../components/form/QRCodeForm";
 import { getQRCode } from "../api/Auth";
-import { getToken } from "../api/Api";
+import { getJwtCookie } from "../api/JwtCookie";
 
 export function Connection() {
     const [searchParams] = useSearchParams();
@@ -25,7 +25,7 @@ export function Connection() {
 };
 
 export function Activate2FA() {
-	const access_token = getToken();
+	const access_token = getJwtCookie();
 	const [qrcode, setQRCode] = React.useState<string>();
 	const navigate = useNavigate();
 

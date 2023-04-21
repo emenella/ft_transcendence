@@ -3,8 +3,8 @@ import "./Body_connected.css";
 import UserSidebar from "../Profile/UserSidebar";
 import Chat from "../Chat/Chat";
 import io, { Socket } from "socket.io-client"
-import { url } from "../../api/Api";
-import { getToken } from "../../api/Api";
+import { url } from "../../api/JwtCookie";
+import { getJwtCookie } from "../../api/JwtCookie";
 import { SocketContext } from "../../utils/SocketContext";
 import { UserContext } from "../../utils/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ function BodyConnected() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		const newSocket = io(url + "/user", { extraHeaders: { Authorization: getToken() as string } });
+		const newSocket = io(url + "/user", { extraHeaders: { Authorization: getJwtCookie() as string } });
 		setSocket(newSocket);
 	}, [])
 

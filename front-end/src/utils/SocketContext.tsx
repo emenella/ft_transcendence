@@ -1,6 +1,6 @@
 import { createContext } from "react";
-import { getToken } from "../api/Api";
+import { getJwtCookie } from "../api/JwtCookie";
 import io, { Socket } from "socket.io-client"
-import { url } from "../api/Api";
+import { url } from "../api/JwtCookie";
 
 export const SocketContext = createContext<Socket  | undefined>(undefined);

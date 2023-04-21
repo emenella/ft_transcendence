@@ -6,7 +6,7 @@ import Profile from '../Profile/Profile';
 import { Navigate } from 'react-router-dom';
 import AccountManagement from '../Profile/AccountManagement';
 import '../Structure/Body_connected.css'
-import { getToken, url } from '../../api/Api'
+import { getJwtCookie, url } from '../../api/JwtCookie'
 import io, { Socket } from 'socket.io-client'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
@@ -60,7 +60,7 @@ function Chat() {
   }
 
   useEffect(() => {
-    const newSocket = io(WebChat, { extraHeaders: { Authorization: getToken() as string } });
+    const newSocket = io(WebChat, { extraHeaders: { Authorization: getJwtCookie() as string } });
     setSocket(newSocket);
   }, [setSocket, WebChat])
 

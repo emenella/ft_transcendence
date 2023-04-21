@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"
-import { getToken } from "../api/Api";
+import { getJwtCookie } from "../api/JwtCookie";
 import UsernameForm from "../components/form/UsernameForm";
 
 export default function SetUsername() {
     const navigate = useNavigate();
-    const token = getToken();
+    const token = getJwtCookie();
 
     if (!token) {
         navigate("/error");
