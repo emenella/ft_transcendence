@@ -1,5 +1,9 @@
 FROM node:19
 
+ARG    REACT_APP_API_PROTOCOL
+ARG    REACT_APP_API_HOST
+ARG    REACT_APP_API_PORT
+
 WORKDIR /usr/front-end
 
 COPY package.json .

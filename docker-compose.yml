@@ -52,12 +52,12 @@ services:
     image: transcendence-client
     build:
       context: ./front-end
+      args:
+        - REACT_APP_API_PROTOCOL=${PROTOCOL}
+        - REACT_APP_API_HOST=${HOSTNAME}
+        - REACT_APP_API_PORT=${PORT_SSL}
     depends_on:
       - server
-    environment:
-      - REACT_APP_API_PROTOCOL=${PROTOCOL}
-      - REACT_APP_API_HOST=${HOSTNAME}
-      - REACT_APP_API_PORT=${PORT_SSL}
     networks:
       - front-end
     restart: on-failure
