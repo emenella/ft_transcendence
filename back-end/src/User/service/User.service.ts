@@ -61,6 +61,23 @@ export class UserService {
 
 	//--- HTTP REQUESTS ---
 
+	async getLightUserById(id: number): Promise<User> {
+		const user = await this.userRepository.findOne({ where: { id: id }, relations: UserRelations });
+		if (!user)
+			throw new HttpException(`User with ID ${id} not found.`, 404);
+		let lightUser = new User();
+		lightUser.id = user.id;
+		lightUser.username = user.username;
+		lightUser.avatarPath = user.avatarPath;
+		lightUser.isProfileComplete = user.isProfileComplete;
+		lightUser.status = user.status;
+		lightUser.color = user.color;
+		lightUser.matchsWon = user.matchsWon;
+		lightUser.matchsLost = user.matchsLost;
+		lightUser.elo = user.elo;
+		return lightUser;
+	}
+
 	async getUserById(id: number): Promise<User> {
 		const user = await this.userRepository.findOne({ where: { id: id }, relations: UserRelations });
 		if (!user)

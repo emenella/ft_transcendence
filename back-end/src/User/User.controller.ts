@@ -19,7 +19,7 @@ export class UserController {
 
 	@Get("/id")
 	async getUserById(@Query("id") id: number): Promise<User> {
-		return await this.userService.getUserById(id);
+		return await this.userService.getLightUserById(id);
 	}
 
 	@Get("/username")
