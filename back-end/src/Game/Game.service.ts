@@ -6,14 +6,12 @@ import { Socket } from "socket.io";
 import { User } from "../User/entity/User.entity";
 import { player, ball, general } from "./interface/Game.interface";
 import { UserService, UserStatus } from "../User/service/User.service";
-import { SocketService } from "../Socket/Socket.service";
 
 @Injectable()
 export class GameService {
     private games: Map<string, Game> = new Map();
     private users: Map<number, Game> = new Map();
     private spectators: Map<number, Game> = new Map();
-    private request: Array<{ from: number, to: number }> = [];
 
     private setup: general = {
             id: null,
@@ -31,7 +29,7 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructor(private readonly socketService: SocketService, private readonly userService: UserService) {
+    constructor(private readonly userService: UserService) {
     }
 
     public getGame(id: string): Game | undefined {
@@ -188,28 +186,6 @@ export class GameService {
             }
         }
         return undefined;
-    }
-
-    public async requestGametoUser(from: User, to: User): Promise<number> {
-        if (this.request.find((req) => req.from == from.id && req.to == to.id)) {
-            this.request.push({ from: from.id, to: to.id });
-            let socket = this.socketService.getUserById(to.id)?.socket;
-            if (socket) {
-                socket.emit('duelRequestSent', { user: from });
-            }
-            return this.request.length - 1;
-        }
-        return -1;
-    }
-
-    public async acceptRequest(id: number, from: User, user: User): Promise<boolean> {
-        if (this.request[id] && this.request[id].from == from.id) {
-            const setup: Setup = await this.createSetup(from, user);
-            await this.createGame(setup, this.handlerGameFinish.bind(this));
-            this.request.splice(id, 1);
-            return true;
-        }
-        return false;
     }
 
     public getPlayerSetup(user: User): player {

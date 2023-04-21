@@ -183,11 +183,10 @@ export class AuthService {
         if (!connection.otp) {
             throw new HttpException("User is not otp", 401);
         }
-        console.log("delete secret");
         connection.otp = null;
         connection.iv = null;
-        const ret = await this.connectionService.updateConnection(connection.id, connection);
-        console.log(ret);
+        await this.connectionService.updateConnection(connection.id, connection);
+		this.userService.change2FA(user, true);
     }
 
     async verifyJWT(token: string): Promise<IToken> {

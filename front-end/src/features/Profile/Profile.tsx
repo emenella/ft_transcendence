@@ -13,13 +13,6 @@ import { SocketContext } from "../../utils/SocketContext";
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	const socket = useContext(SocketContext);
 
-	// useEffect(() => {
-	// 	socket?.on("friendListChangement", friendListChangementListener);
-	// 	return () => {
-	// 		socket?.off("friendListChangement", friendListChangementListener);
-	// 	}
-	// }, [socket])
-
 	return (
 		<div className="player-interaction">
 			{

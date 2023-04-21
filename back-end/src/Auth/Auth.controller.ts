@@ -1,19 +1,19 @@
-import { Controller, Inject, forwardRef, Get, Post, Delete, UseGuards, Req, Res, HttpException } from "@nestjs/common";
+import { Controller, Get, Post, Delete, UseGuards, Req, Res, HttpException } from "@nestjs/common";
 import { Request, Response } from "express";
 import { AuthService } from "./Auth.service";
 import { serverOptions } from "./Auth.constants";
 import { FortyTwoGuard } from "./guard/42.guard";
 import { Public } from "./decorators/public.decoration";
 import { User } from "../User/entity/User.entity";
-import { UserService } from "../User/service/User.service";
 import { ConnectionService } from "../User/service/Connection.service";
+import { UserService } from "../User/service/User.service";
 
 @Controller("auth")
 export class AuthController {
 
 	constructor(private readonly AuthService: AuthService,
-				@Inject(forwardRef(() => UserService)) private readonly userService: UserService,
-				private readonly connectionService: ConnectionService,) {}
+				private readonly connectionService: ConnectionService,
+				private readonly userService: UserService) {}
 	
 	@Public()
 	@Get("/get42URL")

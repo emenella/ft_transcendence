@@ -7,9 +7,9 @@ import { url } from "../../api/JwtCookie";
 import { getJwtCookie } from "../../api/JwtCookie";
 import { SocketContext } from "../../utils/SocketContext";
 import { useNavigate } from "react-router-dom";
-import { acceptDuel, denyDuel } from "../../api/User";
 import Emoji from "../../components/Emoji";
 import { toast } from "react-hot-toast";
+import { User } from "../../utils/backendInterface";
 
 
 function BodyConnected() {
@@ -19,35 +19,34 @@ function BodyConnected() {
 	useEffect(() => {
 		const newSocket = io(url + "/user", { extraHeaders: { Authorization: getJwtCookie() as string } });
 		setSocket(newSocket);
+
+		// function launchDuel() {
+		// 	//jsp
+		// }
+
+		// socket?.on("launchDuel", launchDuel);
+		// return () => {
+		// 	socket?.off("launchDuel", launchDuel);
+		// }
 	}, [])
 
-
 	useEffect(() => {
-		async function duelRequestReceivedListener(sender: any) {
-			async function accept(id : number) {
-				const req = await acceptDuel(id);
-				if (req?.status === 200) {
-					toast.success("Invitation acceptée.");
-					navigate("/home");
-				} else
-					toast.error("Erreur. Veuillez réessayer.");
+		async function duelRequestReceivedListener(sender: User) {
+			function accept(id : number) {
+				socket?.emit("duelRequestAccepted", { senderId: sender.id });
 			}
 		
-			async function deny(id : number) {
-				const req = await denyDuel(id);
-				if (req?.status === 200) {
-					toast.success("Invitation refusée.");
-				} else
-					toast.error("Erreur. Veuillez réessayer.");
-			}
-		
+			// function deny(id : number) {
+			// 	socket?.emit("duelRequestDenied", sender);
+			// }
+
 			toast((t) => (
 				<span>
 					<p>{sender.username} t"a invité à jouer !</p>
 					<button onClick={() => { accept(sender.id); toast.dismiss(t.id); }}>
 						Accepter <Emoji label="check_mark" symbol="✔️" />
 					</button>
-					<button onClick={() => { deny(sender.id); toast.dismiss(t.id); }}>
+					<button onClick={() => { /*deny(sender.id);*/ toast.dismiss(t.id); }}>
 						Refuser <Emoji label="cross_mark" symbol="❌" />
 					</button>
 				</span>), {

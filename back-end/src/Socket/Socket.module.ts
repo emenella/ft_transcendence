@@ -3,6 +3,7 @@ import { UserModule } from "../User/User.module";
 import { AuthModule } from "../Auth/Auth.module";
 import { ChatModule } from "../Chat/Chat.module";
 import { GameModule } from "../Game/Game.module";
+import { MatchmakingModule } from "../Game/Matchmaking/Matchmaking.module";
 import { SocketService } from "./Socket.service";
 import { SocketGateway } from "./Socket.gateway";
 
@@ -12,6 +13,7 @@ import { SocketGateway } from "./Socket.gateway";
 		forwardRef(() => AuthModule),
 		forwardRef(() => ChatModule),
 		forwardRef(() => GameModule),
+		forwardRef(() => MatchmakingModule),
 	],
 	providers: [SocketGateway, SocketService],
 	exports: [SocketService],
