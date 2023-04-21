@@ -7,10 +7,10 @@ import { User } from "../../../utils/backendInterface";
 
 export const defaultGameSettings: GameSettings = {
     bind: {
-        up: "ArrowUp",
-        down: "ArrowDown",
-        left: "ArrowLeft",
-        right: "ArrowRight",
+        up: "w",
+        down: "s",
+        left: "a",
+        right: "d",
         ready: " "
     },
     width: 0,
