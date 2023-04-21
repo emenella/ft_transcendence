@@ -127,9 +127,9 @@ export class AuthService {
         connection.iv = decode.iv;
         console.log(connection);
         this.secret.delete(connection.id);
+        await this.userService.change2FA(user, true);
         const updateConnection = await this.connectionService.updateConnection(connection.id, connection);
         const ret = await this.otp(updateConnection, code);
-        await this.userService.change2FA(user, true);
         return ret;
     }
     
