@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./Profile.css";
 import { getMatchs, getUserById } from "../../api/User";
@@ -12,6 +12,13 @@ import { SocketContext } from "../../utils/SocketContext";
 
 function PlayerInteraction({ user, me }: { user: User | undefined, me: User | undefined }) {
 	const socket = useContext(SocketContext);
+
+	// useEffect(() => {
+	// 	socket?.on("friendListChangement", friendListChangementListener);
+	// 	return () => {
+	// 		socket?.off("friendListChangement", friendListChangementListener);
+	// 	}
+	// }, [socket])
 
 	return (
 		<div className="player-interaction">
@@ -91,13 +98,11 @@ function Profile() {
 	}, [user]);
 
 	//~~ Body
-	if (error) {
+	if (error)
 		return <p>Erreur : {error.message}</p>;
-	}
 
-	if (loading) {
+	if (loading)
 		return <p>Chargement en cours...</p>;
-	}
 
 	const wins = user!.matchsWon.length;
 	const loses = user!.matchsLost.length;
