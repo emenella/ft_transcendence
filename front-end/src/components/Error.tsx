@@ -9,13 +9,12 @@ export function toastError(error: AxiosError) {
 	}
 
 	const data = error.response?.data as errorData;
-	console.log(error);
 	toast.error("Erreur: " + data.message);
 }
 
 export function Error() {
     return (
-        <div>
+        <div className="error">
             <p>Oups, on dirait qu'on a un soucis par ici...</p>
         </div>
     );

@@ -9,8 +9,6 @@ function Login() {
 	const navigate = useNavigate();
 	
 	React.useEffect(() => {
-		console.log("User trying to connect using token:");
-		console.log(token);
 		if (token) {
 			setJwtCookie(token);
 			getMe().then((user) => {

@@ -19,7 +19,6 @@ export class Ball
         this.veloY = _speedY;
         this.color = _color;
         this.maxSpeed = _maxSpeed;
-        console.log("Ball created: " + this.posX + " " + this.posY + " " + this.radius + " " + this.veloX + " " + this.veloY);
     }
 
     

@@ -43,7 +43,6 @@ export class Game {
         this.socketGame.on("game:join", this.handleJoinGame.bind(this));
         this.socketGame.on("game:finish", this.handleFinishGame.bind(this));
         this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
-        console.log(this.socketMatchmaking);
     }
 
     public searchGame() {
@@ -55,7 +54,6 @@ export class Game {
     }
 
     public joinGame(gameId: string) {
-        console.log(gameId);
         this.socketGame.emit("game:join", gameId);
     }
 
@@ -72,7 +70,6 @@ export class Game {
     }
 
     private handleJoinGame(gameSetup: Setup) {
-        console.log(this.isSpec);
         if (!this.pong) {
             this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup, this.isSpec);
         }
@@ -97,7 +94,6 @@ export class Game {
     }
 
     private handleQueue(id: string) {
-        console.log("found match");
         this.joinGame(id);
     }
 

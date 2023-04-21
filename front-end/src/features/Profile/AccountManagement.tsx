@@ -33,11 +33,8 @@ function AccountManagement() {
     };
 
     const handle2FADelete = async () => {
-        const req = await delete2FA();
-        if (req?.status === 200) {
-            setActivated2FA(false);
-            toast.success("2FA désactivé.");
-        } else toast.error("Erreur. Veuillez réessayer.");
+        await delete2FA();
+        setActivated2FA(false);
     };
 
     const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,11 +52,7 @@ function AccountManagement() {
     const handleColorSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (color) {
-            const req = await changeColorPaddle(color);
-            if (req?.status === 201)
-                toast.success("Couleur changée.");
-            else
-                toast.error("Erreur. Veuillez réessayer.");
+            await changeColorPaddle(color);
         }
     };
 

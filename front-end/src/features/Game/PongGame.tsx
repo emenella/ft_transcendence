@@ -27,14 +27,12 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const user = userContext?.user;
     
     useEffect(() => {
-        console.log('componentDidMount Pong');
         const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getJwtCookie() as string } });
         socketGame.current = newSocketGame;
         const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getJwtCookie() as string } });
         socketMatchmaking.current = newSocketMatchmaking;
         
         return () => {
-            console.log('componentWillUnmount Pong');
             game.current?.leaveQueue();
             socketGame.current?.disconnect();
             socketMatchmaking.current?.disconnect();
@@ -42,10 +40,8 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     }, []);
     
     useEffect(() => {
-        console.log('componentDidUpdate Pong');
         const joinQueue = () => {
             if (!game) {
-                console.log('no state game');
                 return;
             }
             game.current?.joinQueue();
@@ -53,7 +49,6 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         
         const leaveQueue = () => {
             if (!game) {
-                console.log('no state game');
                 return;
             }
             game.current?.leaveQueue();
@@ -61,27 +56,22 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         
         const searchGame = () => {
             if (game === null) {
-                console.log('no state game');
                 return;
             }
-            console.log('searching game');
             game.current?.searchGame();
         };
         function setGame() {
             const ctx = canvasRef.current?.getContext('2d');
             if (!game.current && user && ctx) {
-                console.log('Game created' + socketGame, socketMatchmaking, user, ctx);
                 const newGame = new Game(socketGame.current!, socketMatchmaking.current!, user, ctx);
                 game.current = newGame;
             }
         }
         const handlefoundGame = () => {
-            console.log('handlefoundGame');
             props.handlefound();
         };
         
         setGame();
-        console.log(game.current);
         socketMatchmaking.current?.on('matchmaking:foundMatch', handlefoundGame);
         if (props.spec === null) searchGame();
         if (props.isQueue) joinQueue();

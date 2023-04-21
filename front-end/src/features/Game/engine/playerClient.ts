@@ -42,7 +42,6 @@ export class PlayerClient extends Player
 
     public handleKeyDown(event: KeyboardEvent): void
     {
-        console.log(event.key);
         if (this.bind) {    
             switch (event.key) {
                 case this.bind.up:
@@ -103,7 +102,6 @@ export class PlayerClient extends Player
 
     public ready(): void
     {
-        console.log("ready")
         this.isReady = true;
         this.socket.emit("game:ready");
     }

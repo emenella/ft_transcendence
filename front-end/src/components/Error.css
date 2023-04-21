@@ -1,0 +1,9 @@
+.error {
+    background-image: url("../assets/blackhole.jpg");
+    background-size: cover;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0vh;
+    left: 0vh;
+}

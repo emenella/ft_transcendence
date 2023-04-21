@@ -51,7 +51,6 @@ export class ft_pong {
         this.width = gameSetting.width;
         this.height = gameSetting.height;
         this.isSpec = isSpec;
-        console.log(this.width + " " + this.height);
         this.setupGame(setup);
     }
 
@@ -59,7 +58,6 @@ export class ft_pong {
         this.setup = setup;
         if (!this.user)
             throw new Error("User is null");
-        console.log(this.setup);
         this.ratioX = this.width / this.setup.general.width;
         this.ratioY = this.height / this.setup.general.height;
         if (this.isSpec)
@@ -69,14 +67,12 @@ export class ft_pong {
         }
         else if (this.user.id === this.setup.player0.id)
         {
-            console.log("player0");
             this.player0 = new PlayerClient(this.setup.player0.id, this.bind, new Paddle(this.setup.player0.color, this.setup.player0.width * this.ratioX, this.setup.player0.length * this.ratioY, 10, this.ctx.canvas.height / 2, this.setup.player0.speedX * this.ratioX, this.setup.player0.speedY * this.ratioY), this.socket, this.setup.player0.username);
             this.player0.setKeyBindings();
             this.player1 = new PlayerRemote(this.setup.player1.id, new Paddle(this.setup.player1.color, this.setup.player1.width * this.ratioX, this.setup.player1.length * this.ratioY, this.ctx.canvas.width - 10 - this.setup.player1.width, this.ctx.canvas.height / 2, this.setup.player1.speedX * this.ratioX, this.setup.player1.speedY * this.ratioY), this.socket, this.setup.player1.username);
         }
         else if (this.user.id === this.setup.player1.id)
         {
-            console.log("player1");
             this.player0 = new PlayerRemote(this.setup.player0.id, new Paddle(this.setup.player0.color, this.setup.player0.width * this.ratioX, this.setup.player0.length * this.ratioY, 10, this.ctx.canvas.height / 2, this.setup.player0.speedX * this.ratioX, this.setup.player0.speedY * this.ratioY), this.socket, this.setup.player0.username);
             this.player1 = new PlayerClient(this.setup.player1.id, this.bind, new Paddle(this.setup.player1.color, this.setup.player1.width * this.ratioX, this.setup.player1.length * this.ratioY, this.ctx.canvas.width - 10 - this.setup.player1.width, this.ctx.canvas.height / 2, this.setup.player1.speedX * this.ratioX, this.setup.player1.speedY * this.ratioY), this.socket, this.setup.player1.username);
             this.player1.setKeyBindings();
@@ -179,7 +175,6 @@ export class ft_pong {
     }
 
     private handleGameFinish = (): void => {
-        console.log("game finish");
         this.isFinish = true;
     }
 
