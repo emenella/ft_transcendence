@@ -79,7 +79,7 @@ certificate:
 			openssl req \
 			-newkey rsa:2048 -nodes -keyout "ssl_credentials/ssl.key" \
 			-x509 -days 365 \
-			-subj '/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr' \
+			-subj '/C=FR/ST=Auvergne-Rhône-Alpes/L=Lyon/O=42-Lyon-Auvergne-Rhône-Alpes/emailAddress=pthomas@student.42lyon.fr/CN=pong.42.fr' \
 			-out "ssl_credentials/ssl.crt"
 
 #~~~~ Eugene ~~~~#
