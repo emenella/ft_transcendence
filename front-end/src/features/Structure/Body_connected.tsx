@@ -16,49 +16,48 @@ function BodyConnected() {
 	const [socket, setSocket] = useState<Socket>();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const newSocket = io(url + "/user", { extraHeaders: { Authorization: getJwtCookie() as string } });
-		setSocket(newSocket);
+    useEffect(() => {
+        const newSocket = io(url + "/user", { extraHeaders: { Authorization: getJwtCookie() as string } });
+        setSocket(newSocket);
+    }, [])
+    
+    useEffect(() => {
+        function duelLaunched() {
+            console.log("socketemited bro")
+            navigate("/home");
+        }
+                
+        async function duelRequestReceivedListener(sender: User) {
+			console.log(sender);
 
-		// function launchDuel() {
-		// 	//jsp
-		// }
-
-		// socket?.on("launchDuel", launchDuel);
-		// return () => {
-		// 	socket?.off("launchDuel", launchDuel);
-		// }
-	}, [])
-
-	useEffect(() => {
-		async function duelRequestReceivedListener(sender: User) {
-			function accept(id : number) {
-				socket?.emit("duelRequestAccepted", { senderId: sender.id });
-			}
-		
-			// function deny(id : number) {
-			// 	socket?.emit("duelRequestDenied", sender);
-			// }
-
-			toast((t) => (
-				<span>
-					<p>{sender.username} t"a invité à jouer !</p>
-					<button onClick={() => { accept(sender.id); toast.dismiss(t.id); }}>
-						Accepter <Emoji label="check_mark" symbol="✔️" />
-					</button>
-					<button onClick={() => { /*deny(sender.id);*/ toast.dismiss(t.id); }}>
-						Refuser <Emoji label="cross_mark" symbol="❌" />
-					</button>
-				</span>), {
-				duration: 30000,
-			});
-		}
-
-		socket?.on("duelRequestReceived", duelRequestReceivedListener);
-		return () => {
-			socket?.off("duelRequestReceived", duelRequestReceivedListener);
-		}
-	}, [socket, navigate])
+            function accept(id : number) {
+                socket?.emit("duelRequestAccepted", { senderId: sender.id });
+            }
+            // function deny(id : number) {
+            //     socket?.emit("duelRequestDenied", sender);
+            // }
+            
+            toast((t) => (
+                <span>
+                    <p>{sender.username} t'a invité à jouer !</p>
+                    <button onClick={() => { accept(sender.id); toast.dismiss(t.id); }}>
+                        Accepter <Emoji label="check_mark" symbol="✔️" />
+                    </button>
+                    <button onClick={() => { /*deny(sender.id);*/ toast.dismiss(t.id); }}>
+                        Refuser <Emoji label="cross_mark" symbol="❌" />
+                    </button>
+                </span>), {
+                duration: 30000,
+            });
+        }
+        
+        socket?.on("duelLaunched", duelLaunched);
+        socket?.on("duelRequestReceived", duelRequestReceivedListener);
+        return () => {
+            socket?.off("duelLaunched", duelLaunched);
+            socket?.off("duelRequestReceived", duelRequestReceivedListener);
+        }
+    }, [navigate])
 
 	return (
 		<div className="connected">
