@@ -17,6 +17,7 @@ import { msg } from './interfaceChat';
 import Spectate from '../Game/Spec';
 import { UserContext } from '../../utils/UserContext';
 import { SocketContext } from '../../utils/SocketContext';
+import { SockEvent } from '../../utils/backendInterface';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
@@ -32,19 +33,19 @@ function Chat() {
   const WebChat = url + '/chat'
 
   const send = (value: string) => {
-    socketChat?.emit("msgToServer", {chan: activeChan, msg: value});
+    socketChat?.emit(SockEvent.SE_CH_MSG, {chan: activeChan, msg: value});
   }
 
   const createChan = (title: string, isPrivate: boolean, password: string | undefined) => {
     let data = {title: title, isPrivate: isPrivate, password: password};
-    socketChat?.emit("createChan", data);
+    socketChat?.emit(SockEvent.SE_CH_CREATE, data);
   }
 
   const joinChan = (value: string, password: string | null) => {
     if (password === "") {
       password = null;
     }
-    socketChat?.emit("joinChan", {chan: value, password: password});
+    socketChat?.emit(SockEvent.SE_CH_JOIN, {chan: value, password: password});
   }
 
   const toggleChan = (value: string) => {
@@ -56,7 +57,7 @@ function Chat() {
 
   const leaveChan = (chan: string) => {
     if (channels.get(chan) !== undefined) {
-      socketChat?.emit('leaveChan', chan);
+      socketChat?.emit(SockEvent.SE_CH_LEAVE, chan);
     }
   }
 

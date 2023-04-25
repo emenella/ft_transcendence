@@ -17,7 +17,7 @@ interface msg {
   content : string;
 }
 
-@WebSocketGateway(81, {namespace: 'chat', cors: true})
+@WebSocketGateway(81, {cors: true})
 export class ChatGateway {
 
   @WebSocketServer() server : Server;
@@ -163,7 +163,6 @@ export class ChatGateway {
   @SubscribeMessage(SockEvent.SE_CH_JOIN)
   async handleJoinChan(@ConnectedSocket() client: Socket, @MessageBody() data: {chan: string, password: string | null}) {  
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
-
     if (user !== undefined) {
       if (data.password === "") {
         data.password = null;

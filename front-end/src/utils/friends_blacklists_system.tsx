@@ -1,50 +1,34 @@
 import { inviteFriend, removeFriend, acceptFriend, denyFriend, addFromBlacklist, removeFromBlacklist } from "../api/User";
 import { toast } from "react-hot-toast";
 
-export async function invite(username : string) {
-    const req = await inviteFriend(username);
-    if (req?.status === 201)
-        toast.success("Invitation envoyée.");
-    else
-        toast.error("Erreur. Veuillez réessayer.")
+export function handleNotification(data: any) {
+    if (data.ok == true) {
+        toast.success(data.msg);
+    } else {
+        toast.error(data.msg);
+    }
 }
 
-export async function remove(username : string) {
-    const req = await removeFriend(username);
-    if (req?.status === 200)
-        toast.success("Ami supprimé.");
-    else
-        toast.error("Erreur. Veuillez réessayer.")
+export function invite(username : string) {
+    inviteFriend(username);
 }
 
-export async function accept(username : string) {
-    const req = await acceptFriend(username);
-    if (req?.status === 201)
-        toast.success("Demande d\"ami acceptée.");
-    else
-        toast.error("Erreur.")
+export function remove(username : string) {
+    removeFriend(username);
 }
 
-export async function deny(username : string) {
-    const req = await denyFriend(username);
-    if (req?.status === 200)
-        toast.success("Demande d\"ami refusée.");
-    else
-        toast.error("Erreur.")
+export function accept(username : string) {
+    acceptFriend(username);
 }
 
-export async function blacklist(username : string) {
-    const req = await addFromBlacklist(username);
-    if (req?.status === 201)
-        toast.success("Blocage réussi.");
-    else
-        toast.error("Erreur. Veuillez réessayer.")
+export function deny(username : string) {
+    denyFriend(username);
 }
 
-export async function unblacklist(username : string) {
-    const req = await removeFromBlacklist(username);
-    if (req?.status === 200)
-        toast.success("Déblocage réussi.");
-    else
-        toast.error("Erreur. Veuillez réessayer.")
+export function blacklist(username : string) {
+    addFromBlacklist(username);
+}
+
+export function unblacklist(username : string) {
+    removeFromBlacklist(username);
 }

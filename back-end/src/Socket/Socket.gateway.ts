@@ -32,9 +32,10 @@ export enum SockEvent
 	SE_BL_ADD = 'bl:add',
 	SE_BL_REMOVE = 'bl:remove',
 	SE_COLOR = "color",
+	SE_FRONT_NOTIFY = "front:notify"
 }
 
-@WebSocketGateway(81, {namespace: "user", cors: true})
+@WebSocketGateway(81, {cors: true})
 export class SocketGateway {
 	
 	private logger: Logger = new Logger("SocketGateway");
@@ -125,7 +126,10 @@ export class SocketGateway {
 	async inviteFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.inviteFriend(sender, receiver);
+		try {
+			const {ok, msg} = await this.userService.inviteFriend(sender, receiver);
+			client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
+		} catch (e) {}
 	}
 
 	@SubscribeMessage(SockEvent.SE_FR_ACCEPT)
@@ -133,6 +137,7 @@ export class SocketGateway {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		await this.userService.acceptFriend(sender, receiver);
+		
 	}
 
 	@SubscribeMessage(SockEvent.SE_FR_DENY)

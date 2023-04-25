@@ -27,6 +27,10 @@ export interface Match {
 }
 
 export enum SockEvent {
+	SE_CH_MSG = 'ch:msg',
+	SE_CH_JOIN = 'ch:join',
+	SE_CH_LEAVE = 'ch:leave',
+	SE_CH_CREATE = 'ch:create',
     SE_FR_INVITE = 'fr:invite',
 	SE_FR_ACCEPT = 'fr:accept',
 	SE_FR_DENY = 'fr:deny',
@@ -34,4 +38,5 @@ export enum SockEvent {
 	SE_BL_ADD = 'bl:add',
 	SE_BL_REMOVE = 'bl:remove',
     SE_COLOR = "color",
+    SE_FRONT_NOTIFY = "front:notify"
 }

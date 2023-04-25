@@ -68,7 +68,7 @@ function App() {
 				</div>
 			</div>
 			{	hasToken ?
-				<BodyConnected socket={sockRef.current} /> :
+				<BodyConnected /> :
 				<BodyNotConnected />
 			}
 			<Footer />

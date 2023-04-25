@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useContext, useEffect } from "react";
 import "./UserSidebar.css"
-import { User } from "../../utils/backendInterface";
-import { invite } from "../../utils/friends_blacklists_system";
+import { SockEvent, User } from "../../utils/backendInterface";
+import { handleNotification, invite } from "../../utils/friends_blacklists_system";
 import Emoji from "../../components/Emoji";
 import UsernameLink from "../../components/UsernameLink";
 import { AcceptAndDenyFriendButtons } from "./buttons/Buttons";
@@ -32,25 +32,31 @@ function UserSidebar() {
 			userContext?.setUser(await getMe())
 		}
 
-		socket?.on("friendListChangement", friendListChangementListener);
+		//socket?.on("friendListChangement", friendListChangementListener);
+		socket?.on(SockEvent.SE_FRONT_NOTIFY, handleNotification);
 		return () => {
-			socket?.off("friendListChangement", friendListChangementListener);
+			//socket?.off("friendListChangement", friendListChangementListener);
+			socket?.off(SockEvent.SE_FRONT_NOTIFY, handleNotification);
+
 		}
-	}, [socket, userContext])
+	}, [])
 
-	const listFriends = user?.friends?.map((friend: User) => {
-		return (
-			<div className="friend" key={friend.id}>
-				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
-				<div>
-					<UsernameLink user={friend} />
-					{renderSwitch(friend.status)}
+	useEffect(() => {
+		const listFriends = user?.friends?.map((friend: User) => {
+			return (
+				<div className="friend" key={friend.id}>
+					<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
+					<div>
+						<UsernameLink user={friend} />
+						{renderSwitch(friend.status)}
+					</div>
 				</div>
-			</div>
-		)
-	}
-	);
+			)
+		}
+		);
+	});
 
+	
 	const listFriendsInvite = user?.friendRequests?.map((friend: User) => {
 		return (
 			<div className="friend-invite" key={friend.id}>

@@ -124,25 +124,26 @@ export class UserService {
 	}
 
 	//~~FRIENDS
-	async inviteFriend(sender: User, receiver: User): Promise<void> {
+	async inviteFriend(sender: User, receiver: User): Promise<{ok: boolean, msg: string}> {
 		if (sender.id === receiver.id)
-			throw new HttpException(`You can not send a friend request to yourself, go touch some grass.`, 400);
+			return {ok: false, msg: `You can not send a friend request to yourself, go touch some grass.`};
 		else if (sender.friends.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`You are already friend with ${sender.username}.`, 400);
+			return {ok: false, msg: `You are already friend with ${sender.username}.`};
 		else if (receiver.friendRequests.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`${receiver.username} already have a pending friend request from you.`, 400);
+			return {ok: false, msg: `${receiver.username} already have a pending friend request from you.`};
 		else if (receiver.blacklist.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`${receiver.username} blocked you.`, 400);
+			return {ok: false, msg: `${receiver.username} blocked you.`,};
 		else if (sender.blacklist.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`You blocked ${receiver.username}.`, 400);
-		else if (sender.friendRequests.some((f) => { return f.id === receiver.id }))
+			return {ok: false, msg: `You blocked ${receiver.username}.`};
+		else if (sender.friendRequests.some((f) => { return f.id === receiver.id })) {
 			this.acceptFriend(sender, receiver);
-		else {
+			return {ok: true, msg: "Invitation accepted."};
+		} else {
 			receiver.friendRequests.push(sender);
 			receiver.friendRequests.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
-			this.emitFriendListChangement(receiver.id);
+			return {ok: true, msg: "Invitation sent."};
 		}
 	}
 
