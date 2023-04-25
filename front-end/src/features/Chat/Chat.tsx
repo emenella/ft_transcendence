@@ -6,7 +6,7 @@ import Profile from '../Profile/Profile';
 import { Navigate } from 'react-router-dom';
 import AccountManagement from '../Profile/AccountManagement';
 import '../Structure/Body_connected.css'
-import { getJwtCookie, url } from '../../api/JwtCookie'
+import { getJwtCookie, socket, url } from '../../api/JwtCookie'
 import io, { Socket } from 'socket.io-client'
 import MessageInput from './MessageInput'
 import CreateChanInput from './CreateChanInput'
@@ -25,26 +25,26 @@ function Chat() {
   const userContext = useContext(UserContext);
 	const user = userContext?.user;
 
-  const socket = useContext(SocketContext);
+  const socketChat = socket;
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
 
   const WebChat = url + '/chat'
 
   const send = (value: string) => {
-    socket?.emit("msgToServer", {chan: activeChan, msg: value});
+    socketChat?.emit("msgToServer", {chan: activeChan, msg: value});
   }
 
   const createChan = (title: string, isPrivate: boolean, password: string | undefined) => {
     let data = {title: title, isPrivate: isPrivate, password: password};
-    socket?.emit("createChan", data);
+    socketChat?.emit("createChan", data);
   }
 
   const joinChan = (value: string, password: string | null) => {
     if (password === "") {
       password = null;
     }
-    socket?.emit("joinChan", {chan: value, password: password});
+    socketChat?.emit("joinChan", {chan: value, password: password});
   }
 
   const toggleChan = (value: string) => {
@@ -56,7 +56,7 @@ function Chat() {
 
   const leaveChan = (chan: string) => {
     if (channels.get(chan) !== undefined) {
-      socket?.emit('leaveChan', chan);
+      socketChat?.emit('leaveChan', chan);
     }
   }
 
@@ -151,58 +151,58 @@ function Chat() {
   }
 
   useEffect(() => {
-    socket?.on("error", errorListener);
+    socketChat?.on("error", errorListener);
     return () => {
-      socket?.off("error", errorListener);
+      socketChat?.off("error", errorListener);
     }
   }, [errorListener])
 
   useEffect(() => {
-    socket?.on("msgToClient", messageListener);
+    socketChat?.on("msgToClient", messageListener);
     return () => {
-      socket?.off("msgToClient", messageListener);
+      socketChat?.off("msgToClient", messageListener);
     }
   }, [messageListener])
 
   useEffect(() => {
-    socket?.on("createdChan", createChanListener);
+    socketChat?.on("createdChan", createChanListener);
     return () => {
-      socket?.off("createdChan", createChanListener);
+      socketChat?.off("createdChan", createChanListener);
     }
   }, [createChanListener])
 
   useEffect(() => {
-    socket?.on("joinedChan", joinChanListener);
+    socketChat?.on("joinedChan", joinChanListener);
     return () => {
-      socket?.off("joinedChan", joinChanListener);
+      socketChat?.off("joinedChan", joinChanListener);
     }
   }, [joinChanListener])
 
   useEffect(() => {
-    socket?.on("leftChan", leftChanListener);
+    socketChat?.on("leftChan", leftChanListener);
     return () => {
-      socket?.off("leftChan", leftChanListener);
+      socketChat?.off("leftChan", leftChanListener);
     }
   }, [leftChanListener])
 
   useEffect(() => {
-    socket?.on("invited", inviteListener);
+    socketChat?.on("invited", inviteListener);
     return () => {
-      socket?.off("invited", inviteListener);
+      socketChat?.off("invited", inviteListener);
     }
   }, [inviteListener])
 
   useEffect(() => {
-    socket?.on("ban", banListener);
+    socketChat?.on("ban", banListener);
     return () => {
-      socket?.off("ban", banListener);
+      socketChat?.off("ban", banListener);
     }
   }, [banListener])
 
   useEffect(() => {
-    socket?.on("listOfChan", refreshListListener);
+    socketChat?.on("listOfChan", refreshListListener);
     return () => {
-      socket?.off("listOfChan", refreshListListener);
+      socketChat?.off("listOfChan", refreshListListener);
     }
   }, [refreshListListener])
 

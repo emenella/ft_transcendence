@@ -42,6 +42,8 @@ services:
       context: ./back-end
     depends_on:
       - database
+    ports:
+      - "8100:81"
     volumes:
       - ./back-end:/usr/backend/src
     networks:
@@ -67,7 +69,7 @@ services:
       - REACT_APP_API_PORT=${PORT_SSL}
       - REACT_APP_API_LOGIN_URL=${URL_LOGIN}
     volumes:
-      - ./front-end:/usr/frontend/src
+      - ./front-end/src:/usr/front-end/src
     networks:
       - front-end
     restart: on-failure

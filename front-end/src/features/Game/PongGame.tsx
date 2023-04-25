@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { getJwtCookie, url } from '../../api/JwtCookie';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
-import { SocketContext } from '../../utils/SocketContext';
+import { socket } from '../../api/JwtCookie';
 
 
 const WebGame = url + '/game';
@@ -22,9 +22,10 @@ interface PongGameProps {
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const game = useRef<Game>();
-    const socketGame = useContext(SocketContext);
-    const userContext = useContext(UserContext);
+    const socketGame = socket;
     const user = useContext(UserContext)?.user;
+
+    console.log(socketGame)
     
     useEffect(() => {
         
@@ -66,7 +67,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         };
         
         setGame();
-        socketGame!.on('matchmaking:foundMatch', handlefoundGame);
+        socketGame?.on('matchmaking:foundMatch', handlefoundGame);
         if (props.spec === null) searchGame();
         if (props.isQueue) joinQueue();
         else leaveQueue();

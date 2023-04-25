@@ -12,7 +12,7 @@ console.log(loginUrl)
 ;
 export const url = `${protocol}://${host}:${port}`;
 
-export const ws = `${protocol}://${host}:81`;
+export const ws = `ws://${host}:8100`;
 
 export const socket = io(ws, { extraHeaders: { Authorization: getJwtCookie() as string }});
 
