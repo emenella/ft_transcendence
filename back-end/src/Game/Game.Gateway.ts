@@ -4,7 +4,7 @@ import {GameService} from './Game.service';
 import { AuthService } from '../Auth/Auth.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
-import { SockEvent } from 'src/Socket/Socket.gateway';
+import { SockEvent } from '../Socket/Socket.gateway';
 
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})

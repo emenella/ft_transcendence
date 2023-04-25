@@ -4,7 +4,7 @@ import { AuthService } from '../../Auth/Auth.service';
 import { UserService } from '../../User/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
 import { User } from '../../User/entity/User.entity';
-import { SockEvent } from 'src/Socket/Socket.gateway';
+import { SockEvent } from '../../Socket/Socket.gateway';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{

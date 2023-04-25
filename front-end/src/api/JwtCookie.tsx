@@ -1,5 +1,6 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
+import { Socket, io } from "socket.io-client"
 
 const protocol = process.env.REACT_APP_API_PROTOCOL
 const host = process.env.REACT_APP_API_HOST
@@ -11,7 +12,9 @@ console.log(loginUrl)
 
 export const url = `${protocol}://${host}:${port}`;
 
-export const ws = `${protocol}://${host}:81`
+export const ws = `${protocol}://${host}:81`;
+
+export const socket = io(ws, { extraHeaders: { Authorization: getJwtCookie() as string }});
 
 export const client = axios.create({
 	baseURL: `${protocol}://${host}:${port}`,

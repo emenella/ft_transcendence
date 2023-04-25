@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import "./App.css";
@@ -12,6 +12,8 @@ import { get42URL } from "./api/Auth";
 import { User } from "./utils/backendInterface";
 import { UserContext } from "./utils/UserContext";
 import logo from "./assets/black_logo.png";
+import { Socket } from "socket.io-client";
+import { socket  } from "./api/JwtCookie";
 
 function App() {
 	//~~ States
@@ -20,6 +22,7 @@ function App() {
 	const [url] = useState<string>(get42URL() as string);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+	const sockRef = useRef<Socket>(socket);
 
 	//~~ Functions
 	function handleLogout() {
@@ -65,7 +68,7 @@ function App() {
 				</div>
 			</div>
 			{	hasToken ?
-				<BodyConnected /> :
+				<BodyConnected socket={sockRef.current} /> :
 				<BodyNotConnected />
 			}
 			<Footer />

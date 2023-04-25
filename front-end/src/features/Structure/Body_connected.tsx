@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 import { User } from "../../utils/backendInterface";
 
 
-function BodyConnected() {
+function BodyConnected(props: {socket: Socket}) {
 	const [socket, setSocket] = useState<Socket>();
 	const navigate = useNavigate();
 
@@ -54,6 +54,7 @@ function BodyConnected() {
         return () => {
             socket?.off("duelLaunched", duelLaunched);
             socket?.off("duelRequestReceived", duelRequestReceivedListener);
+            socket?.disconnect();
         }
     }, [socket])
 

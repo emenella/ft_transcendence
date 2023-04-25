@@ -8,7 +8,7 @@ import { UserService } from '../User/service/User.service';
 import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
-import { SockEvent } from 'src/Socket/Socket.gateway';
+import { SockEvent } from '../Socket/Socket.gateway';
 
 interface msg {
   date : string;
