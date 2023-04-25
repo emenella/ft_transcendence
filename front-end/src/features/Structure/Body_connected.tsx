@@ -50,7 +50,6 @@ function BodyConnected() {
         return () => {
             socket?.off("duelLaunched", duelLaunched);
             socket?.off("duelRequestReceived", duelRequestReceivedListener);
-            socket?.disconnect();
         }
     }, [socket])
 

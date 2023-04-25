@@ -24,6 +24,8 @@ function UserSidebar() {
 	const userContext = useContext(UserContext);
 	const user = userContext?.user;
 	const socket = useContext(SocketContext);
+	const [listFriends, setListFriends] = React.useState<JSX.Element[]>();
+	const [listFriendsInvite, setListFriendsInvite] = React.useState<JSX.Element[]>();
 	
 
 
@@ -42,7 +44,11 @@ function UserSidebar() {
 	}, [])
 
 	useEffect(() => {
-		const listFriends = user?.friends?.map((friend: User) => {
+		async function fetch() {
+			userContext?.setUser(await getMe())
+		}
+		const listFriends = () => {
+			return user?.friends?.map((friend: User) => {
 			return (
 				<div className="friend" key={friend.id}>
 					<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
@@ -51,24 +57,27 @@ function UserSidebar() {
 						{renderSwitch(friend.status)}
 					</div>
 				</div>
-			)
+				)
+			});
 		}
-		);
+		const listFriendsInvite = () => {
+			return user?.friendRequests?.map((friend: User) => {
+			return (
+				<div className="friend-invite" key={friend.id}>
+					<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
+					<UsernameLink user={friend} />
+					<div>
+						<AcceptAndDenyFriendButtons username={friend.username} />
+					</div>
+				</div>
+			)});
+		}
+		fetch();
+		setListFriends(listFriends());
+		setListFriendsInvite(listFriendsInvite());
 	});
 
 	
-	const listFriendsInvite = user?.friendRequests?.map((friend: User) => {
-		return (
-			<div className="friend-invite" key={friend.id}>
-				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
-				<UsernameLink user={friend} />
-				<div>
-					<AcceptAndDenyFriendButtons username={friend.username} />
-				</div>
-			</div>
-		)
-	}
-	);
 
 	const [friendToAdd, setFriendToAdd] = React.useState<string>();
 
