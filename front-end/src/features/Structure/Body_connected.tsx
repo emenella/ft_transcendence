@@ -10,16 +10,12 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "../../components/Emoji";
 import { toast } from "react-hot-toast";
 import { User } from "../../utils/backendInterface";
+import { socket } from "../../api/JwtCookie";
 
 
-function BodyConnected(props: {socket: Socket}) {
-	const [socket, setSocket] = useState<Socket>();
+function BodyConnected() {
+	const socketUser = socket;
 	const navigate = useNavigate();
-
-    useEffect(() => {
-        const newSocket = io(url + "/user", { extraHeaders: { Authorization: getJwtCookie() as string } });
-        setSocket(newSocket);
-    }, [])
     
     useEffect(() => {
         function duelLaunched() {
