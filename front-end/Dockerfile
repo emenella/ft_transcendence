@@ -3,6 +3,7 @@ FROM node:20
 ARG    REACT_APP_API_PROTOCOL
 ARG    REACT_APP_API_HOST
 ARG    REACT_APP_API_PORT
+ARG    DEV
 
 WORKDIR /usr/front-end
 
@@ -18,4 +19,5 @@ COPY . .
 
 RUN [ "npm", "run", "build" ]
 
-ENTRYPOINT [ "serve", "-s", "build" ]
+ENTRYPOINT [ "npm", "run", "start" ]
+# ENTRYPOINT [ "serve", "-s", "build" ]

@@ -56,7 +56,7 @@ export function Enable2FA() {
 			<img src={QRCode} alt="QRCode" />
 			<br />
 			<div className="form">
-				<label>Veuillez entrer votre code secret correspondant : <input type="text" value={secret} onChange={handleSetSecret} onKeyDown={handleKeyDown}/> </label>
+				<label>Veuillez entrer votre code secret correspondant : <input maxLength={4096} type="text" value={secret} onChange={handleSetSecret} onKeyDown={handleKeyDown} /> </label>
 				<button onClick={handleClick}>Envoyer</button>
 			</div>
 		</div>
@@ -102,7 +102,7 @@ export function Login2FA() {
 		<div className="parent">
 			<Toaster />
 			<div className="form">
-				<label>Veuillez entrer votre code secret: <input type="text" value={secret} onChange={handleSetSecret} onKeyDown={handleKeyDown}/></label>
+				<label>Veuillez entrer votre code secret: <input maxLength={4096} type="text" value={secret} onChange={handleSetSecret} onKeyDown={handleKeyDown}/></label>
 				<button onClick={handleClick}>Envoyer</button>
 			</div>
 		</div>

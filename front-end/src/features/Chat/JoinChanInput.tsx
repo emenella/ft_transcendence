@@ -39,6 +39,7 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="channel to join"
                 value={value}
+                maxLength={4096}
             />
             <input
                 type="password"
@@ -46,6 +47,7 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="password (optional)"
                 value={password}
+                maxLength={4096}
             />
             <button className="button" onClick={() => props.joinChan(value, password)}>Join Channel</button>
         </>

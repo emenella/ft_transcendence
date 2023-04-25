@@ -90,7 +90,7 @@ function UserSidebar() {
 			}
 
 			<h4>Ajouter un ami</h4>
-			<input type="text" onChange={setFriend} />
+			<input maxLength={4096} type="text" onChange={setFriend} />
 			<button onClick={addFriend}> <Emoji label="heavy_plus_sign" symbol="➕" /> </button>
 		</div>
 	);

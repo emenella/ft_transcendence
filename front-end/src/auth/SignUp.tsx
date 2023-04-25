@@ -40,7 +40,7 @@ export default function SignUp() {
 		<div className="parent">
 			<Toaster />
 			<div className="form">
-				<label>Pseudonyme : <input type="text" value={username} onChange={handleUsernameChange} onKeyDown={handleKeyDown}/> </label>
+				<label>Pseudonyme : <input maxLength={4096} type="text" value={username} onChange={handleUsernameChange} onKeyDown={handleKeyDown}/> </label>
 				<button onClick={handleClick}>Envoyer</button>
 			</div>
 		</div>

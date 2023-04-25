@@ -25,6 +25,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="title"
                 value={value}
+                maxLength={4096}
             />
             <input
                 type="password"
@@ -32,6 +33,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 onChange={(e) => setPass(e.target.value)}
                 placeholder="password (optional)"
                 value={password}
+                maxLength={4096}
             />
             <div>
             <label>Private
@@ -39,6 +41,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 type="checkbox"
                 checked={invitOnly}
                 onChange={(e) => setInviteOnly(e.target.checked)}
+                maxLength={4096}
                 />
             </label>
             </div>
