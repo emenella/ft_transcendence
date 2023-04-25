@@ -21,6 +21,10 @@ export class SocketService {
 		return [...this.users.values()].find(e => e.id == id)
 	}
 
+	getUserBySocketId(id: string): User | undefined {
+		return this.users.get([...this.users.keys()].find(e => e.id == id));
+	}
+
 	getSocketByUserId(id: number): Socket | undefined {
 		let found = undefined;
 		for (let [key, value] of this.users.entries()) {

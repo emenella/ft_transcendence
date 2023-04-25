@@ -25,3 +25,13 @@ export interface Match {
     winner: User;
     loser: User;
 }
+
+export enum SockEvent {
+    SE_FR_INVITE = 'fr:invite',
+	SE_FR_ACCEPT = 'fr:accept',
+	SE_FR_DENY = 'fr:deny',
+	SE_FR_REMOVE = 'fr:remove',
+	SE_BL_ADD = 'bl:add',
+	SE_BL_REMOVE = 'bl:remove',
+    SE_COLOR = "color",
+}

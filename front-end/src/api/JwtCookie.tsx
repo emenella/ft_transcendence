@@ -9,7 +9,7 @@ const port = process.env.REACT_APP_API_PORT
 export const loginUrl = process.env.REACT_APP_API_LOGIN_URL;
 
 console.log(loginUrl)
-
+;
 export const url = `${protocol}://${host}:${port}`;
 
 export const ws = `${protocol}://${host}:81`;

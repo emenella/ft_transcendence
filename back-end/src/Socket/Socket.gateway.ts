@@ -24,6 +24,14 @@ export enum SockEvent
 	SE_CH_JOIN = 'ch:join',
 	SE_CH_LEAVE = 'ch:leave',
 	SE_CH_CREATE = 'ch:create',
+
+	SE_FR_INVITE = 'fr:invite',
+	SE_FR_ACCEPT = 'fr:accept',
+	SE_FR_DENY = 'fr:deny',
+	SE_FR_REMOVE = 'fr:remove',
+	SE_BL_ADD = 'bl:add',
+	SE_BL_REMOVE = 'bl:remove',
+	SE_COLOR = "color",
 }
 
 @WebSocketGateway(81, {namespace: "user", cors: true})
@@ -103,4 +111,55 @@ export class SocketGateway {
             }
         }
     }
+
+	@SubscribeMessage(SockEvent.SE_COLOR)
+	async updateColor(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+		//TODO: if color == 0x00000000 ban it
+		const user: User = this.socketService.getUserBySocketId(client.id);
+		await this.userService.changeColor(user, data.color);
+	}
+
+	//~~FRIENDS
+	@SubscribeMessage(SockEvent.SE_FR_INVITE)
+	async inviteFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.inviteFriend(sender, receiver);
+	}
+
+	@SubscribeMessage(SockEvent.SE_FR_ACCEPT)
+	async acceptFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.acceptFriend(sender, receiver);
+	}
+
+	@SubscribeMessage(SockEvent.SE_FR_DENY)
+	async denyFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.denyFriend(receiver, sender);
+	}
+
+	@SubscribeMessage(SockEvent.SE_FR_REMOVE)
+	async removeFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.removeFriend(sender, receiver);
+	}
+
+	//~~ BLACKLIST
+	@SubscribeMessage(SockEvent.SE_BL_ADD)
+	async addBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.addBlacklist(sender, receiver);
+	}
+
+	@SubscribeMessage(SockEvent.SE_BL_REMOVE)
+	async removeBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
+		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const receiver: User = await this.userService.getUserByUsername(data.username);
+		await this.userService.removeBlacklist(sender, receiver);
+	}
 }
