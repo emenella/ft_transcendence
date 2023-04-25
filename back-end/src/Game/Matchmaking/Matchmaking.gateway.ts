@@ -4,6 +4,7 @@ import { AuthService } from '../../Auth/Auth.service';
 import { UserService } from '../../User/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
 import { User } from '../../User/entity/User.entity';
+import { SockEvent } from 'src/Socket/Socket.gateway';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{
@@ -35,7 +36,7 @@ export class MatchmakingGateway{
         client.disconnect();
     }
 
-    @SubscribeMessage('matchmaking:join')
+    @SubscribeMessage(SockEvent.SE_MM_JOIN)
     async joinQueue(@ConnectedSocket() client: Socket)
     {
         const user = await this.authentificate(client);
@@ -45,7 +46,7 @@ export class MatchmakingGateway{
         }
     }
 
-    @SubscribeMessage('matchmaking:leave')
+    @SubscribeMessage(SockEvent.SE_MM_LEAVE)
     async leaveQueue(@ConnectedSocket() client: Socket)
     {
        const user = await this.authentificate(client);
