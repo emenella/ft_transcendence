@@ -14,12 +14,6 @@ export class AuthController {
 				private readonly connectionService: ConnectionService) {}
 	
 	@Public()
-	@Get("/get42URL")
-	get42URL() {
-		return this.AuthService.get42URL();
-	}
-	
-	@Public()
 	@UseGuards(FortyTwoGuard)
 	@Get("/callback")
 	async postAuth(@Req() req: Request, @Res() res: Response) {

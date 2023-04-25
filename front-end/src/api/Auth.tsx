@@ -1,13 +1,7 @@
-import { client as axios } from "./JwtCookie";
+import { client as axios, loginUrl } from "./JwtCookie";
 
-export async function get42URL() {
-	try {
-		const req = await axios.get("/api/auth/get42URL");
-		return req.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
+export function get42URL() {
+	return loginUrl;
 }
 
 export async function submitCode2FA(secret: string, access_token: string): Promise<string> {

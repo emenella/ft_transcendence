@@ -58,8 +58,14 @@ services:
         - REACT_APP_API_PROTOCOL=${PROTOCOL}
         - REACT_APP_API_HOST=${HOSTNAME}
         - REACT_APP_API_PORT=${PORT_SSL}
+        - REACT_APP_API_LOGIN_URL=${URL_LOGIN}
     depends_on:
       - server
+    environment:
+      - REACT_APP_API_PROTOCOL=${PROTOCOL}
+      - REACT_APP_API_HOST=${HOSTNAME}
+      - REACT_APP_API_PORT=${PORT_SSL}
+      - REACT_APP_API_LOGIN_URL=${URL_LOGIN}
     volumes:
       - ./front-end:/usr/frontend/src
     networks:

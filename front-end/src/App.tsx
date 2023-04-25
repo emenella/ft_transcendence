@@ -17,7 +17,7 @@ function App() {
 	//~~ States
 	const [hasToken, setHasToken] = useState(!!getJwtCookie());
 	const [user, setUser] = useState<User>();
-	const [url, setUrl] = useState<string | null>(null);
+	const [url] = useState<string>(get42URL() as string);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 
@@ -35,15 +35,8 @@ function App() {
 		setLoading(false);
 	}
 
-	async function fetchUrl() {
-		setLoading(true);
-		const url = await get42URL() as string;
-		setUrl(url);
-		setLoading(false);
-	}
-
 	React.useEffect(() => {
-		hasToken ? fetchUser() : fetchUrl();
+		hasToken ? fetchUser() : setLoading(false);
 	}, [hasToken]);
 
 	//~~ Body
@@ -67,7 +60,7 @@ function App() {
 				<div>
 					{	hasToken ?
 						<HeaderConnected logout={handleLogout} /> :
-						<HeaderNotConnected url={url!} />
+						<HeaderNotConnected url={url} />
 					}
 				</div>
 			</div>
