@@ -211,7 +211,42 @@ export class ChatService {
 
                 invitedUser.socket.emit('invited', ret.title);
                 return true;
-            } 
+            }
+            case "/kick" : {
+                if (isAdm === false) {
+                    socket.emit('error', 'Only admin or owner can send command !');
+                    return true;
+                }
+                if (command.length != 2) {
+                    socket.emit('error', 'kick command need exactly one argument : /kick <Username>.');
+                    return true;
+                }
+
+                const kickedUser : ChatUser | undefined = this.getUserFromUsername(command[1]);
+                if (kickedUser === undefined) {
+                    socket.emit('error', 'User: ' + command[1] + ' does not exist !');
+                    return true;
+                }
+                if (kickedUser.id === chan.ownerId) {
+                    socket.emit('error', 'You can\'t kick owner !');
+                    return true;
+                }
+                if (await this.chanService.isAdmin(chan.id, kickedUser.id) === true && user.id !== chan.ownerId) {
+                    socket.emit('error', 'You can\'t kick admin !');
+                    return true;
+                }
+
+                const ret : number | string = await this.chanService.leaveChanById(chan.id, kickedUser.id);
+                if (typeof ret === 'string') {
+                    socket.emit('error', ret);
+                    return true;
+                }
+                server.to(chan.id.toString()).emit('msgToClient', {author: user.username, chan: chan.title, msg: kickedUser.username + ' has been kicked !'});
+                kickedUser.socket.leave(chan.id.toString());
+                kickedUser.socket.emit('error', 'You have been kick from ' + chan.title + ' channel.\nPay attention to your behavior next time !');
+                kickedUser.socket.emit('ban', chan.title);
+                return true;
+            }
             case "/ban" : {
                 if (isAdm === false) {
                     socket.emit('error', 'Only admin or owner can send command !');

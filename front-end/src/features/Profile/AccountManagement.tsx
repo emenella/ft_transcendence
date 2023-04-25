@@ -60,7 +60,7 @@ function AccountManagement() {
                 <h2>Gestion du compte</h2>
                 <form onSubmit={handleSubmit}>
                     <label>Avatar : </label>{" "}
-                    <input type="file" accept=".PNG,.JPG,.JPEG,.GIF" onChange={handleImageChange} />
+                    <input maxLength={4096} type="file" accept=".PNG,.JPG,.JPEG,.GIF" onChange={handleImageChange} />
                     <br />
                     <br />
                     <button type="submit">Valider</button>

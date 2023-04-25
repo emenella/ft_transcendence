@@ -34,6 +34,7 @@ export default function MessageInput(props: {send:(value : string) => void, acti
                 value={value}
                 onKeyDown={handleKeyPressed}
                 width='120px'
+                maxLength={4096}
             />
             <button className="button" onClick={handleSend}>Send</button>
         </>
