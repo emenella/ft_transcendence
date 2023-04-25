@@ -53,9 +53,9 @@ export class SocketGateway {
 		if (user) {
 			this.socketService.addUser(client, user)
 			if (this.gameService.findGamesIdWithPlayer(user.id).length)
-				this.userService.changeStatus(user, UserStatus.InGame);
+				await this.userService.changeStatus(user, UserStatus.InGame);
 			else
-				this.userService.changeStatus(user, UserStatus.Connected);
+				await this.userService.changeStatus(user, UserStatus.Connected);
 			this.logger.log(`Client connected: ${user.username}`);
 		}
 		else {
@@ -67,7 +67,7 @@ export class SocketGateway {
 		const user = await this.authentificate(client);
 		if (user) {
 			this.socketService.removeUser(client);
-			this.userService.changeStatus(user, UserStatus.Disconnected);
+			await this.userService.changeStatus(user, UserStatus.Disconnected);
 			this.logger.log(`Client disconnected: ${user.username}`);
 		}
 		client.disconnect();
@@ -100,7 +100,7 @@ export class SocketGateway {
         const receiver: User | null = await this.authentificate(client);
         const sender = await this.userService.getUserById(data.senderId);
         const senderSocket = this.socketService.getSocketByUserId(data.senderId);
-        if (receiver && sender && senderSocket) {
+        if (receiver && sender !== undefined && senderSocket !== undefined) {
             if (!this.gameService.findGamesIdWithPlayer(receiver.id).length
             && !this.gameService.findGamesIdWithPlayer(sender.id).length)
             {
@@ -114,12 +114,13 @@ export class SocketGateway {
 
 	@SubscribeMessage(SockEvent.SE_COLOR)
 	async updateColor(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-		//TODO: if color == 0x00000000 ban it
-		const user: User = this.socketService.getUserBySocketId(client.id);
-		await this.userService.changeColor(user, data.color);
+		const blacklist = ['black', 'gray'];
+		if (blacklist.includes(data.color) == false) {
+			const user: User = this.socketService.getUserBySocketId(client.id);
+			await this.userService.changeColor(user, data.color);
+		}
 	}
 
-	//~~FRIENDS
 	@SubscribeMessage(SockEvent.SE_FR_INVITE)
 	async inviteFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
@@ -148,7 +149,6 @@ export class SocketGateway {
 		await this.userService.removeFriend(sender, receiver);
 	}
 
-	//~~ BLACKLIST
 	@SubscribeMessage(SockEvent.SE_BL_ADD)
 	async addBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);

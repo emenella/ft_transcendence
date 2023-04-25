@@ -8,11 +8,12 @@ import { updateElo, checkMatch, Result } from "./utils/elo.utils";
 import { Match } from "../../User/entity/Match.entity";
 import { MatchService } from "../../User/service/Match.service";
 import { Socket } from "socket.io";
+import { SocketService } from "../../Socket/Socket.service";
 
 
 @Injectable()
 export class MatchmakingService {
-    private sockets: Map<number, Socket> = new Map<number, Socket>();
+    //private sockets: Map<number, Socket> = new Map<number, Socket>();
     private queue: Array<number> = new Array();
     private setup: general = {
         id: null,
@@ -31,7 +32,7 @@ export class MatchmakingService {
     };
 
     constructor(private readonly gameService: GameService, private readonly userService: UserService,
-        private readonly historyService: MatchService) { }
+        private readonly historyService: MatchService, private readonly socketService: SocketService) { }
 
     async joinQueue(user: User): Promise<boolean> {
         if (this.queue.includes(user.id) || await this.isInGame(user.id))
@@ -94,7 +95,7 @@ export class MatchmakingService {
         const ids = this.gameService.findGamesIdWithPlayer(user);
         const games: Game[] = [];
         for (const id of ids) {
-            const game = await this.gameService.getGame(id);
+            const game = this.gameService.getGame(id);
             if (game)
                 games.push(game);
         }
@@ -103,49 +104,39 @@ export class MatchmakingService {
 
     async isInGame(user: number): Promise<boolean> {
         const games = await this.getGameFromUser(user);
-        if (games.length > 0)
-            return true;
-        return false;
+        return games.length > 0;
     }
 
-    public changeBallColor(color: string): boolean {
+    public changeBallColor(color: string): void {
         this.ball.color = color;
-        return true;
     }
 
-    public changeBallRadius(radius: number): boolean {
+    public changeBallRadius(radius: number): void {
         this.ball.radius = radius;
-        return true;
     }
 
-    public changeBallSpeed(speed: number): boolean {
+    public changeBallSpeed(speed: number): void {
         this.ball.speed = speed;
-        return true;
     }
 
-    public changeScoreWin(score: number): boolean {
+    public changeScoreWin(score: number): void {
         this.setup.ScoreWin = score;
-        return true;
     }
 
-    public changeOvertime(overtime: boolean): boolean {
+    public changeOvertime(overtime: boolean): void {
         this.setup.Overtime = overtime;
-        return true;
     }
 
-    public changeOvertimeScore(score: number): boolean {
+    public changeOvertimeScore(score: number): void {
         this.setup.OvertimeScore = score;
-        return true;
     }
 
-    public changeHeight(height: number): boolean {
+    public changeHeight(height: number): void {
         this.setup.height = height;
-        return true;
     }
 
-    public changeWidth(width: number): boolean {
+    public changeWidth(width: number): void {
         this.setup.width = width;
-        return true;
     }
 
     private async foundMatch(): Promise<boolean> {
@@ -158,14 +149,14 @@ export class MatchmakingService {
         const bestMatch = checkMatch(users);
         if (bestMatch) {
             const game: Game = await this.createGame(bestMatch.user0, bestMatch.user1);
-            let socket0 = this.sockets.get(bestMatch.user0.id);
-            let socket1 = this.sockets.get(bestMatch.user1.id);
+            let socket0 = this.socketService.getSocketByUserId(bestMatch.user0.id);
+            let socket1 = this.socketService.getSocketByUserId(bestMatch.user1.id);
             if (socket0 && socket1) {
                 socket0.emit("matchmaking:foundMatch", game.getSetup().general.id);
                 socket1.emit("matchmaking:foundMatch", game.getSetup().general.id);
             }
-            this.leaveQueue(bestMatch.user0);
-            this.leaveQueue(bestMatch.user1);
+            await this.leaveQueue(bestMatch.user0);
+            await this.leaveQueue(bestMatch.user1);
             return true;
         }
         return false;
@@ -195,11 +186,11 @@ export class MatchmakingService {
         await this.userService.updateUser(user0.id, user0);
         await this.userService.updateUser(user1.id, user1);
         await this.createMatchHistory(id, score[0] > score[1] ? user0 : user1, score[0] < score[1] ? user0 : user1);
-        this.gameService.handlerGameFinish(id);
+        await this.gameService.handlerGameFinish(id);
     }
 
     private async createMatchHistory(id: string, winner: User, loser: User): Promise<void> {
-        const game = await this.gameService.getGame(id);
+        const game = this.gameService.getGame(id);
         if (!game)
             throw new HttpException("Game not found", HttpStatus.NOT_FOUND);
         const score: Array<number> = game.getScore();
@@ -212,22 +203,22 @@ export class MatchmakingService {
         await this.historyService.addMatch(history);
     }
 
-    public addSocket(user: User, socket: Socket): void {
-        if (this.sockets.has(user.id))
-            this.sockets.delete(user.id);
-        this.sockets.set(user.id, socket);
-    }
+    // public addSocket(user: User, socket: Socket): void {
+    //     if (this.sockets.has(user.id))
+    //         this.sockets.delete(user.id);
+    //     this.sockets.set(user.id, socket);
+    // }
 
-    public removeSocket(user: User): void {
-        this.sockets.delete(user.id);
-    }
+    // public removeSocket(user: User): void {
+    //     this.sockets.delete(user.id);
+    // }
 
-    public isConnect(user: User): boolean {
-        return this.sockets.has(user.id);
-    }
+    // public isConnect(user: User): boolean {
+    //     return this.sockets.has(user.id);
+    // }
 
-    public getSocket(user: User): Socket {
-        return this.sockets.get(user.id) as Socket;
-    }
+    // public getSocket(user: User): Socket {
+    //     return this.sockets.get(user.id) as Socket;
+    // }
 
 }

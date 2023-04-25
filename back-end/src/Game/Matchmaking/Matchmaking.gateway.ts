@@ -5,6 +5,7 @@ import { UserService } from '../../User/service/User.service';
 import { MatchmakingService} from './Matchmaking.service';
 import { User } from '../../User/entity/User.entity';
 import { SockEvent } from '../../Socket/Socket.gateway';
+import { SocketService } from '../../Socket/Socket.service';
 
 @WebSocketGateway(81, { namespace: 'matchmaking', cors: true})
 export class MatchmakingGateway{
@@ -13,7 +14,8 @@ export class MatchmakingGateway{
 
     constructor(private readonly matchmakingService: MatchmakingService,
         private readonly authService: AuthService,
-        private readonly userService: UserService)
+        private readonly userService: UserService,
+        private readonly socketService: SocketService)
     {}
 
     async handleConnection(@ConnectedSocket() client: Socket)
@@ -21,7 +23,7 @@ export class MatchmakingGateway{
         const user = await this.authentificate(client);
         if (user)
         {
-            this.matchmakingService.addSocket(user, client);
+            this.socketService.addUser(client, user);
         }
     }
 
@@ -31,7 +33,7 @@ export class MatchmakingGateway{
         if (user)
         {
             this.matchmakingService.leaveQueue(user);
-            this.matchmakingService.removeSocket(user);
+            this.socketService.removeUser(client);
         }
         client.disconnect();
     }
