@@ -16,6 +16,7 @@ import Message from './Message'
 import { msg } from './interfaceChat';
 import Spectate from '../Game/Spec';
 import { UserContext } from '../../utils/UserContext';
+import { SocketContext } from '../../utils/SocketContext';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
@@ -24,7 +25,7 @@ function Chat() {
   const userContext = useContext(UserContext);
 	const user = userContext?.user;
 
-  const [socket, setSocket] = useState<Socket>();
+  const socket = useContext(SocketContext);
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
 
@@ -58,11 +59,6 @@ function Chat() {
       socket?.emit('leaveChan', chan);
     }
   }
-
-  useEffect(() => {
-    const newSocket = io(WebChat, { extraHeaders: { Authorization: getJwtCookie() as string } });
-    setSocket(newSocket);
-  }, [setSocket, WebChat])
 
   const errorListener = (error : string) => {
     toast.error(error);

@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { getJwtCookie, url } from '../../api/JwtCookie';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
+import { SocketContext } from '../../utils/SocketContext';
 
 
 const WebGame = url + '/game';
@@ -21,21 +22,14 @@ interface PongGameProps {
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const game = useRef<Game>();
-    const socketGame = useRef<Socket>();
-    const socketMatchmaking = useRef<Socket>();
+    const socketGame = useContext(SocketContext);
     const userContext = useContext(UserContext);
-    const user = userContext?.user;
+    const user = useContext(UserContext)?.user;
     
     useEffect(() => {
-        const newSocketGame = io(WebGame, { extraHeaders: { Authorization: getJwtCookie() as string } });
-        socketGame.current = newSocketGame;
-        const newSocketMatchmaking = io(WebMatchmaking, { extraHeaders: { Authorization: getJwtCookie() as string } });
-        socketMatchmaking.current = newSocketMatchmaking;
         
         return () => {
             game.current?.leaveQueue();
-            socketGame.current?.disconnect();
-            socketMatchmaking.current?.disconnect();
         };
     }, []);
     
@@ -63,7 +57,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         function setGame() {
             const ctx = canvasRef.current?.getContext('2d');
             if (!game.current && user && ctx) {
-                const newGame = new Game(socketGame.current!, socketMatchmaking.current!, user, ctx);
+                const newGame = new Game(socketGame!, socketGame!, user, ctx);
                 game.current = newGame;
             }
         }
@@ -72,7 +66,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         };
         
         setGame();
-        socketMatchmaking.current?.on('matchmaking:foundMatch', handlefoundGame);
+        socketGame!.on('matchmaking:foundMatch', handlefoundGame);
         if (props.spec === null) searchGame();
         if (props.isQueue) joinQueue();
         else leaveQueue();
@@ -80,7 +74,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         if (props.spec) {
             game.current?.spectateGame(props.spec);
         }
-    }, [props.isQueue, props.spec, props.height, props.width]);
+    }, [props.isQueue, props.spec, props.height, props.width, user]);
     
     
 
