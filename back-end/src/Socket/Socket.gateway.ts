@@ -9,6 +9,23 @@ import { AuthService } from "../Auth/Auth.service";
 import { GameService } from "../Game/Game.service";
 import { MatchmakingService } from "../Game/Matchmaking/Matchmaking.service";
 
+export enum SockEvent
+{
+    SE_MM_LEAVE = 'mm:leave',
+    SE_MM_JOIN = 'mm:join',
+	SE_GM_EVENT = 'gm:event',
+	SE_GM_JOIN = 'gm:join',
+	SE_GM_SEARCH = 'gm:search',
+	SE_GM_LEAVE = 'gm:leave',
+	SE_GM_READY = 'gm:ready',
+	SE_GM_INFO = 'gm:info',
+	SE_GM_SPEC = 'gm:spec',
+	SE_CH_MSG = 'ch:msg',
+	SE_CH_JOIN = 'ch:join',
+	SE_CH_LEAVE = 'ch:leave',
+	SE_CH_CREATE = 'ch:create',
+}
+
 @WebSocketGateway(81, {namespace: "user", cors: true})
 export class SocketGateway {
 	
@@ -64,8 +81,8 @@ export class SocketGateway {
     @SubscribeMessage("duelRequestSent")
     async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         const sender: User | null = await this.authentificate(client);
-        const receiverSocket = this.socketService.getUserById(data.receiverId)?.socket;
-        if (sender && receiverSocket) {
+        const receiverSocket : Socket = this.socketService.getSocketByUserId(data.receiverId);
+        if (sender && receiverSocket !== undefined) {
             receiverSocket.emit("duelRequestReceived", sender);
         }
     }
@@ -74,7 +91,7 @@ export class SocketGateway {
     async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
         const receiver: User | null = await this.authentificate(client);
         const sender = await this.userService.getUserById(data.senderId);
-        const senderSocket = this.socketService.getUserById(data.senderId)?.socket;
+        const senderSocket = this.socketService.getSocketByUserId(data.senderId);
         if (receiver && sender && senderSocket) {
             if (!this.gameService.findGamesIdWithPlayer(receiver.id).length
             && !this.gameService.findGamesIdWithPlayer(sender.id).length)

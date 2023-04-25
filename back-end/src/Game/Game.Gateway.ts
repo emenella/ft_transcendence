@@ -4,7 +4,7 @@ import {GameService} from './Game.service';
 import { AuthService } from '../Auth/Auth.service';
 import { UserService } from '../User/service/User.service';
 import { User } from '../User/entity/User.entity';
-
+import { SockEvent } from 'src/Socket/Socket.gateway';
 
 
 @WebSocketGateway(81, {namespace: 'game', cors: true})
@@ -39,7 +39,7 @@ export class GameGateway {
         client.disconnect();
     }
 
-    @SubscribeMessage('game:event')
+    @SubscribeMessage(SockEvent.SE_GM_EVENT)
     async onGameEvent(@ConnectedSocket() client: Socket, @MessageBody() data: string): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
@@ -47,7 +47,7 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage('game:join')
+    @SubscribeMessage(SockEvent.SE_GM_JOIN)
     async onGameJoin(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
@@ -55,16 +55,16 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage('game:search')
+    @SubscribeMessage(SockEvent.SE_GM_SEARCH)
     async onGameSearch(@ConnectedSocket() client: Socket): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
             const games = this.gameService.findGamesIdWithPlayer(user.id);
-            client.emit('game:search', games);
+            client.emit(SockEvent.SE_GM_SEARCH, games);
         }
     }
 
-    @SubscribeMessage('game:leave')
+    @SubscribeMessage(SockEvent.SE_GM_LEAVE)
     async onGameLeave(@ConnectedSocket() client: Socket): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
@@ -72,7 +72,7 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage('game:ready')
+    @SubscribeMessage(SockEvent.SE_GM_READY)
     async onGameReady(client: Socket): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
@@ -80,16 +80,16 @@ export class GameGateway {
         }
     }
 
-    @SubscribeMessage('game:info')
+    @SubscribeMessage(SockEvent.SE_GM_INFO)
     async onGameInfo(@ConnectedSocket() client: Socket): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {
             let game = this.gameService.getGameInfo(user.id);
-            client.emit('game:info', game);
+            client.emit(SockEvent.SE_GM_INFO, game);
         }
     }
 
-    @SubscribeMessage('game:spec')
+    @SubscribeMessage(SockEvent.SE_GM_SPEC)
     async onGameSpec(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
         const user = await this.authentificate(client);
         if (user) {

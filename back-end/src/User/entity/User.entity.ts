@@ -8,7 +8,7 @@ import { Message } from "../../Chat/Message/Message.entity";
 
 @Entity()
 export class User {
-    socket: Socket | undefined = undefined;
+    // socket: Socket | undefined = undefined;
 
 	//~~ INFO
     @PrimaryGeneratedColumn()

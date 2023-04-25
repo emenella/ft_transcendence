@@ -232,9 +232,9 @@ export class UserService {
 		}
 	}
 
-	async emitFriendListChangement(id: number) {
-		let socket = this.socketService.getUserById(id)?.socket;
-		if (socket)
+	emitFriendListChangement(id: number) {
+		let socket = this.socketService.getSocketByUserId(id);
+		if (socket !== undefined)
 			socket.emit("friendListChangement");
 	}
 }

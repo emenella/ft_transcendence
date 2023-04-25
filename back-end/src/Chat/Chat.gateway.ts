@@ -8,6 +8,7 @@ import { UserService } from '../User/service/User.service';
 import { ChatService } from './Chat.service';
 import { ChatUser } from './Dto/chatDto';
 import { ChanListDTO } from './Dto/chanDto';
+import { SockEvent } from 'src/Socket/Socket.gateway';
 
 interface msg {
   date : string;
@@ -83,7 +84,7 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('msgToServer')
+  @SubscribeMessage(SockEvent.SE_CH_MSG)
   async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: {chan: string, msg: string}): Promise<void> {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
@@ -159,7 +160,7 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('joinChan')
+  @SubscribeMessage(SockEvent.SE_CH_JOIN)
   async handleJoinChan(@ConnectedSocket() client: Socket, @MessageBody() data: {chan: string, password: string | null}) {  
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
@@ -198,7 +199,7 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('leaveChan')
+  @SubscribeMessage(SockEvent.SE_CH_LEAVE)
   async handleLeaveChan(@ConnectedSocket() client: Socket, @MessageBody() chan: string) {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
     
@@ -226,7 +227,7 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('createChan')
+  @SubscribeMessage(SockEvent.SE_CH_CREATE)
   async handleCreateChan(@ConnectedSocket() client: Socket, @MessageBody() data: {title: string, isPrivate: boolean, password: string | undefined}) {
     const user : ChatUser | undefined = await this.chatService.getUserFromSocket(client);
 
