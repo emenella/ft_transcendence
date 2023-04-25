@@ -126,45 +126,48 @@ export class SocketGateway {
 	async inviteFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		try {
-			const {ok, msg} = await this.userService.inviteFriend(sender, receiver);
-			client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
-		} catch (e) {}
+		const {ok, msg} = await this.userService.inviteFriend(sender, receiver);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
+
 	}
 
 	@SubscribeMessage(SockEvent.SE_FR_ACCEPT)
 	async acceptFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.acceptFriend(sender, receiver);
-		
+		const {ok, msg} = await this.userService.acceptFriend(sender, receiver);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
 	}
 
 	@SubscribeMessage(SockEvent.SE_FR_DENY)
 	async denyFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.denyFriend(receiver, sender);
+		const {ok, msg} = await this.userService.denyFriend(receiver, sender);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
 	}
 
 	@SubscribeMessage(SockEvent.SE_FR_REMOVE)
 	async removeFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.removeFriend(sender, receiver);
+		const {ok, msg} = await this.userService.removeFriend(sender, receiver);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
 	}
 
 	@SubscribeMessage(SockEvent.SE_BL_ADD)
 	async addBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.addBlacklist(sender, receiver);
+		const {ok, msg} = await this.userService.addBlacklist(sender, receiver);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
 	}
 
 	@SubscribeMessage(SockEvent.SE_BL_REMOVE)
 	async removeBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
 		const sender: User = this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
-		await this.userService.removeBlacklist(sender, receiver);
+		const {ok, msg} = await this.userService.removeBlacklist(sender, receiver);
+		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
 	}
 }

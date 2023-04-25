@@ -147,11 +147,11 @@ export class UserService {
 		}
 	}
 
-	async acceptFriend(sender: User, receiver: User): Promise<void> {
+	async acceptFriend(sender: User, receiver: User): Promise<{ok: boolean, msg: string}> {
 		if (sender.friends.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`You are already friend with ${receiver.username}.`, 400);
+			return {ok: false, msg: `You are already friend with ${receiver.username}.`};
 		else if (!sender.friendRequests.some((f) => { return f.id === receiver.id }))
-			throw new HttpException(`You have no pending friend request from ${receiver.username}.`, 400);
+			return {ok: false, msg: `You have no pending friend request from ${receiver.username}.`};
 		else {
 			sender.friendRequests.splice(sender.friends.indexOf(receiver), 1)
 			sender.friends.push(receiver);
@@ -163,24 +163,26 @@ export class UserService {
 			this.emitFriendListChangement(sender.id);
 			this.emitFriendListChangement(receiver.id);
 			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
-				throw new HttpException(`Couldn't create DM channel.`, 400);
+				return {ok: false, msg: `Couldn't create DM channel.`};
+			return {ok: true, msg: "Friend request accepted."}
 		}
 	}
 
-	async denyFriend(receiver: User, sender: User): Promise<void> {
+	async denyFriend(receiver: User, sender: User): Promise<{ok: boolean, msg: string}> {
 		if (!receiver.friendRequests.some((f) => { return f.id === sender.id }))
-			throw new HttpException(`You have no pending friend request from ${sender.username}.`, 400);
+			return {ok: false, msg: `You have no pending friend request from ${sender.username}.`};
 		else {
 			receiver.friendRequests.splice(receiver.friends.indexOf(sender), 1);
 			await this.userRepository.save(receiver);
+			return {ok: true, msg: "Invitation denied."}
 		}
 	}
 
-	async removeFriend(user: User, friend: User): Promise<void> {
+	async removeFriend(user: User, friend: User): Promise<{ok: boolean, msg: string}> {
 		const userIndex = friend.friends.findIndex((f) => { return f.id === user.id });
 		const friendIndex = user.friends.findIndex((f) => { return f.id === friend.id });
 		if (userIndex === -1 || friendIndex === -1)
-			throw new HttpException(`You are not friend with ${friend.username}.`, 400);
+			return {ok: false, msg: `You are not friend with ${friend.username}.`};
 		else {
 			user.friends.splice(friendIndex, 1);
 			friend.friends.splice(userIndex, 1);
@@ -189,14 +191,15 @@ export class UserService {
 			this.emitFriendListChangement(user.id);
 			this.emitFriendListChangement(friend.id);
 			if (await this.chatService.leaveDM(user.id, friend.id) !== true)
-				throw new HttpException(`Couldn't create channel.`, 400);
+				return {ok: false, msg: `Couldn't create channel.`};
+			return {ok: true, msg: "Friend removed."};
 		}
 	}
 
 	//~~ BLACKLIST
-	async addBlacklist(user: User, userToBlock: User): Promise<void> {
+	async addBlacklist(user: User, userToBlock: User): Promise<{ok: boolean, msg: string}> {
 		if (user.blacklist.some((f) => { return f.id === userToBlock.id }))
-			throw new HttpException(`You have already blocked ${userToBlock.username}.`, 400);
+			return {ok: false, msg: `You have already blocked ${userToBlock.username}.`};
 		else {
 			user.blacklist.push(userToBlock);
 			user.blacklist.sort();
@@ -218,18 +221,20 @@ export class UserService {
 			await this.userRepository.save(user);
 			await this.userRepository.save(userToBlock);
 			if (userIndexF != -1 && userToBlockIndexF != -1 && await this.chatService.leaveDM(user.id, userToBlock.id) !== true)
-				throw new HttpException(`Couldn't create channel.`, 400);
+				return {ok: false, msg: `Couldn't create channel.`};
 			this.emitFriendListChangement(user.id);
 			this.emitFriendListChangement(userToBlock.id);
+			return {ok: true, msg: "Added to blacklist."}
 		}
 	}
 
-	async removeBlacklist(user: User, blockedUser: User): Promise<void> {
+	async removeBlacklist(user: User, blockedUser: User): Promise<{ok: boolean, msg: string}> {
 		if (!user.blacklist.some((f) => { return f.id === blockedUser.id }))
-			throw new HttpException(`You have not blocked ${blockedUser.username}.`, 400);
+			return {ok: false, msg: `You have not blocked ${blockedUser.username}.`};
 		else {
 			user.blacklist.splice(user.friends.indexOf(blockedUser), 1);
 			await this.userRepository.save(user);
+			return {ok: true, msg: "Removed from blacklist."}
 		}
 	}
 
