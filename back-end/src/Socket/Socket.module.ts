@@ -5,7 +5,7 @@ import { ChatModule } from "../Chat/Chat.module";
 import { GameModule } from "../Game/Game.module";
 import { MatchmakingModule } from "../Game/Matchmaking/Matchmaking.module";
 import { SocketService } from "./Socket.service";
-import { SocketGateway } from "./Socket.gateway";
+import { SockEvent, SocketGateway } from "./Socket.gateway";
 
 @Module({
 	imports: [

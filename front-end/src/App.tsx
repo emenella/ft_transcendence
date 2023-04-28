@@ -6,14 +6,12 @@ import { HeaderConnected, HeaderNotConnected } from "./features/Structure/Header
 import BodyNotConnected from "./features/Structure/Body_not_connected";
 import BodyConnected from "./features/Structure/Body_connected";
 import Footer from "./features/Structure/Footer";
-import { getJwtCookie, removeJwtCookie } from "./api/JwtCookie";
+import { getJwtCookie, removeJwtCookie, setJwtCookie } from "./api/JwtCookie";
 import { getMe } from "./api/User";
-import { get42URL } from "./api/Auth";
+import { get42URL, loginWith42 } from "./api/Auth";
 import { User } from "./utils/backendInterface";
 import { UserContext } from "./utils/UserContext";
 import logo from "./assets/black_logo.png";
-import { Socket } from "socket.io-client";
-import { socket  } from "./api/JwtCookie";
 
 function App() {
 	//~~ States
@@ -22,7 +20,6 @@ function App() {
 	const [url] = useState<string>(get42URL() as string);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
-	const sockRef = useRef<Socket>(socket);
 
 	//~~ Functions
 	function handleLogout() {
@@ -30,6 +27,16 @@ function App() {
 		setHasToken(false);
 		navigate("/home");
 	}
+
+	const handleLoginWithout42 = (id: number) => {
+		loginWith42(id).then((token) => {
+			if (token) {
+				setHasToken(true);
+				setJwtCookie(token);
+				navigate("/home");
+			}
+		});
+	};
 
 	async function fetchUser() {
 		setLoading(true);
@@ -63,7 +70,7 @@ function App() {
 				<div>
 					{	hasToken ?
 						<HeaderConnected logout={handleLogout} /> :
-						<HeaderNotConnected url={url} />
+						<HeaderNotConnected url={url} funcLogin={handleLoginWithout42} />
 					}
 				</div>
 			</div>

@@ -1,7 +1,7 @@
 import { inviteFriend, removeFriend, acceptFriend, denyFriend, addFromBlacklist, removeFromBlacklist } from "../api/User";
 import { toast } from "react-hot-toast";
 
-export function handleNotification(data: any) {
+export function notification(data: any) {
     if (data.ok == true) {
         toast.success(data.msg);
     } else {

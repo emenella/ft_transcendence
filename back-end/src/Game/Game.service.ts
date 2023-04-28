@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { Game } from "./modele/Game.modele";
 import { Setup, GameInfo } from "./interface/Game.interface";
 import { v4 as uuidv4 } from "uuid";
@@ -29,7 +29,8 @@ export class GameService {
         maxSpeed: 20
     };
 
-    constructor(private readonly userService: UserService) {
+    //useRef
+    constructor(@Inject(forwardRef(() => UserService)) private readonly userService: UserService) {
     }
 
     public getGame(id: string): Game | undefined {

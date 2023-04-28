@@ -32,7 +32,8 @@ export enum SockEvent
 	SE_BL_ADD = 'bl:add',
 	SE_BL_REMOVE = 'bl:remove',
 	SE_COLOR = "color",
-	SE_FRONT_NOTIFY = "front:notify"
+	SE_FRONT_NOTIFY = "front:notify",
+	SE_FRONT_UPDATE = "front:update"
 }
 
 @WebSocketGateway(81, {cors: true})

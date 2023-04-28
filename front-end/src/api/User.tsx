@@ -12,6 +12,7 @@ server         | 2023-04-25T19:31:05.491618933Z [Nest] 73  - 04/25/2023, 7:31:05
 export async function getMe(): Promise<any> {
 	try {
 		const res = await axios.get<User>("api/users/me", { headers: authHeader() });
+		console.log(res.data);
 		return res.data;
 	}
 	catch (e) {

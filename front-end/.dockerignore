@@ -1,7 +1,6 @@
 # Files not needed for runtime
 Dockerfile
 .gitignore
-package-lock.json
 README.md
 
 # Compiled output

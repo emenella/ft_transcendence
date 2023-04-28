@@ -26,6 +26,12 @@ export class AuthController {
 	}
 
 	@Public()
+    @Post('admin')
+    async getAdmin(@Req() req: Request) {
+        return await this.AuthService.login(req.body.user);
+    }
+
+	@Public()
 	@Post("/2fa/login")
 	async Af2Login(@Req() req: Request) {
 		if (!req.headers.authorization)

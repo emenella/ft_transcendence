@@ -1,4 +1,4 @@
-import { HttpException, Injectable, HttpStatus } from "@nestjs/common";
+import { HttpException, Inject, Injectable, forwardRef, HttpStatus } from "@nestjs/common";
 import { GameService } from "../../Game/Game.service";
 import { UserService } from "../../User/service/User.service";
 import { Game } from "../../Game/modele/Game.modele";
@@ -31,7 +31,7 @@ export class MatchmakingService {
         maxSpeed: 20
     };
 
-    constructor(private readonly gameService: GameService, private readonly userService: UserService,
+    constructor(private readonly gameService: GameService, @Inject(forwardRef(() => UserService)) private readonly userService: UserService,
         private readonly historyService: MatchService, private readonly socketService: SocketService) { }
 
     async joinQueue(user: User): Promise<boolean> {

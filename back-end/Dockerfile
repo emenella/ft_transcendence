@@ -2,9 +2,9 @@ FROM node:20
 
 WORKDIR /usr/backend
 
-COPY package.json .
+COPY package* .
 
-RUN [ "npm", "install"]
+RUN [ "npm", "ci"]
 
 COPY . .
 

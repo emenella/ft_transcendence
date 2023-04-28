@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./Body_connected.css";
 import UserSidebar from "../Profile/UserSidebar";
 import Chat from "../Chat/Chat";
-import io, { Socket } from "socket.io-client"
-import { url } from "../../api/JwtCookie";
-import { getJwtCookie } from "../../api/JwtCookie";
 import { SocketContext } from "../../utils/SocketContext";
 import { useNavigate } from "react-router-dom";
 import Emoji from "../../components/Emoji";
@@ -14,7 +11,6 @@ import { socket } from "../../api/JwtCookie";
 
 
 function BodyConnected() {
-	const socketUser = socket;
 	const navigate = useNavigate();
     
     useEffect(() => {

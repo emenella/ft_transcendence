@@ -38,3 +38,18 @@ export async function saveQRCode(secret: string, access_token: string): Promise<
 	}
 	return "";
 }
+
+export async function loginWith42(id: number): Promise<string> {
+	try {
+		const req = await axios.post("/api/auth/admin", {
+			"user": {
+				"id": id
+			}
+		});
+		return req.data.access_token;
+	}
+	catch (e) {
+		console.log(e);
+	}
+	return "";
+}

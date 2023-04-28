@@ -5,6 +5,7 @@ import { User } from "../entity/User.entity";
 import { Connection } from "../entity/Connection.entity";
 import { SocketService } from "../../Socket/Socket.service";
 import { ChatService } from "../../Chat/Chat.service";
+import { SockEvent } from "../../Socket/Socket.gateway";
 
 export const enum UserStatus {
 	Disconnected,
@@ -143,6 +144,7 @@ export class UserService {
 			receiver.friendRequests.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			this.emitFriendListChangement(receiver.id);
 			return {ok: true, msg: "Invitation sent."};
 		}
 	}
@@ -160,10 +162,10 @@ export class UserService {
 			receiver.friends.sort((a, b) => (a.username > b.username ? -1 : 1));
 			await this.userRepository.save(sender);
 			await this.userRepository.save(receiver);
+			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
+			return {ok: false, msg: `Couldn't create DM channel.`};
 			this.emitFriendListChangement(sender.id);
 			this.emitFriendListChangement(receiver.id);
-			if (await this.chatService.createDMChan(sender.id, receiver.id) !== true)
-				return {ok: false, msg: `Couldn't create DM channel.`};
 			return {ok: true, msg: "Friend request accepted."}
 		}
 	}
@@ -241,6 +243,6 @@ export class UserService {
 	emitFriendListChangement(id: number) {
 		let socket = this.socketService.getSocketByUserId(id);
 		if (socket !== undefined)
-			socket.emit("friendListChangement");
+			socket.emit(SockEvent.SE_FRONT_UPDATE);
 	}
 }

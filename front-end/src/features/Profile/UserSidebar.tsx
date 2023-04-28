@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useContext, useEffect } from "react";
 import "./UserSidebar.css"
 import { SockEvent, User } from "../../utils/backendInterface";
-import { handleNotification, invite } from "../../utils/friends_blacklists_system";
+import { notification, invite } from "../../utils/friends_blacklists_system";
 import Emoji from "../../components/Emoji";
 import UsernameLink from "../../components/UsernameLink";
 import { AcceptAndDenyFriendButtons } from "./buttons/Buttons";
@@ -22,60 +22,61 @@ function renderSwitch(num: number) {
 
 function UserSidebar() {
 	const userContext = useContext(UserContext);
-	const user = userContext?.user;
+	const [user, setUser] = React.useState<User>(userContext?.user as User);
 	const socket = useContext(SocketContext);
 	const [listFriends, setListFriends] = React.useState<JSX.Element[]>();
 	const [listFriendsInvite, setListFriendsInvite] = React.useState<JSX.Element[]>();
 	
-
-
-	useEffect(() => {
-		async function friendListChangementListener() {
-			userContext?.setUser(await getMe())
-		}
-
-		//socket?.on("friendListChangement", friendListChangementListener);
-		socket?.on(SockEvent.SE_FRONT_NOTIFY, handleNotification);
-		return () => {
-			//socket?.off("friendListChangement", friendListChangementListener);
-			socket?.off(SockEvent.SE_FRONT_NOTIFY, handleNotification);
-
-		}
-	}, [])
-
+	const getListFriend = () => {
+		return user?.friends?.map((friend: User) => {
+		return (
+			<div className="friend" key={friend.id}>
+				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
+				<div>
+					<UsernameLink user={friend} />
+					{renderSwitch(friend.status)}
+				</div>
+			</div>
+			)
+		});
+	}
+	const getListFriendInvite = () => {
+		return user?.friendRequests?.map((friend: User) => {
+		return (
+			<div className="friend-invite" key={friend.id}>
+				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
+				<UsernameLink user={friend} />
+				<div>
+					<AcceptAndDenyFriendButtons username={friend.username} />
+				</div>
+			</div>
+		)});
+	}
 	useEffect(() => {
 		async function fetch() {
-			userContext?.setUser(await getMe())
+			setUser(await getMe());
 		}
-		const listFriends = () => {
-			return user?.friends?.map((friend: User) => {
-			return (
-				<div className="friend" key={friend.id}>
-					<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
-					<div>
-						<UsernameLink user={friend} />
-						{renderSwitch(friend.status)}
-					</div>
-				</div>
-				)
-			});
+		const handleUpdate = async (data: any) => {
+			await fetch();
 		}
-		const listFriendsInvite = () => {
-			return user?.friendRequests?.map((friend: User) => {
-			return (
-				<div className="friend-invite" key={friend.id}>
-					<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
-					<UsernameLink user={friend} />
-					<div>
-						<AcceptAndDenyFriendButtons username={friend.username} />
-					</div>
-				</div>
-			)});
+
+		fetch().then(() => {
+		setListFriends(getListFriend());
+		setListFriendsInvite(getListFriendInvite());
+		});
+		socket?.on(SockEvent.SE_FRONT_NOTIFY, notification);
+		socket?.on(SockEvent.SE_FRONT_UPDATE, handleUpdate);
+		return () => {
+			socket?.off(SockEvent.SE_FRONT_UPDATE, handleUpdate);
+			socket?.off(SockEvent.SE_FRONT_NOTIFY, notification);
 		}
-		fetch();
-		setListFriends(listFriends());
-		setListFriendsInvite(listFriendsInvite());
 	}, []);
+
+	useEffect(() => {
+		setListFriends(getListFriend());
+		setListFriendsInvite(getListFriendInvite());
+	}, [user]);
+
 
 	
 

@@ -7,12 +7,12 @@ ARG    REACT_APP_API_LOGIN_URL
 
 WORKDIR /usr/front-end
 
-COPY package.json .
+COPY package* .
 
 RUN [ "apt-get", "update" ]
 RUN [ "apt-get", "-y", "upgrade"]
 RUN [ "apt-get", "install", "xsel" ]
-RUN [ "npm", "install"]
+RUN [ "npm", "ci"]
 RUN [ "npm", "install", "-g", "serve"]
 
 COPY . .

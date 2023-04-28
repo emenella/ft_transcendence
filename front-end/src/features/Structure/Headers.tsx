@@ -4,11 +4,12 @@ import { UserContext } from '../../utils/UserContext';
 
 export function HeaderConnected({ logout }: { logout: () => void }) {
 	const userContext = useContext(UserContext);
+	
     const user = userContext?.user;
 	
 	const linkStyle = {
 		color: "white",
-	}
+	};
 
     return (
         <div>
@@ -22,10 +23,20 @@ export function HeaderConnected({ logout }: { logout: () => void }) {
     );
 }
 
-export function HeaderNotConnected({ url } : { url: string }) {
+export function HeaderNotConnected({ url, funcLogin } : { url: string, funcLogin: (id: number) => void }) {
+	const [id, setId] = React.useState(0);
+
+	const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setId(parseInt(e.target.value));
+	}
+
 	return (
-		<a href={url}>
-			<button>Connexion</button>
-		</a>
+		<div>
+			<a href={url}>
+				<button>Connexion</button>
+			</a>
+			<button onClick={() => funcLogin(id)}>Connexion sans 42</button>
+			<input type="text" placeholder="id" onChange={onChangeId} />
+		</div>
 	);
 }
