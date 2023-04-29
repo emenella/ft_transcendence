@@ -13,7 +13,7 @@ function Login() {
 			setJwtCookie(token);
 			getMe().then((user) => {
 				if (user?.username == null) {
-					navigate("/signup");
+					navigate("/home/signup");
 				}
 			}).catch((err) => { console.error(err); });
 		}

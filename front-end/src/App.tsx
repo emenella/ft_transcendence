@@ -65,7 +65,7 @@ function App() {
 		return <p>Chargement en cours...</p>;
 
 	if (user && !user.isProfileComplete)
-		navigate("/signup");
+		navigate("/home/signup");
 
 	return (
 		<div>

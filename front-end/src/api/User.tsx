@@ -9,7 +9,7 @@ import { socket } from "./JwtCookie";
 server         | 2023-04-25T19:31:05.491618933Z [Nest] 73  - 04/25/2023, 7:31:05 PM   ERROR [ExceptionsHandler] update or delete on table "chan" violates foreign key constraint "FK_5fdbbcb32afcea663c2bea2954f" on table "message"
 */
 
-export async function getMe(): Promise<any> {
+export async function getMe(): Promise<User> {
 	const res = await axios.get<User>("api/users/me", { headers: authHeader() });
 	console.log(res.data);
 	return res.data;

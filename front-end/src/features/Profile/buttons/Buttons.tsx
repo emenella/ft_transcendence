@@ -16,7 +16,7 @@ export	function Enable2FA() {
     const navigate = useNavigate();
 
     function move() {
-        navigate("/enable2fa");
+        navigate("/home/2fa");
     }
 
     return (

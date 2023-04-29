@@ -1,40 +1,48 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { Toaster, toast } from "react-hot-toast";
 import "./Auth.css";
 import { getJwtCookie } from "../api/JwtCookie";
 import { changeUsername, getMe } from "../api/User";
 import { User } from "../utils/backendInterface";
+import { UserContext } from "../utils/UserContext";
 
 export default function SignUp() {
-	const token = getJwtCookie();
+	const context = useContext(UserContext);
+	const [user, setUser] = useState<User | undefined>(context?.user);
 	const [username, setUsername] = useState("");
-	const navigate = useNavigate();
+	let navigate = useNavigate();
 
 	async function handleClick() {
-		const req = await changeUsername(username).catch((err) => { toast.error(err.message); });
-		if (req?.status === 201)
-			navigate("/home");
-		else
-			setUsername("");
+		const req = await changeUsername(username).catch((err) => { toast.error(err.message); console.log(err); });
+		if (req?.status === 201) {
+			const newUser = await getMe().catch((err) => { toast.error(err.message); });
+			if (newUser) {
+				setUser(newUser);
+				context?.setUser(newUser);
+				navigate("/home");
+			}
+		}
 	}
 	
 	async function handleKeyDown(event: any) {
 		if (event.key === "Enter")
-			handleClick();
+			await handleClick();
 	}
 
 	const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setUsername(e.target.value);
 	}
 
-	async function alreadySignUpOrUnauthorized() {
-		let user : User = await getMe().catch((err) => { navigate("/error") });
-		if (user?.isProfileComplete || !token)
-			navigate("/home");
+	const backToHome = () => {
+		if (user?.isProfileComplete === true)
+			navigate("/home", );
 	}
 
-	alreadySignUpOrUnauthorized();
+	useEffect(() => {
+		console.log('useEffect', user);
+		backToHome();	
+	}, [user]);
 
 	return (
 		<div className="parent">

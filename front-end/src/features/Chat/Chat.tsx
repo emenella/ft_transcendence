@@ -18,6 +18,8 @@ import Spectate from '../Game/Spec';
 import { UserContext } from '../../utils/UserContext';
 import { SocketContext } from '../../utils/SocketContext';
 import { SockEvent } from '../../utils/backendInterface';
+import SignUp  from '../../auth/SignUp';
+import { Enable2FA } from '../../auth/2FA';
 
 let activeChan: string = '';
 let channels : Map<string, msg[]> = new Map<string,msg[]>();
@@ -230,6 +232,8 @@ function Chat() {
             <Route index element={<Matchmaking/>}></Route>
             <Route path="profile/:id" element={<Profile />} />
             <Route path="accountmanagement" element={<AccountManagement />} />
+            <Route path="signup" element={<SignUp />} />
+            <Route path="2fa" element={<Enable2FA/>} />
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
 				</div>

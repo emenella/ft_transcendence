@@ -43,7 +43,7 @@ export function Enable2FA() {
 
 	async function alreadyEnabledOrUnauthorized() {
 		let user : User = await getMe().catch((err) => { navigate("/error") });
-		if (user?.is2FAActivated === true || !token)
+		if (user?.is2FAActivated === true)
 			navigate("/home");
 	}
 
