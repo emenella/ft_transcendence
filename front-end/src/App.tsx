@@ -42,7 +42,8 @@ function App() {
 		const user = await getMe().catch((err) => {
 			navigate("/error");
 		});
-		setUser(user);
+		if (user)
+			setUser(user);
 		setLoading(false);
 	}
 

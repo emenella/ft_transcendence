@@ -19,21 +19,14 @@ function BodyConnected() {
         }
                 
         async function duelRequestReceivedListener(sender: User) {
-
-            function accept(id : number) {
-                socket?.emit("duelRequestAccepted", { senderId: sender.id });
-            }
-            // function deny(id : number) {
-            //     socket?.emit("duelRequestDenied", sender);
-            // }
             
             toast((t) => (
                 <span>
                     <p>{sender.username} t'a invité à jouer !</p>
-                    <button onClick={() => { accept(sender.id); toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit("duelRequestAccepted", { senderId: sender.id }); toast.dismiss(t.id); }}>
                         Accepter <Emoji label="check_mark" symbol="✔️" />
                     </button>
-                    <button onClick={() => { /*deny(sender.id);*/ toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit("duelRequestDenied", sender); toast.dismiss(t.id); }}>
                         Refuser <Emoji label="cross_mark" symbol="❌" />
                     </button>
                 </span>), {

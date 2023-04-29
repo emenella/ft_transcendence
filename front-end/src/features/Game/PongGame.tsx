@@ -31,6 +31,7 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
         
         return () => {
             game.current?.leaveQueue();
+            game.current?.leaveGame();
         };
     }, []);
     
