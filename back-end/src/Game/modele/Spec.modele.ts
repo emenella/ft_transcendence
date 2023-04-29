@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 import { Game } from './Game.modele';
 import { GameInfo, Setup } from '../interface/Game.interface';
+import { SockEvent } from '../../Socket/Socket.gateway';
 
 export class Spectator {
     private id: number;
@@ -14,7 +15,7 @@ export class Spectator {
     }
 
     public sendGameUpdate(gameInfo: GameInfo): void {
-        this.socket.emit('game:info', gameInfo);
+        this.socket.emit(SockEvent.SE_GM_INFO, gameInfo);
     }
 
     public getId(): number {
@@ -22,15 +23,15 @@ export class Spectator {
     }
 
     public emitFinish(winner: number) {
-        this.socket.emit('game:finish', winner);
+        this.socket.emit(SockEvent.SE_GM_FINISH, winner);
     }
 
     public emitGameInfo(info: GameInfo) {
-        this.socket.emit('game:info', info);
+        this.socket.emit(SockEvent.SE_GM_INFO, info);
     }
 
     public emitJoin(gameSetup: Setup) {
-        this.socket.emit('game:join', gameSetup);
+        this.socket.emit(SockEvent.SE_GM_JOIN, gameSetup);
     }
 
     public getSocketId() {

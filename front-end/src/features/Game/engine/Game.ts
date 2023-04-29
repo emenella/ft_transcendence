@@ -2,7 +2,8 @@ import { Socket } from "socket.io-client";
 import { ft_pong } from "./ft_pong";
 import { GameSettings, Setup } from "./interfaces/ft_pong.interface";
 import { User } from "../../../utils/backendInterface";
-
+import { SockEvent } from "../../../utils/backendInterface";
+import { Player } from "./player";
 
 
 export const defaultGameSettings: GameSettings = {
@@ -39,14 +40,14 @@ export class Game {
         this.gameSettings.height = ctx.canvas.height;
         this.gameFind = [];
         this.isSpec = false;
-        this.socketGame.on("game:search", this.handleSearchGame.bind(this));
-        this.socketGame.on("game:join", this.handleJoinGame.bind(this));
-        this.socketGame.on("game:finish", this.handleFinishGame.bind(this));
-        this.socketMatchmaking.on("matchmaking:foundMatch", this.handleQueue.bind(this));
+        this.socketGame.on(SockEvent.SE_GM_SEARCH, this.handleSearchGame.bind(this));
+        this.socketGame.on(SockEvent.SE_GM_JOIN, this.handleJoinGame.bind(this));
+        this.socketGame.on(SockEvent.SE_GM_FINISH, this.handleFinishGame.bind(this));
+        this.socketMatchmaking.on(SockEvent.SE_MM_FOUND, this.handleQueue.bind(this));
     }
 
     public searchGame() {
-        this.socketGame = this.socketGame.emit("game:search");
+        this.socketGame = this.socketGame.emit(SockEvent.SE_GM_SEARCH);
     }
 
     public getSearchGame() {
@@ -54,19 +55,19 @@ export class Game {
     }
 
     public joinGame(gameId: string) {
-        this.socketGame.emit("game:join", gameId);
+        this.socketGame.emit(SockEvent.SE_GM_JOIN, gameId);
     }
 
     public leaveGame() {
         if (this.pong) {
-            this.socketGame.emit("game:leave");
+            this.socketGame.emit(SockEvent.SE_GM_LEAVE);
             this.pong.stop();
         }
     }
 
     public spectateGame(id: string) {
         this.isSpec = true;
-        this.socketGame.emit("game:spec", id);
+        this.socketGame.emit(SockEvent.SE_GM_SEARCH, id);
     }
 
     private handleJoinGame(gameSetup: Setup) {
@@ -86,25 +87,26 @@ export class Game {
     }
 
     public joinQueue() {
-        this.socketMatchmaking.emit("matchmaking:join");
+        this.socketMatchmaking.emit(SockEvent.SE_MM_JOIN);
     }
 
     public leaveQueue() {
-        this.socketMatchmaking.emit("matchmaking:leave");
+        this.socketMatchmaking.emit(SockEvent.SE_MM_LEAVE);
     }
 
     private handleQueue(id: string) {
         this.joinGame(id);
     }
 
-    private handleFinishGame() {
+    private handleFinishGame(winner: number) {
+        this.pong?.screenFinish(winner);
         setTimeout(() => {
             if (this.pong) {
                 this.pong.stop();
                 this.pong = null;
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
             }
-        }, 1000);
+        }, 10000);
     }
 
     public stop() {

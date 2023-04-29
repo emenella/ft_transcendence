@@ -1,5 +1,4 @@
 import { Module, forwardRef } from "@nestjs/common";
-import { MatchmakingGateway } from "./Matchmaking.gateway";
 import { MatchmakingService } from "./Matchmaking.service";
 import { AuthModule } from "../../Auth/Auth.module";
 import { GameModule } from "../Game.module";
@@ -14,7 +13,7 @@ import { SocketModule } from "../../Socket/Socket.module";
         forwardRef(() => SocketModule),
     ],
     controllers: [],
-    providers: [MatchmakingGateway, MatchmakingService],
+    providers: [MatchmakingService],
     exports: [MatchmakingService]
 })
 export class MatchmakingModule {}

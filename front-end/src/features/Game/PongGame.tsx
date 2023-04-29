@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { getJwtCookie, url } from '../../api/JwtCookie';
 import { useContext } from 'react';
 import { UserContext } from '../../utils/UserContext';
-import { socket } from '../../api/JwtCookie';
+import { SocketContext } from '../../utils/SocketContext';
 
 
 const WebGame = url + '/game';
@@ -22,7 +22,7 @@ interface PongGameProps {
 const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const game = useRef<Game>();
-    const socketGame = socket;
+    const socketGame = useContext(SocketContext);
     const user = useContext(UserContext)?.user;
 
     console.log(socketGame)

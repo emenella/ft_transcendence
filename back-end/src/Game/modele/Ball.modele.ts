@@ -68,10 +68,12 @@ export class Ball
         this.veloY = dy;
     }
 
-    public move(player0: Player, player1: Player): void
+    public move(player0: Player, player1: Player, update: () => void)
     {
         if (this.collisionWall() || this.collisionPlayer(player0) || this.collisionPlayer(player1))
-        {}
+        {
+            update();
+        }
         this.posX += this.veloX;
         this.posY += this.veloY;
     }

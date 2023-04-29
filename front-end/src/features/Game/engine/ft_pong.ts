@@ -4,7 +4,7 @@ import { Paddle } from "./Paddle";
 import { Socket } from "socket.io-client";
 import { PlayerClient } from "./playerClient";
 import { PlayerRemote } from "./playerRemote";
-import { User } from "../../../utils/backendInterface";
+import { SockEvent, User } from "../../../utils/backendInterface";
 import { Setup, GameInfo, Bind, GameSettings } from "./interfaces/ft_pong.interface";
 
 export class ft_pong {
@@ -81,11 +81,11 @@ export class ft_pong {
         this.ball = new Ball(this.setup.ball.radius * this.ratioY, this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, this.startSpeed, 0, this.setup.ball.color, this.setup.ball.maxSpeed * this.ratioX);
         this.isLive = false;
         this.isFinish = false;
-        this.socket.on("game:info", this.handleGameUpdate);
-        this.socket.on("game:finish", this.handleGameFinish);
-        this.socket.on("game:live", this.handleLive);
-        this.socket.on("game:unready", this.handlerUnready);
-        this.socket.emit("game:info");
+        this.socket.on(SockEvent.SE_GM_INFO, this.handleGameUpdate);
+        this.socket.on(SockEvent.SE_GM_FINISH, this.handleGameFinish);
+        this.socket.on(SockEvent.SE_GM_LIVE, this.handleLive);
+        this.socket.on(SockEvent.SE_GM_UNREADY, this.handlerUnready);
+        this.socket.emit(SockEvent.SE_GM_INFO);
         this.draw();
         this.startGame();
     }
@@ -110,10 +110,6 @@ export class ft_pong {
         {
             this.ctx.fillText("Waiting for opponent", this.width / 2 - 150, this.height / 2 - 150);
         }
-        if (this.isFinish)
-        {
-            this.screenFinish();
-        }
     }
 
     private loop(): void
@@ -128,6 +124,7 @@ export class ft_pong {
             }
             this.draw();
         }
+        requestAnimationFrame(this.loop.bind(this));
     }
 
     public showScore(): void
@@ -138,13 +135,16 @@ export class ft_pong {
         this.ctx.fillText(this.player1.getName() + " : " + this.player1.getScore(), this.width - 300, 30);
     }
 
-    public screenFinish(): void
+    public screenFinish(winner: number): void
     {
+        const player = winner === this.player0.id ? this.player0 : this.player1;
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.fillStyle = "white";
         this.ctx.font = "30px Arial";
         this.ctx.fillText("Game over", this.width / 2 - 150, this.height / 2 - 150);
+        this.ctx.fillText(player.getName() + " win", this.width / 2 - 150, this.height / 2 - 100);
+        this.ctx.fillText("Score : " + player.getScore() + (this.player0.id != player.id ? this.player0.getScore() : this.player1.getScore()), this.width / 2 - 150, this.height / 2 - 50);
         this.showScore();
         this.stop();
     }
@@ -180,10 +180,10 @@ export class ft_pong {
 
     public stop = (): void =>
     {
-        this.socket.off("game:info", this.handleGameUpdate);
-        this.socket.off("game:finish", this.handleGameFinish);
-        this.socket.off("game:live", this.handleLive);
-        this.socket.off("game:unready", this.handlerUnready);
+        this.socket.off(SockEvent.SE_GM_INFO, this.handleGameUpdate);
+        this.socket.off(SockEvent.SE_GM_FINISH, this.handleGameFinish);
+        this.socket.off(SockEvent.SE_GM_LIVE, this.handleLive);
+        this.socket.off(SockEvent.SE_GM_UNREADY, this.handlerUnready);
         this.isFinish = true;
     }
 

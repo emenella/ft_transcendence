@@ -26,7 +26,7 @@ function Chat() {
   const userContext = useContext(UserContext);
 	const user = userContext?.user;
 
-  const socketChat = socket;
+  const socketChat = useContext(SocketContext);
   const [publicChanList, setPublicChan] = useState<string[]>([]);
   const [msgs, setMsgs] = useState<msg[]>([]);
 

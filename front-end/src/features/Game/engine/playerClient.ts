@@ -2,6 +2,7 @@ import { Player } from "./player";
 import { Paddle } from "./Paddle";
 import { Socket } from "socket.io-client";
 import { Bind } from "./interfaces/ft_pong.interface";
+import { SockEvent } from "../../../utils/backendInterface";
 
 export interface gameInfo {
     player0: {
@@ -46,19 +47,19 @@ export class PlayerClient extends Player
             switch (event.key) {
                 case this.bind.up:
                     this.paddle.keyDownUp();
-                    this.socket.emit("game:event", "+UP");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "+UP");
                     break;
                 case this.bind.down:
                     this.paddle.keyDownDown();
-                    this.socket.emit("game:event", "+DOWN");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "+DOWN");
                     break;
                 case this.bind.left:
                     this.paddle.keyDownLeft();
-                    this.socket.emit("game:event", "+LEFT");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "+LEFT");
                     break;
                 case this.bind.right:
                     this.paddle.keyDownRight();
-                    this.socket.emit("game:event", "+RIGHT");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "+RIGHT");
                     break;
                 case this.bind.ready:
                     this.ready();
@@ -75,19 +76,19 @@ export class PlayerClient extends Player
             switch (event.key) {
                 case this.bind.up:
                     this.paddle.keyUpY();
-                    this.socket.emit("game:event", "-UP");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "-UP");
                     break;
                 case this.bind.down:
                     this.paddle.keyUpY();
-                    this.socket.emit("game:event", "-DOWN");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "-DOWN");
                     break;
                 case this.bind.left:
                     this.paddle.keyUpX();
-                    this.socket.emit("game:event", "-LEFT");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "-LEFT");
                     break;
                 case this.bind.right:
                     this.paddle.keyUpX();
-                    this.socket.emit("game:event", "-RIGHT");
+                    this.socket.emit(SockEvent.SE_GM_EVENT, "-RIGHT");
                     break;
                 default:	
                     break;
@@ -103,6 +104,6 @@ export class PlayerClient extends Player
     public ready(): void
     {
         this.isReady = true;
-        this.socket.emit("game:ready");
+        this.socket.emit(SockEvent.SE_GM_READY);
     }
 }

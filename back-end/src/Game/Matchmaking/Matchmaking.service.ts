@@ -7,8 +7,8 @@ import { Setup, general, ball, player } from "../interface/Game.interface";
 import { updateElo, checkMatch, Result } from "./utils/elo.utils";
 import { Match } from "../../User/entity/Match.entity";
 import { MatchService } from "../../User/service/Match.service";
-import { Socket } from "socket.io";
 import { SocketService } from "../../Socket/Socket.service";
+import { SockEvent } from "../../Socket/Socket.gateway";
 
 
 @Injectable()
@@ -152,8 +152,8 @@ export class MatchmakingService {
             let socket0 = this.socketService.getSocketByUserId(bestMatch.user0.id);
             let socket1 = this.socketService.getSocketByUserId(bestMatch.user1.id);
             if (socket0 && socket1) {
-                socket0.emit("matchmaking:foundMatch", game.getSetup().general.id);
-                socket1.emit("matchmaking:foundMatch", game.getSetup().general.id);
+                socket0.emit(SockEvent.SE_MM_FOUND, game.getSetup().general.id);
+                socket1.emit(SockEvent.SE_MM_FOUND, game.getSetup().general.id);
             }
             await this.leaveQueue(bestMatch.user0);
             await this.leaveQueue(bestMatch.user1);

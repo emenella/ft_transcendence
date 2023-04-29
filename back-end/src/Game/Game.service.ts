@@ -62,6 +62,7 @@ export class GameService {
         if (game && !this.users.has(userId)) {
             this.users.set(userId, game);
             const ret = game.playerConnect(userId, socket);
+            console.log("Join Game", ret);
             if (ret)
             {
                 const player0: User = await this.userService.getUserById(userId);

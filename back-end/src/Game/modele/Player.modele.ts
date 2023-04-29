@@ -1,6 +1,7 @@
 import { Paddle } from "./Paddle.modele";
 import { Socket } from "socket.io";
-import { GameInfo, Setup } from "../interface/Game.interface";
+import { GameInfo, Setup, player } from "../interface/Game.interface";
+import { SockEvent } from "../../Socket/Socket.gateway";
 
 export enum Direction {
     UP = "UP",
@@ -99,32 +100,32 @@ export class Player {
 
     private emitLive() {
         if (this.isConnected)
-            this.socket.emit("game:live");
+            this.socket.emit(SockEvent.SE_GM_LIVE);
     }
 
     private emitJoin(gameSetup: Setup) {
         if (this.isConnected)
-            this.socket.emit("game:join", gameSetup);
+            this.socket.emit(SockEvent.SE_GM_JOIN, gameSetup);
     }
 
     private emitUnready() {
         if (this.isConnected)
-            this.socket.emit("game:unready", this.id);
+            this.socket.emit(SockEvent.SE_GM_UNREADY, this.id);
     }
 
     private emitPlayerUnReady(id: number) {
         if (this.isConnected)
-            this.socket.emit("game:unready", id);
+            this.socket.emit(SockEvent.SE_GM_UNREADY, id);
     }
 
     public emitGameInfo(info: GameInfo) {
         if (this.isConnected)
-            this.socket.emit("game:info", info);
+            this.socket.emit(SockEvent.SE_GM_INFO, info);
     }
 
     private emitFinish(winner: number) {
         if (this.isConnected)
-            this.socket.emit("game:finish", winner);
+            this.socket.emit(SockEvent.SE_GM_FINISH, winner);
     }
 
     public move() {
