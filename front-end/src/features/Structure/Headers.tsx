@@ -30,13 +30,18 @@ export function HeaderNotConnected({ url, funcLogin } : { url: string, funcLogin
 		setId(parseInt(e.target.value));
 	}
 
+	async function handleKeyDown(event: any) {
+		if (event.key === "Enter")
+			await funcLogin(id);
+	}
+
 	return (
 		<div>
 			<a href={url}>
 				<button>Connexion</button>
 			</a>
 			<button onClick={() => funcLogin(id)}>Connexion sans 42</button>
-			<input type="text" placeholder="id" onChange={onChangeId} />
+			<input type="text" placeholder="id" onChange={onChangeId} onKeyDown={handleKeyDown}/>
 		</div>
 	);
 }

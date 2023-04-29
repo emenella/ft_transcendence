@@ -11,7 +11,7 @@ export default function SignUp() {
 	const context = useContext(UserContext);
 	const [user, setUser] = useState<User | undefined>(context?.user);
 	const [username, setUsername] = useState("");
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 
 	async function handleClick() {
 		const req = await changeUsername(username).catch((err) => { toast.error(err.message); console.log(err); });
@@ -24,7 +24,7 @@ export default function SignUp() {
 			}
 		}
 	}
-	
+
 	async function handleKeyDown(event: any) {
 		if (event.key === "Enter")
 			await handleClick();

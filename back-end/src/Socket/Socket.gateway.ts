@@ -24,6 +24,8 @@ export enum SockEvent
 	SE_GM_FINISH = 'gm:finish',
 	SE_GM_LIVE = 'gm:live',
 	SE_GM_SPEC = 'gm:spec',
+	SE_GM_DUEL_SEND = 'gm:duelSend',
+	SE_GM_DUEL_RECV = 'gm:duelRecv',
 	SE_CH_MSG = 'ch:msg',
 	SE_CH_JOIN = 'ch:join',
 	SE_CH_LEAVE = 'ch:leave',
@@ -106,7 +108,7 @@ export class SocketGateway {
 		const sender: User | null = await this.authentificate(client);
 		const receiverSocket : Socket = this.socketService.getSocketByUserId(data.receiverId);
 		if (sender && receiverSocket !== undefined) {
-			receiverSocket.emit("duelRequestReceived", sender);
+			receiverSocket.emit(SockEvent.SE_GM_DUEL_SEND, sender);
 		}
 	}
 	
@@ -120,8 +122,8 @@ export class SocketGateway {
 			&& !this.gameService.findGamesIdWithPlayer(sender.id).length)
 			{
 				await this.matchmakingService.createGame(sender, receiver);
-				client.emit("duelLaunched");
-				senderSocket.emit("duelLaunched");
+				client.emit(SockEvent.SE_GM_DUEL_SEND);
+				senderSocket.emit(SockEvent.SE_GM_DUEL_SEND);
 				
 			}
 		}
