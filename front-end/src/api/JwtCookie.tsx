@@ -16,6 +16,11 @@ export const ws = `ws://${host}:8100`;
 
 export const socket = io(ws, { extraHeaders: { Authorization: getJwtCookie() as string }});
 
+export const changeTokenSocket = (token: string) => {
+	socket.io.opts.extraHeaders = { Authorization: token };
+	socket.connect();
+}
+
 export const client = axios.create({
 	baseURL: `${protocol}://${host}:${port}`,
 });
@@ -40,6 +45,7 @@ export function setJwtCookie(token: string) {
 	const cookie = new Cookies();
 	cookie.set("jwtToken", token, { path: "/", maxAge: 3600 });
 	client.defaults.headers.common["Authorization"] = "Bearer " + token;
+	changeTokenSocket(token);
 }
 
 export function getJwtCookie() {
