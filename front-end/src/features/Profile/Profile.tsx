@@ -56,19 +56,21 @@ function Profile() {
     const me = userContext?.user;
 
 	let id = parseInt(useParams().id!);
+
 	
 	//~~ States
 	const [user, setUser] = useState<User>();
 	const [matchs, setMatchs] = useState<Match[]>([]);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
-
+	
+	if (isNaN(id)) {
+		navigate("/error");
+	}
 	//~~ Functions
 	React.useEffect(() => {
 		async function getUser() {
-			const user = await getUserById(id).catch((err) => {
-				navigate("/error");
-			});
+			const user = await getUserById(id).catch(() => { navigate("/error"); });
 			setUser(user!);
 			setLoading(false);
 		}
@@ -78,7 +80,7 @@ function Profile() {
 	React.useEffect(() => {
 		async function getUserMatchs() {
 			if (user) {
-				const match = await getMatchs(user.id);
+				const match = await getMatchs(user.id).catch(() => { navigate("/error"); })
 				setMatchs(match);
 			}
 		};

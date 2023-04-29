@@ -6,10 +6,10 @@ import { HeaderConnected, HeaderNotConnected } from "./features/Structure/Header
 import BodyNotConnected from "./features/Structure/Body_not_connected";
 import BodyConnected from "./features/Structure/Body_connected";
 import Footer from "./features/Structure/Footer";
-import { getJwtCookie, removeJwtCookie, setJwtCookie } from "./api/JwtCookie";
+import { getJwtCookie, removeJwtCookie, setJwtCookie, socket } from "./api/JwtCookie";
 import { getMe } from "./api/User";
 import { get42URL, loginWith42 } from "./api/Auth";
-import { User } from "./utils/backendInterface";
+import { SockEvent, User } from "./utils/backendInterface";
 import { UserContext } from "./utils/UserContext";
 import logo from "./assets/black_logo.png";
 
@@ -39,8 +39,9 @@ function App() {
 	};
 
 	async function fetchUser() {
-		setLoading(true);
-		const user = await getMe();
+		const user = await getMe().catch((err) => {
+			navigate("/error");
+		});
 		setUser(user);
 		setLoading(false);
 	}
@@ -48,6 +49,16 @@ function App() {
 	React.useEffect(() => {
 		hasToken ? fetchUser() : setLoading(false);
 	}, [hasToken]);
+
+	React.useEffect(() => {
+		socket?.on(SockEvent.SE_FRONT_UPDATE, () => {
+			fetchUser().catch((err) => console.error(err));
+		});
+
+		return () => {
+			socket?.off(SockEvent.SE_FRONT_UPDATE);
+		}
+	}, []);
 
 	//~~ Body
 	if (loading)

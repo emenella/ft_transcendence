@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom"
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import "./Auth.css";
 import { getJwtCookie } from "../api/JwtCookie";
 import { changeUsername, getMe } from "../api/User";
@@ -12,7 +12,7 @@ export default function SignUp() {
 	const navigate = useNavigate();
 
 	async function handleClick() {
-		const req = await changeUsername(username);
+		const req = await changeUsername(username).catch((err) => { toast.error(err.message); });
 		if (req?.status === 201)
 			navigate("/home");
 		else
@@ -29,7 +29,7 @@ export default function SignUp() {
 	}
 
 	async function alreadySignUpOrUnauthorized() {
-		let user : User = await getMe();
+		let user : User = await getMe().catch((err) => { navigate("/error") });
 		if (user?.isProfileComplete || !token)
 			navigate("/home");
 	}

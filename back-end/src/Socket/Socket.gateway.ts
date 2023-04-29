@@ -59,9 +59,9 @@ export class SocketGateway {
 		if (user) {
 			this.socketService.addUser(client, user.id)
 			if (this.gameService.isPlayer(client))
-			await this.userService.changeStatus(user, UserStatus.InGame);
+				await this.userService.changeStatus(user, UserStatus.InGame);
 			else
-			await this.userService.changeStatus(user, UserStatus.Connected);
+				await this.userService.changeStatus(user, UserStatus.Connected);
 			this.logger.log(`Client connected: ${user.username}`);
 		}
 		else {

@@ -10,77 +10,42 @@ server         | 2023-04-25T19:31:05.491618933Z [Nest] 73  - 04/25/2023, 7:31:05
 */
 
 export async function getMe(): Promise<any> {
-	try {
-		const res = await axios.get<User>("api/users/me", { headers: authHeader() });
-		console.log(res.data);
-		return res.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
+	const res = await axios.get<User>("api/users/me", { headers: authHeader() });
+	console.log(res.data);
+	return res.data;
 }
 
 export async function changeUsername(username: string) {
-	try {
-		const req = await axios.post("api/users/me", { username: username }, { headers: authHeader() });
-		toast.success("Pseudo enregistré.");
-		return req;
-	}
-	catch (e) {
-		toastError(e as AxiosError);
-	}
+	const req = await axios.post("api/users/me", { username: username }, { headers: authHeader() });
+	toast.success("Pseudo enregistré.");
+	return req;
 }
 
 export async function uploadAvatar(formData: FormData) {
-	try {
-		const req = await axios.post("api/users/avatar/upload", formData, { headers: authHeader("multipart/form-data") });
-		toast.success("Image enregistrée.");
-		return req;
-	}
-	catch (e) {
-		toastError(e as AxiosError);
-	}
+	const req = await axios.post("api/users/avatar/upload", formData, { headers: authHeader("multipart/form-data") });
+	toast.success("Image enregistrée.");
+	return req;
 }
 
 export async function delete2FA() {
-	try {
-		const req = await axios.delete("api/auth/2fa/delete", { headers: authHeader() });
-		toast.success("2FA désactivé.");
-		return req;
-	}
-	catch (e) {
-		toastError(e as AxiosError);
-	}
+	const req = await axios.delete("api/auth/2fa/delete", { headers: authHeader() });
+	toast.success("2FA désactivé.");
+	return req;
 }
 
 export async function getUserById(id: number) {
-	try {
-		const res = await axios.get<User>("api/users/id/?id=" + id, { headers: authHeader() });
-		return res.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
+	const res = await axios.get<User>("api/users/id/?id=" + id, { headers: authHeader() });
+	return res.data;
 }
 
 export async function getUserByUsername(username: string) {
-	try {
-		const res = await axios.get("api/users/username/?username=" + username, { headers: authHeader() });
-		return res.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
+	const res = await axios.get("api/users/username/?username=" + username, { headers: authHeader() });
+	return res.data;
 }
 
 export async function getMatchs(id: number) {
-	try {
-		const res = await axios.get("api/users/match_history/?id=" + id, { headers: authHeader() });
-		return res.data;
-	}
-	catch (e) {
-		console.log(e);
-	}
+	const res = await axios.get("api/users/match_history/?id=" + id, { headers: authHeader() });
+	return res.data;
 }
 
 // export async function inviteFriend(username : string) {

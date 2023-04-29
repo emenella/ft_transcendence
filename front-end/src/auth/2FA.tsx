@@ -42,7 +42,7 @@ export function Enable2FA() {
 	};
 
 	async function alreadyEnabledOrUnauthorized() {
-		let user : User = await getMe();
+		let user : User = await getMe().catch((err) => { navigate("/error") });
 		if (user?.is2FAActivated === true || !token)
 			navigate("/home");
 	}
@@ -91,7 +91,7 @@ export function Login2FA() {
 	};
 
 	async function notEnabledOrLoggedIn() {
-		let user : User = await getMe();
+		let user : User = await getMe().catch((err) => { navigate("/error") });
 		if (user?.is2FAActivated === false || !token)
 			navigate("/home");
 	}

@@ -6,6 +6,7 @@ import { Enable2FA, Disable2FA } from "./buttons/Buttons";
 import { uploadAvatar, delete2FA, changeColorPaddle } from "../../api/User";
 import { useContext } from "react";
 import { UserContext } from "../../utils/UserContext";
+import { toast } from "react-hot-toast";
 
 function AccountManagement() {
     const userContext = useContext(UserContext);
@@ -20,13 +21,13 @@ function AccountManagement() {
         if (image) {
             const formData = new FormData();
             formData.append("file", image);
-            await uploadAvatar(formData);
+            await uploadAvatar(formData).catch((err) => { toast.error(err.message) });
 			setImage(undefined);
         }
     };
 
     const handle2FADelete = async () => {
-        await delete2FA();
+        await delete2FA().catch((err) => { toast.error(err.message) });
         setActivated2FA(false);
     };
 

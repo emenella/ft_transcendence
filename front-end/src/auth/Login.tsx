@@ -15,7 +15,7 @@ function Login() {
 				if (user?.username == null) {
 					navigate("/signup");
 				}
-			});
+			}).catch((err) => { console.error(err); });
 		}
 		navigate("/home");
 	}, [token, navigate]);

@@ -7,7 +7,6 @@ import UsernameLink from "../../components/UsernameLink";
 import { AcceptAndDenyFriendButtons } from "./buttons/Buttons";
 import { UserContext } from "../../utils/UserContext";
 import { SocketContext } from "../../utils/SocketContext";
-import { getMe } from "../../api/User";
 
 function renderSwitch(num: number) {
 	switch (num) {
@@ -22,7 +21,7 @@ function renderSwitch(num: number) {
 
 function UserSidebar() {
 	const userContext = useContext(UserContext);
-	const [user, setUser] = React.useState<User>(userContext?.user as User);
+	const user = userContext?.user;
 	const socket = useContext(SocketContext);
 	const [listFriends, setListFriends] = React.useState<JSX.Element[]>();
 	const [listFriendsInvite, setListFriendsInvite] = React.useState<JSX.Element[]>();
@@ -53,21 +52,18 @@ function UserSidebar() {
 		)});
 	}
 	useEffect(() => {
-		async function fetch() {
-			setUser(await getMe());
-		}
-		const handleUpdate = async (data: any) => {
-			await fetch();
-		}
-
-		fetch().then(() => {
+		// async function fetch() {
+		// 	setUser(await getMe());
+		// }
+		
+		// fetch().then(() => {
+		// setListFriends(getListFriend());
+		// setListFriendsInvite(getListFriendInvite());
+		// });
 		setListFriends(getListFriend());
 		setListFriendsInvite(getListFriendInvite());
-		});
 		socket?.on(SockEvent.SE_FRONT_NOTIFY, notification);
-		socket?.on(SockEvent.SE_FRONT_UPDATE, handleUpdate);
 		return () => {
-			socket?.off(SockEvent.SE_FRONT_UPDATE, handleUpdate);
 			socket?.off(SockEvent.SE_FRONT_NOTIFY, notification);
 		}
 	}, []);
