@@ -1,15 +1,16 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import { Socket } from "socket.io"
 import { User } from "../User/entity/User.entity";
+import { UserService } from "../User/service/User.service";
 
 @Injectable()
 export class SocketService {
 
-	private	users: Map<Socket, User> = new Map();
+	private	users: Map<Socket, number> = new Map();
 
-	constructor() {}
+	constructor(@Inject(forwardRef(() => UserService))readonly userService: UserService) {}
 
-	addUser(socket: Socket, user: User): void {
+	addUser(socket: Socket, user: number): void {
 		this.users.set(socket, user);
 	}
 
@@ -17,18 +18,28 @@ export class SocketService {
 		this.users.delete(socket)
 	}
 
-	getUserById(id: number): User | undefined {
-		return [...this.users.values()].find(e => e.id == id)
+	async getUserById(id: number): Promise<User | undefined> {
+		const ret = [...this.users.values()].find(e => e == id);
+		if (ret)
+		{
+			return await this.userService.getUserById(ret);
+		}
+		return undefined;
 	}
 
-	getUserBySocketId(id: string): User | undefined {
-		return this.users.get([...this.users.keys()].find(e => e.id == id));
+	async getUserBySocketId(id: string): Promise<User | undefined> {
+		const ret = this.users.get([...this.users.keys()].find(e => e.id == id));
+		if (ret)
+		{
+			return await this.userService.getUserById(ret);
+		}
+		return undefined;
 	}
 
 	getSocketByUserId(id: number): Socket | undefined {
 		let found = undefined;
 		for (let [key, value] of this.users.entries()) {
-			if (value.id == id) {
+			if (value == id) {
 				found = key;
 				break ;
 			}

@@ -57,7 +57,7 @@ export class SocketGateway {
 	async handleConnection(@ConnectedSocket() client: Socket) {
 		const user = await this.authentificate(client);
 		if (user) {
-			this.socketService.addUser(client, user)
+			this.socketService.addUser(client, user.id)
 			if (this.gameService.isPlayer(client))
 			await this.userService.changeStatus(user, UserStatus.InGame);
 			else
@@ -131,14 +131,14 @@ export class SocketGateway {
 	async updateColor(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const blacklist = ['black', 'gray'];
 		if (blacklist.includes(data.color) == false) {
-			const user: User = this.socketService.getUserBySocketId(client.id);
+			const user: User = await this.socketService.getUserBySocketId(client.id);
 			await this.userService.changeColor(user, data.color);
 		}
 	}
 	
 	@SubscribeMessage(SockEvent.SE_FR_INVITE)
 	async inviteFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.inviteFriend(sender, receiver);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
@@ -147,7 +147,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_FR_ACCEPT)
 	async acceptFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.acceptFriend(sender, receiver);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
@@ -155,7 +155,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_FR_DENY)
 	async denyFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.denyFriend(receiver, sender);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
@@ -163,7 +163,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_FR_REMOVE)
 	async removeFriend(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.removeFriend(sender, receiver);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
@@ -171,7 +171,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_BL_ADD)
 	async addBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.addBlacklist(sender, receiver);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});
@@ -179,7 +179,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_BL_REMOVE)
 	async removeBlacklist(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<void> {
-		const sender: User = this.socketService.getUserBySocketId(client.id);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiver: User = await this.userService.getUserByUsername(data.username);
 		const {ok, msg} = await this.userService.removeBlacklist(sender, receiver);
 		client.emit(SockEvent.SE_FRONT_NOTIFY, {ok: ok, msg: msg});

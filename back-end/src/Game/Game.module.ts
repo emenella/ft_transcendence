@@ -9,7 +9,6 @@ import { SocketModule } from "../Socket/Socket.module";
     imports: [
         forwardRef(() => UserModule),
         forwardRef(() => AuthModule),
-        forwardRef(() => SocketModule)
     ],
     controllers: [GameController],
     providers: [GameService],

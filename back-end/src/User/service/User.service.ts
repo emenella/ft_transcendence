@@ -137,7 +137,7 @@ export class UserService {
 		else if (sender.blacklist.some((f) => { return f.id === receiver.id }))
 			return {ok: false, msg: `You blocked ${receiver.username}.`};
 		else if (sender.friendRequests.some((f) => { return f.id === receiver.id })) {
-			this.acceptFriend(sender, receiver);
+			await this.acceptFriend(sender, receiver);
 			return {ok: true, msg: "Invitation accepted."};
 		} else {
 			receiver.friendRequests.push(sender);
