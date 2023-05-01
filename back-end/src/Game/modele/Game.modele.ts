@@ -33,12 +33,10 @@ export class Game {
         {
             if (this.isLive)	
             {
-                this.ball.move(this.player0, this.player1, () => {/*this.sendGameInfo();this.sendGameInfoToSpectators();*/});
+                this.ball.move(this.player0, this.player1, () => {this.sendGameInfo();this.sendGameInfoToSpectators();});
                 this.player0.move();
                 this.player1.move();
                 this.checkGoal();
-                this.sendGameInfo();
-                this.sendGameInfoToSpectators();
             }
             setTimeout(() => this.loop(), 1000/60);
         }
@@ -194,6 +192,8 @@ export class Game {
             {
                 player.unpress(direction);
             }
+            this.sendGameInfo();
+            this.sendGameInfoToSpectators();
         }
     }
     

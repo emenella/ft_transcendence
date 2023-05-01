@@ -123,6 +123,7 @@ export class ft_pong {
                 this.player1.paddle.move(this.ctx);
             }
             this.draw();
+            console.log(this.ball.getPosX(), this.ball.getPosY(), this.ball.getDx, this.ball.getDy());
         }
         requestAnimationFrame(this.loop.bind(this));
     }

@@ -40,6 +40,7 @@ export class Ball
         {
             if (this.posY + this.radius > player.paddle.getPosY() - player.paddle.getLength() && this.posY - this.radius < player.paddle.getPosY() + player.paddle.getLength())
             {
+                console.log("collision");
                 this.veloY = -((player.paddle.getPosY() - this.posY) / player.paddle.getLength() * 10);
                 this.veloX = -this.veloX;
                 this.accelerate();
@@ -49,7 +50,7 @@ export class Ball
         return false;
     }
     
-    private collisionWall(ctx :CanvasRenderingContext2D): boolean
+    private collisionWall(ctx : CanvasRenderingContext2D): boolean
     {
         if (this.posY + this.radius >= ctx.canvas.height || this.posY - this.radius <= 0)
         {
@@ -92,6 +93,16 @@ export class Ball
     public getPosY(): number
     {
         return this.posY;
+    }
+
+    public getDx(): number
+    {
+        return this.veloX;
+    }
+
+    public getDy(): number
+    {
+        return this.veloY;
     }
 
     public getRadius(): number
