@@ -1,9 +1,9 @@
 FROM node:20
 
-ARG    REACT_APP_API_PROTOCOL
-ARG    REACT_APP_API_HOST
-ARG    REACT_APP_API_PORT
-ARG    REACT_APP_API_LOGIN_URL
+ARG    VITE_API_PROTOCOL
+ARG    VITE_API_HOST
+ARG    VITE_API_PORT
+ARG    VITE_API_LOGIN_URL
 
 WORKDIR /usr/front-end
 
@@ -11,13 +11,15 @@ COPY package* .
 
 RUN [ "apt-get", "update" ]
 RUN [ "apt-get", "-y", "upgrade"]
-RUN [ "apt-get", "install", "xsel" ]
+RUN [ "apt-get", "-y", "install", "xdg-utils" ]
 RUN [ "npm", "ci"]
-RUN [ "npm", "install", "-g", "serve"]
 
 COPY . .
 
 RUN [ "npm", "run", "build" ]
 
 ENTRYPOINT [ "npm", "run", "start" ]
+# ENTRYPOINT [ "sh", ]
+# //ENTRYPOINT infinity while true; do sleep 1000; done
+# ENTRYPOINT [ "sh", 
 # ENTRYPOINT [ "serve", "-s", "build" ]

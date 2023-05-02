@@ -2,11 +2,11 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import { Socket, io } from "socket.io-client"
 
-const protocol = process.env.REACT_APP_API_PROTOCOL
-const host = process.env.REACT_APP_API_HOST
-const port = process.env.REACT_APP_API_PORT
+const protocol = import.meta.env.VITE_API_PROTOCOL
+const host = import.meta.env.VITE_API_HOST
+const port = import.meta.env.VITE_API_PORT
 
-export const loginUrl = process.env.REACT_APP_API_LOGIN_URL;
+export const loginUrl = import.meta.env.VITE_API_LOGIN_URL;
 
 console.log(loginUrl)
 ;
