@@ -227,16 +227,6 @@ function Chat() {
       </div>
 
       <div className="connectedCenter">
-        <div>
-          <Routes>
-            <Route index element={<Matchmaking/>}></Route>
-            <Route path="profile/:id" element={<Profile />} />
-            <Route path="accountmanagement" element={<AccountManagement />} />
-            <Route path="signup" element={<SignUp />} />
-            <Route path="2fa" element={<Enable2FA/>} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
-				</div>
         <div className='chat'>
           <div className='chanTitle'>{activeChan}</div>
           <div className='messagesList'>

@@ -7,7 +7,12 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "../../components/Emoji";
 import { toast } from "react-hot-toast";
 import { SockEvent, User } from "../../utils/backendInterface";
-
+import { Route, Routes, Navigate } from "react-router-dom";
+import Matchmaking from "../Game/Matchmaking";
+import Profile from "../Profile/Profile";
+import AccountManagement from "../Profile/AccountManagement";
+import SignUp from "../../auth/SignUp";
+import { Enable2FA } from "../../auth/2FA";
 
 function BodyConnected() {
 	const navigate = useNavigate();
@@ -46,6 +51,16 @@ function BodyConnected() {
 		<div className="connected">
 			<SocketContext.Provider value={socket}>
 			<Chat />
+            <div>
+                <Routes>
+                    <Route index element={<Matchmaking/>}></Route>
+                    <Route path="profile/:id" element={<Profile />} />
+                    <Route path="accountmanagement" element={<AccountManagement />} />
+                    <Route path="signup" element={<SignUp />} />
+                    <Route path="2fa" element={<Enable2FA/>} />
+                    <Route path="*" element={<Navigate to="/home" replace />} />
+                </Routes>
+			</div>
 			<UserSidebar />
 			</SocketContext.Provider>
 		</div>
