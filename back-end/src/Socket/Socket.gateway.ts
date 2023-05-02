@@ -12,8 +12,8 @@ import { MatchmakingService } from "../Game/Matchmaking/Matchmaking.service";
 export enum SockEvent
 {
 	SE_MM_LEAVE = 'mm:leave',
-	SE_MM_JOIN = 'mm:join',
-	SE_MM_FOUND = 'mm:foundMatch',
+    SE_MM_JOIN = 'mm:join',
+    SE_MM_FOUND = 'mm:foundMatch',
 	SE_GM_EVENT = 'gm:event',
 	SE_GM_JOIN = 'gm:join',
 	SE_GM_SEARCH = 'gm:search',
@@ -24,8 +24,11 @@ export enum SockEvent
 	SE_GM_FINISH = 'gm:finish',
 	SE_GM_LIVE = 'gm:live',
 	SE_GM_SPEC = 'gm:spec',
+	SE_GM_DUEL_ACCEPT = 'gm:accept',
+	SE_GM_DUEL_DENY = 'gm:deny',
 	SE_GM_DUEL_SEND = 'gm:duelSend',
-	SE_GM_DUEL_RECV = 'gm:duelRecv',
+	SE_GM_DUEL_RECEIVE = 'gm:duelReceive',
+	SE_GM_DUEL_LAUNCH = 'gm:duelLaunch',
 	SE_CH_MSG = 'ch:msg',
 	SE_CH_JOIN = 'ch:join',
 	SE_CH_LEAVE = 'ch:leave',
@@ -103,16 +106,16 @@ export class SocketGateway {
 		return (user ? user : null);
 	}
 	
-	@SubscribeMessage("duelRequestSent")
+	@SubscribeMessage(SockEvent.SE_GM_DUEL_SEND)
 	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiverSocket : Socket = this.socketService.getSocketByUserId(data.receiverId);
 		if (sender && receiverSocket !== undefined) {
-			receiverSocket.emit(SockEvent.SE_GM_DUEL_SEND, sender);
+			receiverSocket.emit(SockEvent.SE_GM_DUEL_RECEIVE, sender);
 		}
 	}
 	
-	@SubscribeMessage("duelRequestAccepted")
+	@SubscribeMessage(SockEvent.SE_GM_DUEL_ACCEPT)
 	async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
 		const receiver: User | null = await this.socketService.getUserBySocketId(client.id);
 		const sender = await this.userService.getUserById(data.senderId);
@@ -122,8 +125,8 @@ export class SocketGateway {
 			&& !this.gameService.findGamesIdWithPlayer(sender.id).length)
 			{
 				await this.matchmakingService.createGame(sender, receiver);
-				client.emit(SockEvent.SE_GM_DUEL_SEND);
-				senderSocket.emit(SockEvent.SE_GM_DUEL_SEND);
+				client.emit(SockEvent.SE_GM_DUEL_LAUNCH);
+				senderSocket.emit(SockEvent.SE_GM_DUEL_LAUNCH);
 				
 			}
 		}

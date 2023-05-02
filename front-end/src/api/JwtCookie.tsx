@@ -14,11 +14,10 @@ export const url = `${protocol}://${host}:${port}`;
 
 export const ws = `ws://${host}:8100`;
 
-export const socket = io(ws, { extraHeaders: { Authorization: getJwtCookie() as string }});
+export const socket = io(ws, { extraHeaders: { authorization: getJwtCookie() }, autoConnect: false });
 
 export const changeTokenSocket = (token: string) => {
 	socket.io.opts.extraHeaders = { Authorization: token };
-	socket.connect();
 }
 
 export const client = axios.create({
@@ -48,9 +47,13 @@ export function setJwtCookie(token: string) {
 	changeTokenSocket(token);
 }
 
-export function getJwtCookie() {
+export function getJwtCookie(): string {
 	const cookie = new Cookies();
-	return cookie.get("jwtToken");
+	let ret = cookie.get("jwtToken");
+	if (ret === undefined) {
+		return "";
+	}
+	return ret;
 }
 
 export function removeJwtCookie() {

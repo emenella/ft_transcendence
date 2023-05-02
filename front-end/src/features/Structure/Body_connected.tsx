@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "../../components/Emoji";
 import { toast } from "react-hot-toast";
 import { SockEvent, User } from "../../utils/backendInterface";
-import { socket } from "../../api/JwtCookie";
 
 
 function BodyConnected() {
 	const navigate = useNavigate();
+    const socket = React.useContext(SocketContext);
     
     useEffect(() => {
         function duelLaunched() {
@@ -22,24 +22,25 @@ function BodyConnected() {
             toast((t) => (
                 <span>
                     <p>{sender.username} t'a invité à jouer !</p>
-                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_ACCEPT, { senderId: sender.id }); toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_DUEL_ACCEPT, { senderId: sender.id }); toast.dismiss(t.id); }}>
                         Accepter <Emoji label="check_mark" symbol="✔️" />
                     </button>
-                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_DENY, sender); toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_DUEL_DENY, sender); toast.dismiss(t.id); }}>
                         Refuser <Emoji label="cross_mark" symbol="❌" />
                     </button>
                 </span>), {
                 duration: 30000,
             });
         }
-        
-        socket?.on(SockEvent.SE_GM_DUEL_SEND, duelLaunched);
-        socket?.on(SockEvent.SE_GM_DUEL_RECV, duelRequestReceivedListener);
+        socket?.connect();
+        socket?.on(SockEvent.SE_GM_DUEL_LAUNCH, duelLaunched);
+        socket?.on(SockEvent.SE_GM_DUEL_RECEIVE, duelRequestReceivedListener);
         return () => {
-            socket?.off(SockEvent.SE_GM_DUEL_SEND, duelLaunched);
-            socket?.off(SockEvent.SE_GM_DUEL_SEND, duelRequestReceivedListener);
+            socket?.off(SockEvent.SE_GM_DUEL_LAUNCH, duelLaunched);
+            socket?.off(SockEvent.SE_GM_DUEL_RECEIVE, duelRequestReceivedListener);
+            socket?.disconnect();
         }
-    }, [socket])
+    }, [])
 
 	return (
 		<div className="connected">

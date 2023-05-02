@@ -183,10 +183,10 @@ export class MatchmakingService {
             user0.elo = Math.round(updateElo(tmpUsers[0], tmpUsers[1], Result.DRAW));
             user1.elo = Math.round(updateElo(tmpUsers[1], tmpUsers[0], Result.DRAW));
         }
-        await this.userService.updateUser(user0.id, user0);
-        await this.userService.updateUser(user1.id, user1);
         await this.createMatchHistory(id, score[0] > score[1] ? user0 : user1, score[0] < score[1] ? user0 : user1);
         await this.gameService.handlerGameFinish(id);
+        await this.userService.updateUser(user0.id, user0);
+        await this.userService.updateUser(user1.id, user1);
     }
 
     private async createMatchHistory(id: string, winner: User, loser: User): Promise<void> {

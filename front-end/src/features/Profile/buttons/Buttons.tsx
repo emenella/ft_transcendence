@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Emoji from "../../../components/Emoji";
 import { invite, accept, deny, remove, blacklist, unblacklist } from "../../../utils/friends_blacklists_system";
 import { Socket } from "socket.io-client";
+import { SockEvent } from "../../../utils/backendInterface";
 
 export	function Disable2FA({ onClick }: { onClick: () => void }) {
     return (
@@ -48,7 +49,7 @@ export function DuelButton({ socket, receiverId }: { socket: Socket | undefined,
 	return (
 		<div>
 			<label>Proposer une partie </label>
-			<button onClick={ () => { socket?.emit("duelRequestSent", { receiverId: receiverId } ); } }> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
+			<button onClick={ () => { socket?.emit(SockEvent.SE_GM_DUEL_SEND, { receiverId: receiverId } ); } }> <Emoji label="crossed_swords" symbol="⚔️" /> </button>
 		</div>
 	);
 }

@@ -8,7 +8,7 @@ export class SocketService {
 
 	private	users: Map<Socket, number> = new Map();
 
-	constructor(@Inject(forwardRef(() => UserService))readonly userService: UserService) {}
+	constructor(@Inject(forwardRef(() => UserService)) readonly userService: UserService) {}
 
 	addUser(socket: Socket, user: number): void {
 		this.users.set(socket, user);
