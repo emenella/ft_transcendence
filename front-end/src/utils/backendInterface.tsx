@@ -41,6 +41,10 @@ export enum SockEvent
 	SE_GM_FINISH = 'gm:finish',
 	SE_GM_LIVE = 'gm:live',
 	SE_GM_SPEC = 'gm:spec',
+	SE_GM_ACCEPT = 'gm:accept',
+	SE_GM_DENY = 'gm:deny',
+	SE_GM_DUEL_SEND = 'gm:duelSend',
+	SE_GM_DUEL_RECV = 'gm:duelRecv',
 	SE_CH_MSG = 'ch:msg',
 	SE_CH_JOIN = 'ch:join',
 	SE_CH_LEAVE = 'ch:leave',
@@ -54,5 +58,5 @@ export enum SockEvent
 	SE_BL_REMOVE = 'bl:remove',
 	SE_COLOR = "color",
 	SE_FRONT_NOTIFY = "front:notify",
-	SE_FRONT_UPDATE = "front:update"
+	SE_FRONT_UPDATE = "front:update",
 }

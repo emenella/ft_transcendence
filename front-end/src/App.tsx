@@ -55,18 +55,16 @@ function App() {
 		socket?.on(SockEvent.SE_FRONT_UPDATE, () => {
 			fetchUser().catch((err) => console.error(err));
 		});
-
+		if (user && !user.isProfileComplete)
+			navigate("/home/signup");
 		return () => {
 			socket?.off(SockEvent.SE_FRONT_UPDATE);
 		}
-	}, []);
+	}, [user]);
 
 	//~~ Body
 	if (loading)
 		return <p>Chargement en cours...</p>;
-
-	if (user && !user.isProfileComplete)
-		navigate("/home/signup");
 
 	return (
 		<div>

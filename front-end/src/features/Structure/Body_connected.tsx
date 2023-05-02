@@ -6,7 +6,7 @@ import { SocketContext } from "../../utils/SocketContext";
 import { useNavigate } from "react-router-dom";
 import Emoji from "../../components/Emoji";
 import { toast } from "react-hot-toast";
-import { User } from "../../utils/backendInterface";
+import { SockEvent, User } from "../../utils/backendInterface";
 import { socket } from "../../api/JwtCookie";
 
 
@@ -19,14 +19,13 @@ function BodyConnected() {
         }
                 
         async function duelRequestReceivedListener(sender: User) {
-            
             toast((t) => (
                 <span>
                     <p>{sender.username} t'a invité à jouer !</p>
-                    <button onClick={() => { socket?.emit("duelRequestAccepted", { senderId: sender.id }); toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_ACCEPT, { senderId: sender.id }); toast.dismiss(t.id); }}>
                         Accepter <Emoji label="check_mark" symbol="✔️" />
                     </button>
-                    <button onClick={() => { socket?.emit("duelRequestDenied", sender); toast.dismiss(t.id); }}>
+                    <button onClick={() => { socket?.emit(SockEvent.SE_GM_DENY, sender); toast.dismiss(t.id); }}>
                         Refuser <Emoji label="cross_mark" symbol="❌" />
                     </button>
                 </span>), {
@@ -34,11 +33,11 @@ function BodyConnected() {
             });
         }
         
-        socket?.on("duelLaunched", duelLaunched);
-        socket?.on("duelRequestReceived", duelRequestReceivedListener);
+        socket?.on(SockEvent.SE_GM_DUEL_SEND, duelLaunched);
+        socket?.on(SockEvent.SE_GM_DUEL_RECV, duelRequestReceivedListener);
         return () => {
-            socket?.off("duelLaunched", duelLaunched);
-            socket?.off("duelRequestReceived", duelRequestReceivedListener);
+            socket?.off(SockEvent.SE_GM_DUEL_SEND, duelLaunched);
+            socket?.off(SockEvent.SE_GM_DUEL_SEND, duelRequestReceivedListener);
         }
     }, [socket])
 
