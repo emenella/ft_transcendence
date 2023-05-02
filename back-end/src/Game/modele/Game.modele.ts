@@ -37,8 +37,6 @@ export class Game {
                 this.player0.move();
                 this.player1.move();
                 this.checkGoal();
-                this.sendGameInfo();
-                this.sendGameInfoToSpectators();
             }
             setTimeout(() => this.loop(), 1000/60);
         }
@@ -122,6 +120,11 @@ export class Game {
         if (player != null)
         {
             this.isLive = player.ready(this.isLive, player == this.player0 ? this.player1 : this.player0);
+            if (this.isLive)
+            {
+                this.sendGameInfo();
+                this.sendGameInfoToSpectators();
+            }
             return true;
         }
         return false;
@@ -270,6 +273,24 @@ export class Game {
     public getPlayersId(): Array<number>
     {
         return [this.player0.getId(), this.player1.getId()];
+    }
+
+    public interpolatePosition(userId: number, data: {ball: {x: number, y: number}, player: {x: number, y: number}}): void
+    {
+        const opp = userId == this.player0.getId() ? this.player1 : this.player0;
+        const player = this.getPlayer(userId);
+        if (opp != null)
+        {
+            const ball: {x: number, y: number} = {x: this.ball.getPosX(), y: this.ball.getPosY()};
+            const paddle: {x: number, y: number} = {x: opp.getPosX(), y: opp.getPosY()};
+
+            const ballDistance = Math.sqrt(Math.pow(ball.x - data.ball.x, 2) + Math.pow(ball.y - data.ball.y, 2));
+            const playerDistance = Math.sqrt(Math.pow(paddle.x - data.player.x, 2) + Math.pow(paddle.y - data.player.y, 2));
+            if (ballDistance > 10 || playerDistance > 10)
+            {
+                player.emitGameInfo(this.getGameInfo());
+            }
+        }
     }
 
 }

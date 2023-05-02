@@ -212,4 +212,11 @@ export class GameService {
         };
         return setup;
     }
+
+    public interpolatePosition(user: User, data: any): void {
+        const game = this.users.get(user.id);
+        if (game) {
+            game.interpolatePosition(user.id, data);
+        }
+    }
 }

@@ -39,6 +39,11 @@ export class ft_pong {
     private width: number;
     private height: number;
 
+    private lastTime: number;
+    private frameRate: number; // fréquence d'affichage cible
+    private accumulator: number;
+    private interpolationCounter: number;
+
     private socket: Socket;
 
     constructor(_socket: Socket, gameSetting: GameSettings, ctx: CanvasRenderingContext2D, setup: Setup, isSpec: boolean)
@@ -51,6 +56,10 @@ export class ft_pong {
         this.width = gameSetting.width;
         this.height = gameSetting.height;
         this.isSpec = isSpec;
+        this.lastTime = 0;
+        this.frameRate = 60;
+        this.accumulator = 0;
+        this.interpolationCounter = 0;
         this.setupGame(setup);
     }
 
@@ -85,7 +94,6 @@ export class ft_pong {
         this.socket.on(SockEvent.SE_GM_FINISH, this.handleGameFinish);
         this.socket.on(SockEvent.SE_GM_LIVE, this.handleLive);
         this.socket.on(SockEvent.SE_GM_UNREADY, this.handlerUnready);
-        this.socket.emit(SockEvent.SE_GM_INFO);
         this.draw();
         this.startGame();
     }
@@ -112,19 +120,43 @@ export class ft_pong {
         }
     }
 
-    private loop(): void
+    private loop(currentTime: number): void
     {
         if (!this.isFinish)
         {
-            if (this.isLive)	
+            if (this.isLive)
             {
-                this.ball.move(this.ctx, this.player0, this.player1);
-                this.player0.paddle.move(this.ctx);
-                this.player1.paddle.move(this.ctx);
+                let deltaTime = (currentTime - this.lastTime) / 1000;
+                this.accumulator += deltaTime;
+                while (this.accumulator >= 1 / this.frameRate)
+                {
+                    console.log("new Position");
+                    this.ball.move(this.ctx, this.player0, this.player1);
+                    this.player0.paddle.move(this.ctx);
+                    this.player1.paddle.move(this.ctx);
+                    this.interpolationCounter += 0.5;
+
+                    if (this.interpolationCounter >= 10) {
+                        this.interpolation();
+                        this.interpolationCounter -= 10;
+                    }
+                    this.accumulator -= 1 / this.frameRate;
+                }
             }
             this.draw();
         }
-        // setTimeout(() => this.loop(), 1000 / 60);
+        this.lastTime = currentTime;
+        requestAnimationFrame(this.loop.bind(this));
+    }
+
+    private interpolation(): void
+    {
+       if (this.user)
+       {
+        const opponent	= this.user.id === this.player0.id ? this.player1 : this.player0;
+        const data: {ball: {x: number, y: number}, player: {x: number, y: number}} = { ball: {x: this.ball.getPosX() / this.ratioX, y: this.ball.getPosY() / this.ratioY}, player: {x: opponent.paddle.getPosX() / this.ratioX, y: opponent.paddle.getPosY() / this.ratioY}};
+        this.socket.emit(SockEvent.SE_GM_INFO, { ball: {x: this.ball.getPosX() / this.ratioX, y: this.ball.getPosY() / this.ratioY}, player: {x: opponent.paddle.getPosX() / this.ratioX, y: opponent.paddle.getPosY() / this.ratioY}});
+       }
     }
 
     public showScore(): void
@@ -151,10 +183,11 @@ export class ft_pong {
 
     public startGame(): void
     {
-        this.loop();
+        requestAnimationFrame(this.loop.bind(this));
     }
 
     private handleGameUpdate = (data: GameInfo): void => {
+        console.log("handleGameUpdate");
         this.player0.paddle.setPos(data.player0.paddle.x * this.ratioX, data.player0.paddle.y * this.ratioY);
         this.player1.paddle.setPos(data.player1.paddle.x * this.ratioX, data.player1.paddle.y * this.ratioY);
         this.ball.setPos(data.ball.x * this.ratioX, data.ball.y * this.ratioY, data.ball.dx * this.ratioX, data.ball.dy * this.ratioY);

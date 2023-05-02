@@ -72,7 +72,7 @@ export class SocketGateway {
 	}
 	
 	async handleDisconnect(@ConnectedSocket() client: Socket) {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.socketService.removeUser(client);
 			await this.userService.changeStatus(user, UserStatus.Disconnected);
@@ -105,7 +105,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage("duelRequestSent")
 	async duelRequestSent(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-		const sender: User | null = await this.authentificate(client);
+		const sender: User = await this.socketService.getUserBySocketId(client.id);
 		const receiverSocket : Socket = this.socketService.getSocketByUserId(data.receiverId);
 		if (sender && receiverSocket !== undefined) {
 			receiverSocket.emit(SockEvent.SE_GM_DUEL_SEND, sender);
@@ -114,7 +114,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage("duelRequestAccepted")
 	async duelRequestAccepted(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
-		const receiver: User | null = await this.authentificate(client);
+		const receiver: User | null = await this.socketService.getUserBySocketId(client.id);
 		const sender = await this.userService.getUserById(data.senderId);
 		const senderSocket = this.socketService.getSocketByUserId(data.senderId);
 		if (receiver && sender !== undefined && senderSocket !== undefined) {
@@ -189,7 +189,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_GM_EVENT)
 	async onGameEvent(@ConnectedSocket() client: Socket, @MessageBody() data: string): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.gameService.handleGameEvent(user.id, data);
 		}
@@ -197,7 +197,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_GM_JOIN)
 	async onGameJoin(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.gameService.joinPlayer(data, user.id, client);
 		}
@@ -205,7 +205,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_GM_SEARCH)
 	async onGameSearch(@ConnectedSocket() client: Socket): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			const games = this.gameService.findGamesIdWithPlayer(user.id);
 			client.emit(SockEvent.SE_GM_SEARCH, games);
@@ -214,7 +214,7 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_GM_LEAVE)
 	async onGameLeave(@ConnectedSocket() client: Socket): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.gameService.leavePlayer(user.id);
 		}
@@ -222,24 +222,23 @@ export class SocketGateway {
 	
 	@SubscribeMessage(SockEvent.SE_GM_READY)
 	async onGameReady(client: Socket): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.gameService.setPlayerReady(user.id);
 		}
 	}
 	
 	@SubscribeMessage(SockEvent.SE_GM_INFO)
-	async onGameInfo(@ConnectedSocket() client: Socket): Promise<any> {
-		const user = await this.authentificate(client);
+	async onGameInfo(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
-			let game = this.gameService.getGameInfo(user.id);
-			client.emit(SockEvent.SE_GM_INFO, game);
+			this.gameService.interpolatePosition(user, data);
 		}
 	}
 	
 	@SubscribeMessage(SockEvent.SE_GM_SPEC)
 	async onGameSpec(@ConnectedSocket() client: Socket, @MessageBody() data: any): Promise<any> {
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user) {
 			this.gameService.spectateGame(data, user.id, client);
 		}
@@ -248,7 +247,7 @@ export class SocketGateway {
 	@SubscribeMessage(SockEvent.SE_MM_JOIN)
 	async joinQueue(@ConnectedSocket() client: Socket)
 	{
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user)
 		{
 			await this.matchmakingService.joinQueue(user);
@@ -258,7 +257,7 @@ export class SocketGateway {
 	@SubscribeMessage(SockEvent.SE_MM_LEAVE)
 	async leaveQueue(@ConnectedSocket() client: Socket)
 	{
-		const user = await this.authentificate(client);
+		const user = await this.socketService.getUserBySocketId(client.id);
 		if (user)
 		{
 			this.matchmakingService.leaveQueue(user);

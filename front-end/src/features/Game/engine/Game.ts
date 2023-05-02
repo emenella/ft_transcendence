@@ -71,6 +71,7 @@ export class Game {
     }
 
     private handleJoinGame(gameSetup: Setup) {
+        console.log(gameSetup);
         if (!this.pong) {
             this.pong = new ft_pong(this.socketGame, this.gameSettings, this.ctx, gameSetup, this.isSpec);
         }
