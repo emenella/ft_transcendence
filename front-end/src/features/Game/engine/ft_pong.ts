@@ -124,7 +124,7 @@ export class ft_pong {
             }
             this.draw();
         }
-        requestAnimationFrame(this.loop.bind(this));
+        // setTimeout(() => this.loop(), 1000 / 60);
     }
 
     public showScore(): void
@@ -160,7 +160,6 @@ export class ft_pong {
         this.ball.setPos(data.ball.x * this.ratioX, data.ball.y * this.ratioY, data.ball.dx * this.ratioX, data.ball.dy * this.ratioY);
         this.player0.score = data.player0.score;
         this.player1.score = data.player1.score;
-        console.log(data.ball);
         this.draw();
     }
 

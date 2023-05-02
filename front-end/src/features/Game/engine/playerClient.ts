@@ -34,6 +34,7 @@ export class PlayerClient extends Player
 {
     private socket: Socket;
     public  isReady: boolean = false;
+    private lastInput: string = "";
 
     constructor(_id: number, _bind: Bind | null, _paddle: Paddle, _socket: Socket, username: string)
     {
@@ -43,7 +44,7 @@ export class PlayerClient extends Player
 
     public handleKeyDown(event: KeyboardEvent): void
     {
-        if (this.bind) {    
+        if (this.bind && this.lastInput !== "+") {    
             switch (event.key) {
                 case this.bind.up:
                     this.paddle.keyDownUp();
@@ -66,13 +67,15 @@ export class PlayerClient extends Player
                     break;
                 default:
                     break;
-            }
+                }
+                this.lastInput = "+";
         }
     }
 
     public handleKeyUp(event: KeyboardEvent): void
     {
-        if (this.bind){    
+        if (this.bind && this.lastInput !== "-")
+        {    
             switch (event.key) {
                 case this.bind.up:
                     this.paddle.keyUpY();
@@ -93,6 +96,7 @@ export class PlayerClient extends Player
                 default:	
                     break;
             }
+            this.lastInput = "-";
         }
     }
 
