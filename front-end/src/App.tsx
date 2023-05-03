@@ -13,7 +13,7 @@ import { SockEvent, User } from "./utils/backendInterface";
 import { UserContext } from "./utils/UserContext";
 import logo from "./assets/black_logo.png";
 
-function App() {
+export default function App() {
 	//~~ States
 	const [hasToken, setHasToken] = useState(!!getJwtCookie());
 	const [user, setUser] = useState<User>();
@@ -75,7 +75,7 @@ function App() {
 					<img src={logo} alt="Logo du site" />
 				</div>
 				<div>
-					<h1>Pong Game</h1>
+					<h1 className="text-5xl font-bold underline">Pong Game</h1>
 				</div>
 				<div>
 					{	hasToken ?
@@ -93,5 +93,3 @@ function App() {
 		</div>
 	);
 }
-
-export default App;

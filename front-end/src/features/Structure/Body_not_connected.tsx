@@ -25,27 +25,26 @@ function BodyNotConnected() {
 			</p>
 			<h4>Amusez-vous bien !</h4>
             <br />
-			<h2>Vos dévoués développeurs.</h2>
             <div className="flexbox">
                 <div>
                     <h4>Erwan Menella</h4>
                     <img src={emenella} alt="Erwan" className="profilPhoto" />
-                    <p><strong>One man army</strong>.</p>
+                    <p><strong>Crypto Boy</strong>.</p>
                 </div>
                 <div>
-                    <h4>Emil Bellon</h4>
+                    <h4>Pablo Lamtenzan</h4>
                     <img src={ebellon} alt="Emil" className="profilPhoto" />
                     <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
                 <div>
-                    <h4>Pierre Thomas</h4>
-                    <img src={pthomas} alt="Pierre" className="profilPhoto" />
-                    <p>Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
+                    <h4>Emil Ebellon</h4>
+                    <img src={ebellon} alt="Emil" className="profilPhoto" />
+                    <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
                 <div>
-                    <h4>Manon Berne</h4>
-                    <img src={mberne} alt="Manon" className="profilPhoto" />
-                    <p>Spécialiste du &#60;strong&#62;frontend&#60;/strong&#62;.</p>
+                    <h4>Nathan Lecaille</h4>
+                    <img src={pthomas} alt="Pierre" className="profilPhoto" />
+                    <p>Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
                 </div>
             </div>
 		</div>

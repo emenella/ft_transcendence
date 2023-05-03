@@ -1,11 +1,10 @@
-import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App";
 import Login from "./auth/Login";
 import { Enable2FA, Login2FA } from "./auth/2FA";
-import SignUp from "./auth/SignUp";
 import { Error } from "./components/Error";
+import "./index.css"
 
 const root = createRoot(
 	document.getElementById("root") as HTMLElement

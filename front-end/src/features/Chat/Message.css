@@ -1,4 +1,4 @@
-.ligne {
+/* .ligne {
     display: flex;
     margin-top: 5px;
     margin-bottom: 5px;
@@ -18,7 +18,7 @@
 .message {
     white-space: pre-line;
     height: 15vh;
-    /* overflow-x: hidden; */
+    overflow-x: hidden;
     overflow-y: auto;
     overflow-wrap: break-word;
     max-width: 1200px;
@@ -33,4 +33,4 @@
 
 .nowrap {
     white-space: nowrap;
-}
+} */
