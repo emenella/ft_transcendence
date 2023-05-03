@@ -68,6 +68,8 @@ services:
         - VITE_API_HOST=${HOSTNAME}
         - VITE_API_PORT=${PORT_SSL}
         - VITE_API_LOGIN_URL=${URL_LOGIN}
+    ports:
+      - "8888:8888"
     volumes:
       - ./front-end/src:/usr/front-end/src
     networks:
