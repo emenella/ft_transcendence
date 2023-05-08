@@ -48,10 +48,9 @@ function BodyConnected() {
     }, [])
 
 	return (
-		<div className="connected">
-			<SocketContext.Provider value={socket}>
-			<Chat />
-            <div>
+		<div className="flex flex-wrap justify-between items-stretch pt-10 pb-10">
+            <SocketContext.Provider value={socket}>
+                <div className="flex-1 h-3/5">
                 <Routes>
                     <Route index element={<Matchmaking/>}></Route>
                     <Route path="profile/:id" element={<Profile />} />
@@ -60,10 +59,11 @@ function BodyConnected() {
                     <Route path="2fa" element={<Enable2FA/>} />
                     <Route path="*" element={<Navigate to="/home" replace />} />
                 </Routes>
-			</div>
-			<UserSidebar />
-			</SocketContext.Provider>
-		</div>
+                <Chat/>
+                </div>
+                <UserSidebar />
+            </SocketContext.Provider>
+        </div>
 	);
 }
 

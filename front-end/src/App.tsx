@@ -70,24 +70,26 @@ export default function App() {
 		<div>
 			<UserContext.Provider value={{ user, setUser }}>
 			<Toaster />
-			<div className="flex-container">
-				<div>
+			<div className="flex-container rounded-5 w-full flex justify-around items-center bg-teal-600 py-10 text-white">
+				<div className="w-1/3 text-center">
 					<img src={logo} alt="Logo du site" />
 				</div>
-				<div>
+				<div className="w-1/3 text-center">
 					<h1 className="text-5xl font-bold underline">Pong Game</h1>
 				</div>
-				<div>
+				<div className="w-1/3 text-center">
 					{	hasToken ?
 						<HeaderConnected logout={handleLogout} /> :
 						<HeaderNotConnected url={url} funcLogin={handleLoginWithout42} />
 					}
 				</div>
 			</div>
+			<div className="">
 			{	hasToken ?
 				<BodyConnected /> :
 				<BodyNotConnected />
 			}
+			</div>
 			<Footer />
 			</UserContext.Provider>
 		</div>

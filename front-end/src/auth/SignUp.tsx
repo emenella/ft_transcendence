@@ -45,11 +45,11 @@ export default function SignUp() {
 	}, [user]);
 
 	return (
-		<div className="parent">
+		<div className="bg-cover absolute h-screen w-screen top-0 left-0 flex flex-col items-center justify-center text-white text-lg bg-blue-500">
 			<Toaster />
 			<div className="form">
-				<label>Pseudonyme : <input maxLength={4096} type="text" value={username} onChange={handleUsernameChange} onKeyDown={handleKeyDown}/> </label>
-				<button onClick={handleClick}>Envoyer</button>
+				<label>Pseudonyme : <input className="border-white" maxLength={4096} type="text" value={username} onChange={handleUsernameChange} onKeyDown={handleKeyDown}/> </label>
+				<button className="border-white" onClick={handleClick}>Envoyer</button>
 			</div>
 		</div>
 	);

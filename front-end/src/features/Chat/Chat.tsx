@@ -210,35 +210,34 @@ function Chat() {
   }, [refreshListListener])
 
   return (
-    <>
-      <div className='chatSidebar'>
-        <div className='toggleLeaveChan'>
-          <label>- Select Chan Menu -</label>
-          <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={channels} activeChan={activeChan}/>
+      <div className='w-4/5 h-2/5 rounded-2xl border border-teal-600 bg-teal-50 ml-1 mr-5 grid grid-cols-2'>
+        <div>
+          <div className='text-center mt-10 mb-10'>
+            <label className='text-lg font-bold'>- Select Chan Menu -</label>
+            <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={channels} activeChan={activeChan}/>
+          </div>
+          <div className='text-center mt-10 mb-10'>
+            <label className='text-lg font-bold'>- Join Chan Menu -</label>
+            <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
+          </div>
+          <div className='text-center mt-10 mb-10'>
+            <label className='text-lg font-bold'>- Create Chan Menu -</label>
+            <CreateChanInput createChan={createChan}/>
+          </div>
         </div>
-        <div className='joinChan'>
-          <label>- Join Chan Menu -</label>
-          <JoinChanInput joinChan={joinChan} publicChans={publicChanList}/>
-        </div>
-        <div className='createChan'>
-          <label>- Create Chan Menu -</label>
-          <CreateChanInput createChan={createChan}/>
+        <div className='border-l border-teal-600 relative h-full'>
+          <div className='font-bold ml-1 mt-0.5'>{activeChan}</div>
+            <div className='ml-1 mt-0.5 mb-0.5 overflow-y-scroll'>
+              <Message messages = {msgs}/>
+            </div>
+          <div className='absolute bottom-0 left-0'>
+            <div className='ml-1 mt-0.5 mb-0.5'>
+              <MessageInput send={send} activeChan={activeChan}/>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="connectedCenter">
-        <div className='chat'>
-          <div className='chanTitle'>{activeChan}</div>
-          <div className='messagesList'>
-            <Message messages = {msgs}/>
-          </div>
-          <div className='inputMessage'>
-            <MessageInput send={send} activeChan={activeChan}/>
-          </div>
-        </div>
-			</div>
-    </>
   )
-}
+}  
 
 export default Chat

@@ -8,7 +8,7 @@ import mberne from "../../assets/mberne.jpg";
 
 function BodyNotConnected() {
 	return (
-		<div className="notconnected">
+		<div className="text-center bg-DAF0EE pt-10 pb-10">
 			<h2>
 				Bienvenue sur le pong codé par vos plus dévoués développeurs.
 			</h2>
@@ -25,25 +25,25 @@ function BodyNotConnected() {
 			</p>
 			<h4>Amusez-vous bien !</h4>
             <br />
-            <div className="flexbox">
-                <div>
+            <div className="flexbox flex-wrap justify-center gap-x-20">
+                <div className="w-1/4">
                     <h4>Erwan Menella</h4>
-                    <img src={emenella} alt="Erwan" className="profilPhoto" />
+                    <img src={emenella} alt="Erwan" className="rounded-full w-52" />
                     <p><strong>Crypto Boy</strong>.</p>
                 </div>
-                <div>
+                <div className="w-1/4">
                     <h4>Pablo Lamtenzan</h4>
-                    <img src={ebellon} alt="Emil" className="profilPhoto" />
+                    <img src={ebellon} alt="Emil" className="rounded-full w-52" />
                     <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
-                <div>
+                <div className="w-1/4">
                     <h4>Emil Ebellon</h4>
-                    <img src={ebellon} alt="Emil" className="profilPhoto" />
+                    <img src={ebellon} alt="Emil" className="rounded-full w-52" />
                     <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
-                <div>
+                <div className="w-1/4">
                     <h4>Nathan Lecaille</h4>
-                    <img src={pthomas} alt="Pierre" className="profilPhoto" />
+                    <img src={pthomas} alt="Pierre" className="rounded-full w-52" />
                     <p>Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
                 </div>
             </div>

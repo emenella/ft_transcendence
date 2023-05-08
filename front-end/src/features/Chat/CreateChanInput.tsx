@@ -20,7 +20,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
     return (
         <>
             <input
-                className="nowrap"
+                className="whitespace-nowrap"
                 id="titleCreate"
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="title"
@@ -45,7 +45,7 @@ export default function CreateChanInput({createChan}:{createChan:(title: string,
                 />
             </label>
             </div>
-            <button className="button" onClick={() => createChan(value, invitOnly, password)}>Create Channel</button>
+            <button className="border border-teal-600 bg-teal-100 rounded" onClick={() => createChan(value, invitOnly, password)}>Create Channel</button>
         </>
     )
 }

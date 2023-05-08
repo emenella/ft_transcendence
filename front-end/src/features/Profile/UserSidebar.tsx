@@ -29,8 +29,8 @@ function UserSidebar() {
 	const getListFriend = () => {
 		return user?.friends?.map((friend: User) => {
 		return (
-			<div className="friend" key={friend.id}>
-				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
+			<div className="flex gap-x-20" key={friend.id}>
+				<img className="object-cover w-1/4 h-screen" src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
 				<div>
 					<UsernameLink user={friend} />
 					{renderSwitch(friend.status)}
@@ -42,7 +42,7 @@ function UserSidebar() {
 	const getListFriendInvite = () => {
 		return user?.friendRequests?.map((friend: User) => {
 		return (
-			<div className="friend-invite" key={friend.id}>
+			<div className="flex justify-evenly items-center" key={friend.id}>
 				<img src={"../../" + friend?.avatarPath} alt="Logo du joueur" />
 				<UsernameLink user={friend} />
 				<div>
@@ -88,7 +88,7 @@ function UserSidebar() {
 	}
 
 	return (
-		<div className="userSidebar">
+		<div className="min-w-15 border rounded border-solid border-green-600 bg-teal-100 p-5 ml-5 mr-1">
 			<h4>Amis</h4>
 			{   listFriends?.length
 				? <div>{listFriends}</div>

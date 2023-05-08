@@ -16,16 +16,16 @@ function useChatScroll<T>(dep: T): React.MutableRefObject<HTMLDivElement> {
 export default function Message({messages}:{messages: msg[]}) {
     const ref = useChatScroll(messages);
     return (
-        <div className="message" ref={ref}>
+        <div className="whitespace-pre-line h-15v overflow-x-hidden overflow-y-auto break-words max-w-1200" ref={ref}>
             {messages.map((message, index) => (
-                <div className="ligne" key={index}>
-                    <div className="header">
+                <div className=".flex" key={index}>
+                    <div className="inline-block whitespace-no-wrap ml-1">
                         {message.date}
                         &nbsp;
                         <Link to={"/home/profile/" + message.authorId} style={{color: "black"}}>{message.author + ':'}</Link>
                         &nbsp;
                     </div>
-                    <div className="content">&nbsp;{message.content}&nbsp;</div>
+                    <div className="bg-teal-200 rounded">&nbsp;{message.content}&nbsp;</div>
                 </div>
             ))}
         </div>

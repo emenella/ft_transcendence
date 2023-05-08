@@ -27,14 +27,14 @@ export default function JoinChanInput(props: {joinChan: (value : string, passwor
     return (
         <>
             <select
-                className="nowrap"
+                className="whitespace-nowrap"
                 id="selectJoin"
                 onChange={(e) =>setValue(e.target.value)}
             >
             {props.publicChans.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
             <input
-                className="nowrap"
+                className="whitespace-nowrap"
                 id="inputJoin"
                 onChange={(e) => setValue(e.target.value)}
                 placeholder="channel to join"

@@ -57,7 +57,7 @@ function AccountManagement() {
             <Link to={"/"} style={linkStyle}>
                 <Emoji label="arrow_left" symbol="⬅️" /> Retour au matchmaking
             </Link>
-            <div className="account-management">
+            <div className="text-center">
                 <h2>Gestion du compte</h2>
                 <form onSubmit={handleSubmit}>
                     <label>Avatar : </label>{" "}

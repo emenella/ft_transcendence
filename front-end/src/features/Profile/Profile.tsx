@@ -14,7 +14,7 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 	const socket = useContext(SocketContext);
 
 	return (
-		<div className="player-interaction">
+		<div className="p-20 flex flex-wrap justify-center gap-20">
 			{
 				me?.friends.some((friend: User) => { return friend.id === user?.id })
 					? <RemoveFriendButton username={user?.username} />
@@ -37,14 +37,14 @@ function PlayerInteraction({ user, me }: { user: User | undefined, me: User | un
 function PrintMatch({ username, match }: { username: string | undefined, match: Match }) {
 	if (match.winner.username === username) {
 		return (
-			<div className="win">
+			<div className="p-5 bg-teal-200">
 				<p>{match.winner.username} VS {match.loser.username} | {match.scores[0]} - {match.scores[1]}</p>
 			</div>
 		);
 	}
 	else {
 		return (
-			<div className="lose">
+			<div className="p-5 bg-red-500 bg-opacity-50">
 				<p>{match.loser.username} VS {match.winner.username} | {match.scores[1]} - {match.scores[0]}</p>
 			</div>
 		);
@@ -107,14 +107,14 @@ function Profile() {
 			<Link to={"/"} style={linkStyle}>
 				<Emoji label="arrow_left" symbol="⬅️" /> Retour au matchmaking
 			</Link>
-			<div className="profil">
+			<div className="text-center">
 				<h2>Profil</h2>
-				<div className="player-profil">
-					<img src={"../../" + user?.avatarPath} alt="Logo du joueur" />
+				<div className="p-20 flex flex-wrap justify-center gap-20">
+					<img  className="rounded-full object-cover w-200 h-200" src={"../../" + user?.avatarPath} alt="Logo du joueur" />
 					<p>{user?.username}</p>
 				</div>
 				{ (me?.id === user?.id) ? <></> : <PlayerInteraction user={user} me={me} /> }
-				<div className="player-info">
+				<div className="flex flex-row flex-wrap justify-center gap-x-200 gap-y-10">
 					<div className="statistics">
 						<h3>Statistiques</h3>
 						<p>Parties jouées : {games}</p>

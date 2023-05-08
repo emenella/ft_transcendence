@@ -18,7 +18,7 @@ const Matchmaking = () => {
   };
 
   return (
-    <div className="matchmaking">
+    <div className="text-center">
       <div className="main">
         <div className="logo">
           <PongGame

@@ -18,7 +18,7 @@ class SearchButton extends Component<ButtonProps> {
   render() {
     const { isSearching } = this.props;
     return (
-      <button onClick={this.handleClick}>
+      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={this.handleClick}>
         {isSearching ? 'En attente...' : 'PLAY'}
       </button>
     );

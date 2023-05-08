@@ -42,9 +42,6 @@ export function HeaderConnected({ logout }: { logout: () => void }) {
 			</a>
 			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => funcLogin(id)}>Connexion sans 42</button>
 			<input type="text" placeholder="id" onChange={onChangeId} onKeyDown={handleKeyDown}/>
-			<button className="btn btn-blue">
-			Button
-			</button>
 			</div>
 			);
 		}
