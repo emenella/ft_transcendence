@@ -4,7 +4,7 @@ import "./Footer.css";
 function Footer() {
     return (
         <footer>
-            <div className="container mx-auto flex justify-between items-center">
+            <div className="container mx-auto flex justify-between items-center relative">
                 <div className="text-sm">
                     Copyright ©
                     <br /> emenella ebellon plamtenz nlecaill<br />

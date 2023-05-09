@@ -36,11 +36,11 @@ export function HeaderConnected({ logout }: { logout: () => void }) {
 		
 		return (
 			<div>
-			<a href={url}>
-			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Connexion</button>
-			</a>
-			<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => funcLogin(id)}>Connexion sans 42</button>
-			<input type="text" placeholder="id" onChange={onChangeId} onKeyDown={handleKeyDown}/>
+				<a href={url}>
+					<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Connexion</button>
+				</a>
+				<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => funcLogin(id)}>Connexion sans 42</button>
+				<input type="text" placeholder="id" onChange={onChangeId} onKeyDown={handleKeyDown}/>
 			</div>
 			);
 		}

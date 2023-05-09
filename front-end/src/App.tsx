@@ -67,10 +67,10 @@ export default function App() {
 		return <p>Chargement en cours...</p>;
 
 	return (
-		<div className="h-screen ">
+		<div className="h-screen flex flex-col min-h-screen min-w-screen">
 			<UserContext.Provider value={{ user, setUser }}>
 			{/* <Toaster /> */}
-			<div className="flex justify-around items-center bg-teal-600 text-white h-1/6">
+			<div className="flex flex-1 justify-around items-center bg-teal-600 text-white h-1/6">
 				<div className="text-center w-20">
 					<img src={logo} alt="Logo du site" className="w-full h-full"/>
 				</div>
@@ -84,13 +84,13 @@ export default function App() {
 					}
 				</div>
 			</div>
-			<div className="h-4/6">
+			<div className="h-5/6 flex-grow">
 				{	hasToken ?
 					<BodyConnected /> :
 					<BodyNotConnected />
 				}
 			</div>
-			<div className="bg-gray-800 text-gray-300 py-4 w-full h-10">
+			<div className="bg-gray-800 text-gray-300 py-4 w-full h-20 bottom-0 left-0 absolute z-10">
 				<Footer />
 			</div>
 			</UserContext.Provider>

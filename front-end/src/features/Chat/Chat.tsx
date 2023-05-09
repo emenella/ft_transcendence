@@ -210,8 +210,8 @@ function Chat() {
   }, [refreshListListener])
 
   return (
-      <div className='rounded-2xl border border-teal-600 bg-teal-50 grid grid-cols-2 h-full'>
-        <div className='h-full'>
+      <div className='rounded-2xl border border-teal-600 bg-teal-50 grid grid-cols-2'>
+        <div className=''>
           <div className='text-center mt-10 mb-10'>
             <label className='text-lg font-bold'>- Select Chan Menu -</label>
             <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={channels} activeChan={activeChan}/>
@@ -225,11 +225,13 @@ function Chat() {
             <CreateChanInput createChan={createChan}/>
           </div>
         </div>
-        <div className='border-l border-teal-600 relative h-full'>
+        <div className='border-l border-teal-600 relative'>
           <div className='font-bold ml-1 mt-0.5'>{activeChan}</div>
-            <div className='ml-1 mt-0.5 mb-0.5 overflow-y-scroll'>
-              <Message messages = {msgs}/>
-            </div>
+          <div className='overflow-y-scroll h-full'>
+              <div className='ml-1 mt-0.5 mb-0.5'>
+                <Message messages = {msgs}/>
+              </div>
+          </div>
           <div className='absolute bottom-0 left-0'>
             <div className='ml-1 mt-0.5 mb-0.5'>
               <MessageInput send={send} activeChan={activeChan}/>

@@ -12,7 +12,7 @@ function BodyNotConnected() {
 			<h2>
 				Bienvenue sur le pong codé par vos plus dévoués développeurs.
 			</h2>
-			<img src={logo} alt="Logo du site" />
+			<img src={logo} className="mx-auto" alt="Logo du site" />
 			<h4>Venez vous mesurer aux meilleurs joueurs de tout 42Lyon !</h4>
 			<p>
 				Pour ça rien de plus simple : créez-vous un compte ou connectez-vous,
@@ -25,26 +25,26 @@ function BodyNotConnected() {
 			</p>
 			<h4>Amusez-vous bien !</h4>
             <br />
-            <div className="flexbox flex-wrap justify-center gap-x-20">
-                <div className="w-1/4">
-                    <h4>Erwan Menella</h4>
+            <div className="flex flex-initial justify-center gap-x-20">
+                <div className="w-1/6">
+                    <h4 className="w-52 ">Erwan Menella</h4>
                     <img src={emenella} alt="Erwan" className="rounded-full w-52" />
-                    <p><strong>Crypto Boy</strong>.</p>
+                    <p className="w-52"><strong>Crypto Boy</strong>.</p>
                 </div>
-                <div className="w-1/4">
-                    <h4>Pablo Lamtenzan</h4>
+                <div className="w-1/6">
+                    <h4 className="w-52">Pablo Lamtenzan</h4>
                     <img src={ebellon} alt="Emil" className="rounded-full w-52" />
-                    <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
+                    <p className="w-52"><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
-                <div className="w-1/4">
-                    <h4>Emil Ebellon</h4>
+                <div className="w-1/6">
+                    <h4 className="w-52">Emil Ebellon</h4>
                     <img src={ebellon} alt="Emil" className="rounded-full w-52" />
-                    <p><strong>RPL_WHOISUSER</strong> ebellon.</p>
+                    <p className="w-52"><strong>RPL_WHOISUSER</strong> ebellon.</p>
                 </div>
-                <div className="w-1/4">
-                    <h4>Nathan Lecaille</h4>
+                <div className="w-1/6">
+                    <h4 className="w-52">Nathan Lecaille</h4>
                     <img src={pthomas} alt="Pierre" className="rounded-full w-52" />
-                    <p>Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
+                    <p className="w-52">Spécialiste des <strong>caissons métalliques parallélépipédiques</strong>.</p>
                 </div>
             </div>
 		</div>

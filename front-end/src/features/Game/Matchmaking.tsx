@@ -6,8 +6,8 @@ import PongGame from './PongGame';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [height] = useState(800);
-  const [width] = useState(800);
+  const [height] = useState(1080);
+  const [width] = useState(1920);
 
   const joinQueueHandler = () => {
     setIsSearching(true);
@@ -18,8 +18,8 @@ const Matchmaking = () => {
   };
 
   return (
-    <div className="text-center">
-      <div className="main">
+    <div className="flex justify-center items-center aspect-video">
+      <div className="main flex flex-col justify-center items-center max-h-max">
         <div className="logo">
           <PongGame
             width={width}
@@ -29,13 +29,15 @@ const Matchmaking = () => {
             handlefound={leaveQueueHandler}
           />
         </div>
-        <SearchButton
-          onClick={joinQueueHandler}
-          isSearching={isSearching}
-        ></SearchButton>
-        {isSearching ? (
-          <LeaveButton onClick={leaveQueueHandler}></LeaveButton>
-        ) : null}
+        <div className='flex justify-center items-center mt-8'>
+          <SearchButton
+            onClick={joinQueueHandler}
+            isSearching={isSearching}
+          ></SearchButton>
+          {isSearching ? (
+            <LeaveButton onClick={leaveQueueHandler}></LeaveButton>
+          ) : null}
+        </div>
       </div>
     </div>
   );

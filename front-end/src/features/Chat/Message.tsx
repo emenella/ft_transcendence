@@ -16,7 +16,7 @@ function useChatScroll<T>(dep: T): React.MutableRefObject<HTMLDivElement> {
 export default function Message({messages}:{messages: msg[]}) {
     const ref = useChatScroll(messages);
     return (
-        <div className="whitespace-pre-line h-15v overflow-x-hidden overflow-y-auto break-words max-w-1200" ref={ref}>
+        <div className="whitespace-pre-line h-15v break-words max-w-1200" ref={ref}>
             {messages.map((message, index) => (
                 <div className=".flex" key={index}>
                     <div className="inline-block whitespace-no-wrap ml-1">
