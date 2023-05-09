@@ -6,8 +6,8 @@ import PongGame from './PongGame';
 
 const Matchmaking = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [height] = useState(1080);
-  const [width] = useState(1920);
+  const [height] = useState(800);
+  const [width] = useState(800);
 
   const joinQueueHandler = () => {
     setIsSearching(true);

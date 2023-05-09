@@ -83,12 +83,11 @@ const PongGame: React.FC<PongGameProps> = (props: PongGameProps) => {
     
 
     return (
-        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+        <div >
             <canvas
                 ref={canvasRef}
                 width={props.width}
                 height={props.height}
-                style={{ width: '100%', height: '100%'}}
             />
         </div>
         );

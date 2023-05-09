@@ -88,7 +88,7 @@ function UserSidebar() {
 	}
 
 	return (
-		<div className="min-w-15 border rounded border-solid border-green-600 bg-teal-100 p-5 ml-5 mr-1">
+		<div className="border rounded border-solid border-green-600 bg-teal-100 p-5">
 			<h4>Amis</h4>
 			{   listFriends?.length
 				? <div>{listFriends}</div>

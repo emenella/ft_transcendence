@@ -34,8 +34,8 @@ export default function ToggleChanInput(props : {toggleChan: (value : string) =>
             >
             {chanJoined.map((arrayChan, index) => <option key={index}>{arrayChan}</option>)}
             </select>
-            <div><button className="border border-teal-600 bg-teal-100 rounded" onClick={() => props.toggleChan(value)}>Select Channel</button></div>
-            <div><button className="border border-teal-600 bg-teal-100 rounded" onClick={() => {props.leaveChan(value); setValue(chanJoined[0])}}>Leave Channel</button></div>
+            <div><button className="border border-teal-600 bg-teal-100 rounded" onClick={() => props.toggleChan(value)}>Select Channel</button>
+            <button className="border border-teal-600 bg-teal-100 rounded" onClick={() => {props.leaveChan(value); setValue(chanJoined[0])}}>Leave Channel</button></div>
         </>
     )
 }

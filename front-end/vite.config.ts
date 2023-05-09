@@ -14,7 +14,7 @@ export default defineConfig({
     port: 3000,
     host: true,
     hmr: {
-      clientPort: 4430,
+      clientPort: 443,
       port: 8888,
       path: '/__hmr',
     },

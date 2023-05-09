@@ -8,7 +8,7 @@ export function HeaderConnected({ logout }: { logout: () => void }) {
 	const user = userContext?.user;
 	
 	const linkStyle = {
-		color: "white",
+		color: "black",
 	};
 	
 	return (
@@ -17,8 +17,7 @@ export function HeaderConnected({ logout }: { logout: () => void }) {
 		<br />
 		<Link to="/home/accountmanagement" style={linkStyle}>Paramètres de compte</Link>
 		<br />
-		<br />
-		<button onClick={logout}>Déconnexion</button>
+		<button onClick={logout} style={linkStyle}>Déconnexion</button>
 		</div>
 		);
 	}

@@ -210,8 +210,8 @@ function Chat() {
   }, [refreshListListener])
 
   return (
-      <div className='w-4/5 h-2/5 rounded-2xl border border-teal-600 bg-teal-50 ml-1 mr-5 grid grid-cols-2'>
-        <div>
+      <div className='rounded-2xl border border-teal-600 bg-teal-50 grid grid-cols-2 h-full'>
+        <div className='h-full'>
           <div className='text-center mt-10 mb-10'>
             <label className='text-lg font-bold'>- Select Chan Menu -</label>
             <ToggleChanInput toggleChan={toggleChan} leaveChan={leaveChan} chans={channels} activeChan={activeChan}/>

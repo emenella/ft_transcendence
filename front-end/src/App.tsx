@@ -67,30 +67,32 @@ export default function App() {
 		return <p>Chargement en cours...</p>;
 
 	return (
-		<div>
+		<div className="h-screen ">
 			<UserContext.Provider value={{ user, setUser }}>
-			<Toaster />
-			<div className="flex-container rounded-5 w-full flex justify-around items-center bg-teal-600 py-10 text-white">
-				<div className="w-1/3 text-center">
-					<img src={logo} alt="Logo du site" />
+			{/* <Toaster /> */}
+			<div className="flex justify-around items-center bg-teal-600 text-white h-1/6">
+				<div className="text-center w-20">
+					<img src={logo} alt="Logo du site" className="w-full h-full"/>
 				</div>
-				<div className="w-1/3 text-center">
+				<div className="text-center">
 					<h1 className="text-5xl font-bold underline">Pong Game</h1>
 				</div>
-				<div className="w-1/3 text-center">
+				<div className="text-center h-max">
 					{	hasToken ?
 						<HeaderConnected logout={handleLogout} /> :
 						<HeaderNotConnected url={url} funcLogin={handleLoginWithout42} />
 					}
 				</div>
 			</div>
-			<div className="">
-			{	hasToken ?
-				<BodyConnected /> :
-				<BodyNotConnected />
-			}
+			<div className="h-4/6">
+				{	hasToken ?
+					<BodyConnected /> :
+					<BodyNotConnected />
+				}
 			</div>
-			<Footer />
+			<div className="bg-gray-800 text-gray-300 py-4 w-full h-10">
+				<Footer />
+			</div>
 			</UserContext.Provider>
 		</div>
 	);
