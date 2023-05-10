@@ -11,7 +11,6 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Matchmaking from "../Game/Matchmaking";
 import Profile from "../Profile/Profile";
 import AccountManagement from "../Profile/AccountManagement";
-import SignUp from "../../auth/SignUp";
 import { Enable2FA } from "../../auth/2FA";
 
 function BodyConnected() {
@@ -55,7 +54,6 @@ function BodyConnected() {
                         <Route index element={<Matchmaking/>}></Route>
                         <Route path="profile/:id" element={<Profile/>} />
                         <Route path="accountmanagement" element={<AccountManagement />} />
-                        <Route path="signup" element={<SignUp />} />
                         <Route path="2fa" element={<Enable2FA/>} />
                         <Route path="*" element={<Navigate to="/home" replace />} />
                     </Routes>

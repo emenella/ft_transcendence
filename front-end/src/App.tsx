@@ -56,7 +56,7 @@ export default function App() {
 			fetchUser().catch((err) => console.error(err));
 		});
 		if (user && !user.isProfileComplete)
-			navigate("/home/signup");
+			navigate("/signup");
 		return () => {
 			socket?.off(SockEvent.SE_FRONT_UPDATE);
 		}

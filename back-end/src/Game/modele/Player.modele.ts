@@ -19,6 +19,8 @@ export class Player {
     private isReady: boolean;
     private paddle: Paddle;
 
+    private lastInput: string = "";
+
     constructor(id: number, _setup: Setup, startX: number, startY: number) {
         this.id = id;
         this.score = 0;
@@ -59,7 +61,7 @@ export class Player {
         return false;
     }
 
-    public press(direction: Direction) {
+    public press(direction: Direction, opponent: Player) {
         switch (direction) {
             case Direction.UP:
                 this.paddle.keyDownUp();
@@ -74,9 +76,13 @@ export class Player {
                 this.paddle.keyDownRight();
                 break;
         }
+        if (this.lastInput !== "+") {
+            this.lastInput = "+";
+            opponent.emitPlayerMove(this.lastInput + direction);
+        }
     }
 
-    public unpress(direction: Direction) {
+    public unpress(direction: Direction, opponent: Player) {
         switch (direction) {
             case Direction.UP:
                 this.paddle.keyUpY();
@@ -90,6 +96,10 @@ export class Player {
             case Direction.RIGHT:
                 this.paddle.keyUpX();
                 break;
+        }
+        if (this.lastInput !== "-") {
+            this.lastInput = "-";
+            opponent.emitPlayerMove(this.lastInput + direction);
         }
     }
 
@@ -126,6 +136,11 @@ export class Player {
     private emitFinish(winner: number) {
         if (this.isConnected)
             this.socket.emit(SockEvent.SE_GM_FINISH, winner);
+    }
+
+    public emitPlayerMove(direction: string) {
+        if (this.isConnected)
+            this.socket.emit(SockEvent.SE_GM_EVENT, direction);
     }
 
     public move() {

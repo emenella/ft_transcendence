@@ -32,7 +32,7 @@ export interface gameInfo {
 
 export class PlayerClient extends Player
 {
-    private socket: Socket;
+    protected socket: Socket;
     public  isReady: boolean = false;
     private lastInput: string = "";
 
@@ -103,6 +103,13 @@ export class PlayerClient extends Player
     public setPos(x: number, y: number): void
     {
         this.paddle.setPos(x, y);
+        this.reset();
+    }
+
+    public reset(): void
+    {
+        this.paddle.keyUpX();
+        this.paddle.keyUpY();
     }
 
     public ready(): void

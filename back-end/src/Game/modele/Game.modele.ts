@@ -184,17 +184,18 @@ export class Game {
     public handleEvent(id: number, key: string): void
     {
         const player = this.getPlayer(id);
+        const opponent = player == this.player0 ? this.player1 : this.player0;
         if (player != null && this.isLive)
         {
             const keyType = key.slice(0, 1);
             const direction: Direction = key.slice(1, key.length) as Direction;
             if (keyType == "+")
             {
-                player.press(direction);
+                player.press(direction, opponent);
             }
             else if (keyType == "-")
             {
-                player.unpress(direction);
+                player.unpress(direction, opponent);
             }
         }
     }
@@ -286,7 +287,7 @@ export class Game {
 
             const ballDistance = Math.sqrt(Math.pow(ball.x - data.ball.x, 2) + Math.pow(ball.y - data.ball.y, 2));
             const playerDistance = Math.sqrt(Math.pow(paddle.x - data.player.x, 2) + Math.pow(paddle.y - data.player.y, 2));
-            if (ballDistance > 10 || playerDistance > 10)
+            if (ballDistance > 10 || playerDistance > 0)
             {
                 player.emitGameInfo(this.getGameInfo());
             }

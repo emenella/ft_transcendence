@@ -133,6 +133,7 @@ export class ft_pong {
                     this.ball.move(this.ctx, this.player0, this.player1);
                     this.player0.paddle.move(this.ctx);
                     this.player1.paddle.move(this.ctx);
+                    this.checkGoal();
                     this.interpolationCounter += 0.5;
 
                     if (this.interpolationCounter >= 10) {
@@ -148,13 +149,34 @@ export class ft_pong {
         requestAnimationFrame(this.loop.bind(this));
     }
 
+    protected checkGoal(): void
+    {
+        if (this.ball.getPosX() + this.ball.getRadius() >= (this.setup.general.width * this.ratioX))
+        {
+            console.log("goal");
+            this.player0.incrementScore();
+            this.player0.setPos(10, (this.setup.general.height * this.ratioY) / 2);
+            this.player1.setPos((this.setup.general.width * this.ratioX) - 10 - this.player1.paddle.getWidth(), (this.setup.general.height * this.ratioY) / 2);
+            this.ball.setPos((this.setup.general.width * this.ratioX) / 2, (this.setup.general.height * this.ratioY) / 2, this.startSpeed, 0);
+            this.showScore();
+        }
+        else if (this.ball.getPosX() - this.ball.getRadius() <= 0)
+        {
+            this.player1.incrementScore();
+            this.player0.setPos(10, (this.setup.general.height * this.ratioY) / 2);
+            this.player1.setPos((this.setup.general.width * this.ratioX) - 10 - this.player1.paddle.getWidth(), (this.setup.general.height * this.ratioY) / 2);
+            this.ball.setPos((this.setup.general.width * this.ratioX) / 2, (this.setup.general.height * this.ratioY) / 2, -this.startSpeed, 0);
+            this.showScore();
+        }
+    }
+
     private interpolation(): void
     {
        if (this.user)
        {
         const opponent	= this.user.id === this.player0.id ? this.player1 : this.player0;
-        const data: {ball: {x: number, y: number}, player: {x: number, y: number}} = { ball: {x: this.ball.getPosX() / this.ratioX, y: this.ball.getPosY() / this.ratioY}, player: {x: opponent.paddle.getPosX() / this.ratioX, y: opponent.paddle.getPosY() / this.ratioY}};
-        this.socket.emit(SockEvent.SE_GM_INFO, { ball: {x: this.ball.getPosX() / this.ratioX, y: this.ball.getPosY() / this.ratioY}, player: {x: opponent.paddle.getPosX() / this.ratioX, y: opponent.paddle.getPosY() / this.ratioY}});
+        const data: {ball: {x: number, y: number}, player: {x: number, y: number}} = { ball: {x: Math.round(this.ball.getPosX() / this.ratioX), y: Math.round(this.ball.getPosY() / this.ratioY)}, player: {x: Math.round(opponent.paddle.getPosX() / this.ratioX), y: Math.round(opponent.paddle.getPosY() / this.ratioY)}};
+        this.socket.emit(SockEvent.SE_GM_INFO, data);
        }
     }
 
@@ -203,6 +225,8 @@ export class ft_pong {
         this.isLive = false;
         const player = this.player0.id === id ? this.player0 : this.player1;
         player.isReady = false;
+        this.player0.reset();
+        this.player1.reset();
         this.draw();
     }
 

@@ -74,6 +74,10 @@ export class Player {
     public getScore(): number {
         return this.score;
     }
+
+    public incrementScore(): void {
+        this.score++;
+    }
     
     public getName(): string {
         return this.username;
