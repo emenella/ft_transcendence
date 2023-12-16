@@ -1,0 +1,12 @@
+# Files not needed for runtime
+Dockerfile
+.gitignore
+README.md
+
+# Compiled output
+/dist
+/node_modules
+
+# IDE - VSCode
+.prettierrc
+.eslintrc

@@ -1,0 +1,47 @@
+.ligne {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.header {
+    display: block;
+    white-space: nowrap;
+    margin-left: 1px;
+}
+
+.content {
+    background: #91D2CC;
+    border-radius: 5px;
+}
+
+.message {
+    white-space: pre-line;
+    max-height: 20vh;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    max-width: fit-content;
+}
+
+.button {
+    margin-top: 5px;
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #009688;
+    background-color: #009688;
+    color: white;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.user_button {
+    text-decoration: underline;
+    border: 0px;
+    color: black;
+    background-color: #DAF0EE;
+    font-size: 1em;
+}

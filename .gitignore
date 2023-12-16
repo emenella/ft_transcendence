@@ -1,0 +1,10 @@
+# Sensitive data
+/ssl_credentials
+/volumes
+.env
+
+# Vscode
+.eslintrc.js
+
+# Linux
+.nfs*

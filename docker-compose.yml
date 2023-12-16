@@ -1,0 +1,87 @@
+version: "3.9"
+name: pong
+
+services:
+  database:
+    container_name: database
+    image: postgres:15.1
+    env_file: .env
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - back-end
+    restart: on-failure
+    init: true
+
+  reverse-proxy:
+    container_name: reverse-proxy 
+    image: nginx:stable
+    depends_on:
+      - server
+    env_file: .env
+    ports:
+      - "${PORT_HTTP}:80"
+      - "${PORT_SSL}:443"
+    configs:
+      - source: nginx-config
+        target: /etc/nginx/conf.d
+    secrets:
+      - source: ssl-credentials
+        target: /etc/ssl/private
+    networks:
+      - front-end
+      - back-end
+    restart: on-failure
+    init: true
+
+  server:
+    container_name: server
+    image: transcendence-server
+    env_file: .env
+    build:
+      context: ./back-end
+    depends_on:
+      - database
+    networks:
+      - back-end
+    ports:
+      - "8100:81"
+    restart: on-failure
+    init: true
+    
+  client:
+    container_name: client
+    image: transcendence-client
+    build:
+      context: ./front-end
+      args:
+        - REACT_APP_API_PROTOCOL=${PROTOCOL}
+        - REACT_APP_API_HOST=${HOSTNAME}
+        - REACT_APP_API_PORT=${PORT_SSL}
+        - REACT_APP_API_URL_42=${URL_42}
+    depends_on:
+      - server
+    networks:
+      - front-end
+    restart: on-failure
+    init: true
+
+volumes:
+  database:
+    name: database
+
+networks:
+  front-end:
+    name: front-end
+    driver: bridge
+  back-end:
+    name: back-end
+    driver: bridge
+
+configs:
+  nginx-config:
+    file: ./reverse-proxy
+
+secrets:
+  ssl-credentials:
+    file: ./ssl_credentials

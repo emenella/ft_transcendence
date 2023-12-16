@@ -1,0 +1,22 @@
+.notconnected {
+    text-align: center;
+    background-color: #DAF0EE;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.flexbox {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 20px;
+}
+
+.flexbox>div {
+    flex-basis: 24%;
+}
+
+.profilPhoto {
+    border-radius: 50%;
+    width: 200px;
+}

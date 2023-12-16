@@ -1,0 +1,49 @@
+.profil {
+    text-align: center;
+}
+
+.player-profil {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.player-profil>img {
+    border-radius: 50%;
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+}
+
+.player-interaction {
+    padding: 20px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.player-info {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+	text-align: left;
+    gap: 10px 200px;
+}
+
+.historic {
+    max-height: 20vh;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+}
+
+.win {
+    padding: 5px;
+    background-color: #DAF0EE;
+}
+
+.lose {
+    padding: 5px;
+    background-color: rgba(255, 0, 0, 0.50);
+}
